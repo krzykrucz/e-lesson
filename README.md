@@ -28,6 +28,10 @@
 
 ## Event storming
 
+![alt text](https://raw.githubusercontent.com/krzykrucz/e-lesson/master/images/big-picture.jpg)
+
+![alt text](https://raw.githubusercontent.com/krzykrucz/e-lesson/master/images/current-lesson-design-level.jpg)
+
 ## Contribute
 Please, feel free to contribute by creating a Pull Request from your own fork repository. 
 

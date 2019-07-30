@@ -22,6 +22,17 @@ data class WholeNumber private constructor(val number: Int) {
     }
 }
 
+data class NaturalNumber private constructor(val number: Int) {
+    companion object {
+        val ONE = NaturalNumber(1)
+        val TWO = NaturalNumber(2)
+        val THREE = NaturalNumber(3)
+        fun of(int: Int): NaturalNumber? =
+                if (int > 0) NaturalNumber(int)
+                else null
+    }
+}
+
 data class NonNegativeRealNumber private constructor(val number: Double) {
     operator fun minus(number: NonNegativeRealNumber): NonNegativeRealNumber? {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.

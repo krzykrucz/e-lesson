@@ -1,2 +1,85 @@
 package com.krzykrucz.elesson.currentlesson.domain
 
+import java.time.LocalDate
+import java.time.LocalDateTime
+
+
+typealias NumberInRegister = NaturalNumber
+typealias FirstName = NonEmptyText
+typealias SecondName = NonEmptyText
+
+typealias ClassName = NonEmptyText
+
+data class Student(val firstName: FirstName,
+                   val secondName: SecondName,
+                   val numberInRegister: NumberInRegister)
+
+data class Class(val students: List<Student>,
+                 val className: ClassName)
+
+typealias Note = NonEmptyText
+
+data class TeacherCalendar(val notes: List<Note>)
+
+data class Teacher(val firstName: FirstName,
+                   val secondName: SecondName)
+
+data class ScheduledLesson(val scheduledTime: LocalDateTime,
+                           val teacher: Teacher,
+                           val clazz: Class,
+                           val teacherCalendar: TeacherCalendar)
+
+
+typealias AbsentStudent = Student
+
+sealed class PresentStudent
+data class PreparedStudent(val student: Student) : PresentStudent()
+data class UnpreparedStudent(val student: Student) : PresentStudent()
+typealias LateStudent = PresentStudent
+
+
+typealias TopicOrdinal = NaturalNumber
+
+data class LessonTopic(val ordinal: TopicOrdinal,
+                       val title: NonEmptyText,
+                       val date: LocalDate)
+
+enum class Presence {
+    Present,
+    Absent,
+    Late
+}
+
+typealias LessonNumber = NaturalNumber
+
+data class Attendance(val date: LocalDate,
+                      val lessonNumber: LessonNumber,
+                      val presentStudents: List<PresentStudent>,
+                      val absentStudents: List<AbsentStudent>)
+
+
+sealed class CurrentLesson
+
+data class LessonBeforeAttendance(val id: LessonIdentifier,
+                                  val clazz: Class) : CurrentLesson()
+
+data class LessonBeforeTopic(val id: LessonIdentifier,
+                             val attendance: Attendance,
+                             val clazz: Class) : CurrentLesson()
+
+data class LessonIntroduction(val id: LessonIdentifier,
+                              val attendance: Attendance,
+                              val topic: LessonTopic) : CurrentLesson()
+
+data class InProgressLesson(val id: LessonIdentifier,
+                            val attendance: Attendance,
+                            val topic: LessonTopic) : CurrentLesson()
+
+
+data class FinishedLesson(val id: LessonIdentifier,
+                          val topic: LessonTopic)
+
+
+data class LessonIdentifier(val date: LocalDate,
+                            val lessonNumber: LessonNumber,
+                            val className: ClassName)

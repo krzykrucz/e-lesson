@@ -16,7 +16,7 @@
 
 ##### Tech stack:
 * Kotlin with Spring Boot in production
-* Spock, ArchUnit in testing
+* Cucumber with Gherkin and ArchUnit in testing
 
 ##### The process:
 1. Big Picture event storming

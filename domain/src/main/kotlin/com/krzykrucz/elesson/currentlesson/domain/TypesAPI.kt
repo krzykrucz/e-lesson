@@ -4,20 +4,20 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 
 
-typealias NumberInRegister = NaturalNumber
-typealias FirstName = NonEmptyText
-typealias SecondName = NonEmptyText
+data class NumberInRegister(val number: NaturalNumber)
+data class FirstName(val name: NonEmptyText)
+data class SecondName(val name: NonEmptyText)
 
-typealias ClassName = NonEmptyText
+data class ClassName(val name: NonEmptyText)
 
 data class Student(val firstName: FirstName,
                    val secondName: SecondName,
                    val numberInRegister: NumberInRegister)
 
-data class Class(val students: List<Student>,
-                 val className: ClassName)
+data class ClassRegistry(val students: List<Student>,
+                         val className: ClassName)
 
-typealias Note = NonEmptyText
+data class Note(val note: NonEmptyText)
 
 data class TeacherCalendar(val notes: List<Note>)
 
@@ -26,19 +26,20 @@ data class Teacher(val firstName: FirstName,
 
 data class ScheduledLesson(val scheduledTime: LocalDateTime,
                            val teacher: Teacher,
-                           val clazz: Class,
+                           val className: ClassName,
                            val teacherCalendar: TeacherCalendar)
 
 
-typealias AbsentStudent = Student
+data class AbsentStudent(val student: Student)
 
 sealed class PresentStudent
 data class PreparedStudent(val student: Student) : PresentStudent()
 data class UnpreparedStudent(val student: Student) : PresentStudent()
-typealias LateStudent = PresentStudent
+
+data class LateStudent(val student: PresentStudent)
 
 
-typealias TopicOrdinal = NaturalNumber
+data class TopicOrdinal(val number: NaturalNumber)
 
 data class LessonTopic(val ordinal: TopicOrdinal,
                        val title: NonEmptyText,
@@ -50,10 +51,10 @@ enum class Presence {
     Late
 }
 
-typealias LessonNumber = NaturalNumber
+data class LessonHourNumber(val number: NaturalNumber)
 
 data class Attendance(val date: LocalDate,
-                      val lessonNumber: LessonNumber,
+                      val lessonHourNumber: LessonHourNumber,
                       val presentStudents: List<PresentStudent>,
                       val absentStudents: List<AbsentStudent>)
 
@@ -61,11 +62,11 @@ data class Attendance(val date: LocalDate,
 sealed class CurrentLesson
 
 data class LessonBeforeAttendance(val id: LessonIdentifier,
-                                  val clazz: Class) : CurrentLesson()
+                                  val clazz: ClassRegistry) : CurrentLesson()
 
 data class LessonBeforeTopic(val id: LessonIdentifier,
                              val attendance: Attendance,
-                             val clazz: Class) : CurrentLesson()
+                             val clazz: ClassRegistry) : CurrentLesson()
 
 data class LessonIntroduction(val id: LessonIdentifier,
                               val attendance: Attendance,
@@ -81,5 +82,5 @@ data class FinishedLesson(val id: LessonIdentifier,
 
 
 data class LessonIdentifier(val date: LocalDate,
-                            val lessonNumber: LessonNumber,
+                            val lessonHourNumber: LessonHourNumber,
                             val className: ClassName)

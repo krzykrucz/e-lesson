@@ -7,4 +7,4 @@ import java.time.LocalDateTime
 
 typealias CheckScheduledLesson = (Teacher, LocalDateTime) -> IO<ScheduledLesson>
 typealias FetchClassRegistry = (ClassName) -> IO<ClassRegistry>
-typealias StartLesson = (FetchClassRegistry, CheckScheduledLesson, Teacher, LocalDateTime) -> Option<LessonIntroduction>
+typealias StartLesson = (FetchClassRegistry, CheckScheduledLesson, Teacher, LocalDateTime) -> IO<LessonBeforeAttendance>

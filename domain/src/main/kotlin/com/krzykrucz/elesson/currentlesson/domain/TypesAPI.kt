@@ -25,6 +25,7 @@ data class Teacher(val firstName: FirstName,
                    val secondName: SecondName)
 
 data class ScheduledLesson(val scheduledTime: LocalDateTime,
+                           val lessonHourNumber: LessonHourNumber,
                            val teacher: Teacher,
                            val className: ClassName,
                            val teacherCalendar: TeacherCalendar)

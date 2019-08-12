@@ -1,5 +1,8 @@
 package com.krzykrucz.elesson.currentlesson.domain
 
+import arrow.core.Either
+import arrow.effects.IO
+
 data class NonEmptyText(val text: String) {
     companion object {
         fun of(string: String): NonEmptyText? =
@@ -57,3 +60,13 @@ class NonEmptySet<T> private constructor(private val elements: Set<T>) : Set<T> 
     }
 
 }
+
+typealias Output<T> = Either<LessonError, T>
+typealias AsyncOutput<T> = IO<Output<T>>
+
+typealias Output2<T, E> = Either<E, T>
+typealias AsyncOutput2<T, E> = IO<Output2<T, E>>
+
+fun <T> asyncSuscess(t: T): AsyncOutput<T> = IO.just(Either.right(t))
+fun <T> asyncDomainError(error: LessonError): AsyncOutput<T> = IO.just(Either.left(error))
+

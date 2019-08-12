@@ -1,5 +1,9 @@
 package com.krzykrucz.elesson.currentlesson.domain
 
+import arrow.effects.typeclasses.Async
+import arrow.effects.typeclasses.Duration
+import java.util.concurrent.TimeUnit
+
 fun newTeacher(firstName: String, secondName: String): Teacher =
         Teacher(
                 FirstName(NonEmptyText.of(firstName)!!),
@@ -16,3 +20,5 @@ fun newStudent(firstName: String, secondName: String, numberInRegister: Int): St
 fun newClassName(name: String): ClassName = ClassName(NonEmptyText.of(name)!!)
 
 fun lessonHourNumberOf(number: Int) = LessonHourNumber(NaturalNumber.of(number)!!)
+
+fun<T> AsyncOutput<T>.evaluate() = this.unsafeRunTimed(Duration(5, TimeUnit.SECONDS)).orNull()!!

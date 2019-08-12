@@ -1,16 +1,20 @@
 package com.krzykrucz.elesson.currentlesson.domain
 
+import arrow.core.Either
 import arrow.core.Option
 import arrow.effects.IO
+import arrow.effects.typeclasses.Duration
 import io.cucumber.java8.En
 import java.time.LocalDateTime
+import java.util.concurrent.TimeUnit
 import kotlin.test.assertTrue
 
 class StartLessonSteps : En {
     lateinit var teacher: Teacher
     var scheduledLessonProvider: CheckScheduledLesson = { teacher, localDateTime -> IO.never }
     var classRegistryProvider: FetchClassRegistry = { className -> IO.never }
-    lateinit var output: Option<CurrentLesson>
+    lateinit var output: AsyncOutput<CurrentLesson>
+    lateinit var lesson: CurrentLesson
 
     init {
         Given("Some teacher") {
@@ -22,12 +26,12 @@ class StartLessonSteps : En {
                 val className1 = newClassName(className)
                 val teacherCalendar = TeacherCalendar(emptyList())
                 val scheduledLesson = ScheduledLesson(scheduledTime, lessonHourNumberOf(1), teacher, className1, teacherCalendar)
-                IO.just(scheduledLesson)
+                asyncSuscess(scheduledLesson)
             }
         }
         Given("Class registry for class {word}") { className: String ->
             classRegistryProvider = {
-                IO.just(ClassRegistry(listOf(newStudent("Harry", "Potter", 1)), it))
+                asyncSuscess(ClassRegistry(listOf(newStudent("Harry", "Potter", 1)), it))
             }
         }
         When("Lesson is started at {word}") { startTime: String ->
@@ -40,13 +44,17 @@ class StartLessonSteps : En {
                     )
         }
         Then("Lesson should be started") {
-            assertTrue(output.nonEmpty())
+            val currentLessonOrError = output.evaluate()
+            val lessonOption = currentLessonOrError.toOption()
+            assertTrue { currentLessonOrError.isRight() }
         }
         Then("Lesson should not be started") {
-            assertTrue(output.isEmpty())
+            //            TODO()
         }
         Then("Lesson should be before attendance") {
-//            TODO()
+            val currentLessonOrError = output.evaluate()
+            assertTrue { currentLessonOrError is LessonBeforeAttendance }
+            //            TODO()
         }
     }
 

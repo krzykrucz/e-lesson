@@ -85,3 +85,7 @@ data class FinishedLesson(val id: LessonIdentifier,
 data class LessonIdentifier(val date: LocalDate,
                             val lessonHourNumber: LessonHourNumber,
                             val className: ClassName)
+
+sealed class LessonError {
+    data class NotScheduledLesson(val error: String = "Cannot start a lesson outside of a lesson hour for which it's scheduled") : LessonError()
+}

@@ -5,8 +5,7 @@ Feature: Start lesson
     And Scheduled lesson for class 1A and 2019-09-09T10:00
     And Class registry for class 1A
     When Lesson is started at <startTime>
-    Then Lesson should be started
-    And Lesson should be before attendance
+    Then Lesson before attendance should be started
     Examples:
       | startTime        |
       | 2019-09-09T10:00 |
@@ -17,7 +16,7 @@ Feature: Start lesson
     And Scheduled lesson for class 1A and 2019-09-09T10:00
     And Class registry for class 1A
     When Lesson is started at <startTime>
-    Then Lesson should not be started
+    Then Lesson should not be started because no scheduled lesson
     Examples:
       | startTime        |
       | 2019-09-09T09:59 |
@@ -25,13 +24,21 @@ Feature: Start lesson
 
   Scenario: Should not start new lesson without a schedule
     Given Some teacher
+    And Failed to check lesson schedule
     When Lesson is started at 2019-09-09T10:00
-    Then Lesson should not be started
+    Then Lesson should not be started because no scheduled lesson
+
+  Scenario: Should not start new lesson without a class registry
+    Given Some teacher
+    And Scheduled lesson for class 1A and 2019-09-09T10:00
+    And Failed to fetch class registry
+    When Lesson is started at 2019-09-09T10:00
+    Then Lesson should not be started because class registry unavailable
 
   Scenario: Should not start new lesson twice
     Given Some teacher
     And Scheduled lesson for class 1A and 2019-09-09T10:00
     And Class registry for class 1A
+    And Lesson was already started
     When Lesson is started at 2019-09-09T10:00
-    And Lesson is started at 2019-09-09T10:01
-    Then Lesson should be started
+    Then Lesson should not be started because it's already started

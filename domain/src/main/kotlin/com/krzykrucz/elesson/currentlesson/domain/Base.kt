@@ -1,6 +1,9 @@
 package com.krzykrucz.elesson.currentlesson.domain
 
 import arrow.core.Either
+import arrow.core.Predicate
+import arrow.core.flatMap
+import arrow.core.getOrHandle
 import arrow.effects.IO
 
 data class NonEmptyText(val text: String) {
@@ -61,12 +64,36 @@ class NonEmptySet<T> private constructor(private val elements: Set<T>) : Set<T> 
 
 }
 
-typealias Output<T> = Either<LessonError, T>
-typealias AsyncOutput<T> = IO<Output<T>>
+typealias Output<Success, Error> = Either<Error, Success>
+typealias AsyncOutput<Success, Error> = IO<Output<Success, Error>>
 
-typealias Output2<T, E> = Either<E, T>
-typealias AsyncOutput2<T, E> = IO<Output2<T, E>>
 
-fun <T> asyncSuscess(t: T): AsyncOutput<T> = IO.just(Either.right(t))
-fun <T> asyncDomainError(error: LessonError): AsyncOutput<T> = IO.just(Either.left(error))
+fun <Success, Error> AsyncOutput<Success, Error>.failIf(predicate: Predicate<Success>, error: Error): AsyncOutput<Success, Error> {
+    return this.map { either -> either.flatMap { success: Success -> if (predicate(success)) Either.Left(error) else Either.Right(success) } }
+}
 
+
+fun <S1, Error, S2> AsyncOutput<S1, Error>.mapSuccess(transformer: (S1) -> S2): AsyncOutput<S2, Error> {
+    return this.map { either -> either.map(transformer) }
+}
+
+fun <Success, E1, E2> AsyncOutput<Success, E1>.mapError(transformer: (E1) -> E2): AsyncOutput<Success, E2> {
+    return this.map { either -> either.mapLeft(transformer) }
+}
+
+fun <S1, Error, S2> AsyncOutput<S1, Error>.flatMapSuccess(transformer: (S1) -> AsyncOutput<S2, Error>): AsyncOutput<S2, Error> {
+    return this.flatMap { either ->
+        either.map { transformer(it) }
+                .getOrHandle { IO.just(Either.left(it)) }
+    }
+}
+
+fun <T, E> Output<T, E>.isSuccess() = this.isRight()
+fun <T, E> Output<T, E>.isError() = this.isLeft()
+
+class AsyncFactory {
+    companion object {
+        fun <S> justSuccess(success: S) = IO.just(Either.right(success))
+        fun <E> justError(error: E) = IO.just(Either.left(error))
+    }
+}

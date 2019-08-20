@@ -1,7 +1,6 @@
 package com.krzykrucz.elesson.currentlesson.domain
 
-import arrow.core.*
-import arrow.effects.IO
+import com.krzykrucz.elesson.currentlesson.domain.StartLessonError.*
 
 
 private fun ScheduledLesson.lessonIdentifier() =
@@ -10,26 +9,17 @@ private fun ScheduledLesson.lessonIdentifier() =
 private fun ScheduledLesson.toCurrentLessonWithClass(classRegistry: ClassRegistry) =
         LessonBeforeAttendance(this.lessonIdentifier(), classRegistry)
 
-val startLesson: StartLesson = { fetchClassRegistry, checkScheduledLesson, teacher, localDateTime ->
+
+val startLesson: StartLesson = { checkLessonStarted, checkScheduledLesson, fetchClassRegistry, teacher, localDateTime ->
     checkScheduledLesson(teacher, localDateTime)
-            .failIf({ scheduledLesson -> localDateTime.isBefore(scheduledLesson.scheduledTime) }, LessonError.NotScheduledLesson())
-            .flatMapIfSuccess { scheduledLesson ->
+            .mapError { _ -> NotScheduledLesson() }
+            .failIf({ scheduledLesson -> localDateTime.isBefore(scheduledLesson.scheduledTime) }, NotScheduledLesson())
+            .failIf({ scheduledLesson -> localDateTime.isAfter(scheduledLesson.scheduledTime.plusMinutes(44)) }, NotScheduledLesson())
+            .flatMapSuccess { scheduledLesson ->
                 fetchClassRegistry(scheduledLesson.className)
-                        .mapIfSuccess(scheduledLesson::toCurrentLessonWithClass)
+                        .mapSuccess(scheduledLesson::toCurrentLessonWithClass)
+                        .mapError { _ -> ClassRegistryUnavailable() }
             }
+            .failIf({ lesson -> checkLessonStarted(lesson.id) }, LessonAlreadyStarted())
 }
 
-fun <A> AsyncOutput<A>.failIf(predicate: Predicate<A>, error: LessonError): AsyncOutput<A> {
-    return this.map { either -> either.flatMap { a: A -> if (predicate(a)) Either.Left(error) else Either.Right(a) } }
-}
-
-fun <A, B> AsyncOutput<A>.mapIfSuccess(transformer: (A) -> B): AsyncOutput<B> {
-    return this.map { either -> either.map(transformer) }
-}
-
-fun <A, B> AsyncOutput<A>.flatMapIfSuccess(transformer: (A) -> AsyncOutput<B>): AsyncOutput<B> {
-    return this.flatMap { either ->
-        either.map { transformer(it) }
-                .getOrHandle { IO.just(Either.left(it)) }
-    }
-}

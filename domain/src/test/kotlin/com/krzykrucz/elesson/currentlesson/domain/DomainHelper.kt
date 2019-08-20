@@ -1,6 +1,6 @@
 package com.krzykrucz.elesson.currentlesson.domain
 
-import arrow.effects.typeclasses.Async
+import arrow.core.orNull
 import arrow.effects.typeclasses.Duration
 import java.util.concurrent.TimeUnit
 
@@ -21,4 +21,6 @@ fun newClassName(name: String): ClassName = ClassName(NonEmptyText.of(name)!!)
 
 fun lessonHourNumberOf(number: Int) = LessonHourNumber(NaturalNumber.of(number)!!)
 
-fun<T> AsyncOutput<T>.evaluate() = this.unsafeRunTimed(Duration(5, TimeUnit.SECONDS)).orNull()!!
+fun <T, E> AsyncOutput<T, E>.evaluate() = this.unsafeRunTimed(Duration(5, TimeUnit.SECONDS)).orNull()!!
+fun <T, E> Output<T, E>.getError() = this.swap().orNull()!!
+fun <T, E> Output<T, E>.getSuccess() = this.orNull()!!

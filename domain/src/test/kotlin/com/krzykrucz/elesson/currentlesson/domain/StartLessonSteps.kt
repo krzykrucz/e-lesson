@@ -50,13 +50,10 @@ class StartLessonSteps : En {
         }
         When("Lesson is started at {word}") { startTime: String ->
             val result =
-                    startLesson(
-                            checkLessonStarted,
-                            scheduledLessonProvider,
-                            classRegistryProvider,
-                            teacher,
-                            LocalDateTime.parse(startTime)
-                    )
+                startLesson(checkLessonStarted, scheduledLessonProvider, classRegistryProvider)(
+                    teacher,
+                    LocalDateTime.parse(startTime)
+                )
             currentLessonOrError = result.evaluate()
         }
         Then("Lesson before attendance should be started") {

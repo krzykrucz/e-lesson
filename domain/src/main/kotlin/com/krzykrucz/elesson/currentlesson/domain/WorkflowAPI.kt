@@ -7,4 +7,4 @@ typealias CheckScheduledLesson = (Teacher, LocalDateTime) -> AsyncOutput<Schedul
 typealias FetchClassRegistry = (ClassName) -> AsyncOutput<ClassRegistry, Throwable>
 typealias CheckLessonStarted = (LessonIdentifier) -> Boolean
 
-typealias StartLesson = (CheckLessonStarted, CheckScheduledLesson, FetchClassRegistry, Teacher, LocalDateTime) -> AsyncOutput<LessonBeforeAttendance, StartLessonError>
+typealias StartLesson = (Teacher, LocalDateTime) -> AsyncOutput<LessonBeforeAttendance, StartLessonError>

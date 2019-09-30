@@ -19,6 +19,7 @@ fun startLesson(checkLessonStarted: CheckLessonStarted,
         .mapError { _ -> NotScheduledLesson() }
         .failIf({ scheduledLesson -> attemptedStartTime.isBefore(scheduledLesson.scheduledTime) }, NotScheduledLesson())
         .failIf({ scheduledLesson -> attemptedStartTime.isAfter(scheduledLesson.scheduledTime.plusMinutes(44)) }, NotScheduledLesson())
+        // ^ TODO maybe enclose these 2 mapping in the above and introduce another internal error type (lesson started too early or so)
         .flatMapSuccess { scheduledLesson ->
             fetchClassRegistry(scheduledLesson.className)
                 .mapSuccess { classRegistry -> scheduledLesson.toCurrentLessonWithClass(classRegistry, attemptedStartTime) }

@@ -4,7 +4,11 @@ import arrow.core.Either
 import arrow.core.Predicate
 import arrow.core.flatMap
 import arrow.core.getOrHandle
+import arrow.data.extensions.list.traverse.traverse
+import arrow.data.fix
 import arrow.effects.IO
+import arrow.effects.extensions.io.applicative.applicative
+import arrow.effects.fix
 
 data class NonEmptyText(val text: String) {
     companion object {
@@ -66,6 +70,12 @@ class NonEmptySet<T> private constructor(private val elements: Set<T>) : Set<T> 
 
 typealias Output<Success, Error> = Either<Error, Success>
 typealias AsyncOutput<Success, Error> = IO<Output<Success, Error>>
+typealias Async<T> = IO<T>
+
+
+fun <A, B> List<A>.mapAsync(function: (A) -> Async<B>): Async<List<B>> =
+        this.traverse(IO.applicative()) { a -> function(a) }.fix()
+                .map { it.fix().toList() }
 
 
 fun <Success, Error> AsyncOutput<Success, Error>.failIf(predicate: Predicate<Success>, error: Error): AsyncOutput<Success, Error> {

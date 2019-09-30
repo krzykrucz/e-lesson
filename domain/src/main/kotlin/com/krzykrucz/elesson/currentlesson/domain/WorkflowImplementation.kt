@@ -1,15 +1,14 @@
 package com.krzykrucz.elesson.currentlesson.domain
 
-import com.krzykrucz.elesson.currentlesson.domain.StartLessonError.ClassRegistryUnavailable
-import com.krzykrucz.elesson.currentlesson.domain.StartLessonError.LessonAlreadyStarted
-import com.krzykrucz.elesson.currentlesson.domain.StartLessonError.NotScheduledLesson
+import com.krzykrucz.elesson.currentlesson.domain.StartLessonError.*
+import java.time.LocalDate
 
 
 private fun ScheduledLesson.lessonIdentifier() =
-    LessonIdentifier(this.scheduledTime.toLocalDate(), this.lessonHourNumber, this.className)
+        LessonIdentifier(this.scheduledTime.toLocalDate(), this.lessonHourNumber, this.className)
 
 private fun ScheduledLesson.toCurrentLessonWithClass(classRegistry: ClassRegistry, attemptedLessonStartTime: AttemptedLessonStartTime) =
-    LessonBeforeAttendance(this.lessonIdentifier(), LessonStartTime(attemptedLessonStartTime), classRegistry)
+        LessonBeforeAttendance(this.lessonIdentifier(), LessonStartTime(attemptedLessonStartTime), classRegistry)
 
 
 fun startLesson(checkLessonStarted: CheckLessonStarted,
@@ -28,4 +27,37 @@ fun startLesson(checkLessonStarted: CheckLessonStarted,
         }
         .failIf({ lesson -> checkLessonStarted(lesson.id) }, LessonAlreadyStarted())
 }
+
+fun checkAttendance(noteStudentPresence: NoteStudentPresence, checkIfAllStudentsAreNoted: CheckIfAllStudentsAreNoted): CheckAttendance = { lesssonBeforeAttendence ->
+    val students = lesssonBeforeAttendence.clazz.students
+    val attendanceFinished: AsyncOutput<AttendanceCheckFinished, StartLessonError> = students.mapAsync(noteStudentPresence)
+            .map { studentsWithCheckedPresence ->
+                val tuple = studentsWithCheckedPresence.partition {
+                    it is AbsentStudent
+                }
+                tuple.first.map { it as AbsentStudent } to tuple.second.map { it as PresentStudent }
+            }
+            .map { (absentStudents, presentStudents) ->
+                Attendance(
+                        date = LocalDate.now(),
+                        absentStudents = absentStudents,
+                        presentStudents = presentStudents,
+                        lessonHourNumber = lesssonBeforeAttendence.id.lessonHourNumber
+                )
+            }.map { attendance ->
+                checkIfAllStudentsAreNoted(students, attendance)
+            }
+
+    attendanceFinished.mapSuccess { attendanceCheckFinished ->
+        LessonBeforeTopic(
+                id = lesssonBeforeAttendence.id,
+                attendance = attendanceCheckFinished.attendance,
+                clazz = lesssonBeforeAttendence.clazz
+        )
+    }
+
+}
+
+
+
 

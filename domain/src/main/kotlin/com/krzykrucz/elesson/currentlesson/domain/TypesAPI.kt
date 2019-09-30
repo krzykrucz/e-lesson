@@ -32,10 +32,10 @@ data class ScheduledLesson(val scheduledTime: ScheduledLessonStartTime,
                            val className: ClassName,
                            val teacherCalendar: TeacherCalendar)
 
+sealed class StudentWithCheckedPresence
+data class AbsentStudent(val student: Student): StudentWithCheckedPresence()
 
-data class AbsentStudent(val student: Student)
-
-sealed class PresentStudent
+sealed class PresentStudent: StudentWithCheckedPresence()
 data class PreparedStudent(val student: Student) : PresentStudent()
 data class UnpreparedStudent(val student: Student) : PresentStudent()
 
@@ -61,6 +61,7 @@ data class Attendance(val date: LocalDate,
                       val presentStudents: List<PresentStudent>,
                       val absentStudents: List<AbsentStudent>)
 
+data class AttendanceCheckFinished(val attendance: Attendance)
 
 sealed class CurrentLesson
 
@@ -94,4 +95,6 @@ sealed class StartLessonError {
     data class NotScheduledLesson(val error: String = "Cannot start a lesson outside of a lesson hour for which it's scheduled") : StartLessonError()
     data class ClassRegistryUnavailable(val error: String = "Class registry unavailable") : StartLessonError()
     data class LessonAlreadyStarted(val error: String = "Lesson already started") : StartLessonError()
+    data class LessonNotStarted(val error: String = "Lesson not started") : StartLessonError()
+    data class NotAllStudentsAreCheckedForPresence(val error: String = "Not all students are checked for presence") : StartLessonError()
 }

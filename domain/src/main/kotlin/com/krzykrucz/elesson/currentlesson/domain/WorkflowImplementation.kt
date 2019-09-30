@@ -8,20 +8,20 @@ import com.krzykrucz.elesson.currentlesson.domain.StartLessonError.NotScheduledL
 private fun ScheduledLesson.lessonIdentifier() =
     LessonIdentifier(this.scheduledTime.toLocalDate(), this.lessonHourNumber, this.className)
 
-private fun ScheduledLesson.toCurrentLessonWithClass(classRegistry: ClassRegistry) =
-    LessonBeforeAttendance(this.lessonIdentifier(), classRegistry)
+private fun ScheduledLesson.toCurrentLessonWithClass(classRegistry: ClassRegistry, attemptedLessonStartTime: AttemptedLessonStartTime) =
+    LessonBeforeAttendance(this.lessonIdentifier(), LessonStartTime(attemptedLessonStartTime), classRegistry)
 
 
 fun startLesson(checkLessonStarted: CheckLessonStarted,
                 checkScheduledLesson: CheckScheduledLesson,
-                fetchClassRegistry: FetchClassRegistry): StartLesson = { teacher, localDateTime ->
-    checkScheduledLesson(teacher, localDateTime)
+                fetchClassRegistry: FetchClassRegistry): StartLesson = { teacher, attemptedStartTime ->
+    checkScheduledLesson(teacher, attemptedStartTime)
         .mapError { _ -> NotScheduledLesson() }
-        .failIf({ scheduledLesson -> localDateTime.isBefore(scheduledLesson.scheduledTime) }, NotScheduledLesson())
-        .failIf({ scheduledLesson -> localDateTime.isAfter(scheduledLesson.scheduledTime.plusMinutes(44)) }, NotScheduledLesson())
+        .failIf({ scheduledLesson -> attemptedStartTime.isBefore(scheduledLesson.scheduledTime) }, NotScheduledLesson())
+        .failIf({ scheduledLesson -> attemptedStartTime.isAfter(scheduledLesson.scheduledTime.plusMinutes(44)) }, NotScheduledLesson())
         .flatMapSuccess { scheduledLesson ->
             fetchClassRegistry(scheduledLesson.className)
-                .mapSuccess(scheduledLesson::toCurrentLessonWithClass)
+                .mapSuccess { classRegistry -> scheduledLesson.toCurrentLessonWithClass(classRegistry, attemptedStartTime) }
                 .mapError { _ -> ClassRegistryUnavailable() }
         }
         .failIf({ lesson -> checkLessonStarted(lesson.id) }, LessonAlreadyStarted())

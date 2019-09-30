@@ -24,7 +24,9 @@ data class TeacherCalendar(val notes: List<Note>)
 data class Teacher(val firstName: FirstName,
                    val secondName: SecondName)
 
-data class ScheduledLesson(val scheduledTime: LocalDateTime,
+typealias ScheduledLessonStartTime = LocalDateTime
+
+data class ScheduledLesson(val scheduledTime: ScheduledLessonStartTime,
                            val lessonHourNumber: LessonHourNumber,
                            val teacher: Teacher,
                            val className: ClassName,
@@ -62,7 +64,9 @@ data class Attendance(val date: LocalDate,
 
 sealed class CurrentLesson
 
+data class LessonStartTime(val time: LocalDateTime)
 data class LessonBeforeAttendance(val id: LessonIdentifier,
+                                  val lessonStart: LessonStartTime,
                                   val clazz: ClassRegistry) : CurrentLesson()
 
 data class LessonBeforeTopic(val id: LessonIdentifier,

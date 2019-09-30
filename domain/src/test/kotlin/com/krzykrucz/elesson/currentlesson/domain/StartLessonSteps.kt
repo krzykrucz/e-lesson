@@ -17,6 +17,7 @@ class StartLessonSteps : En {
     lateinit var currentLessonOrError: Output<LessonBeforeAttendance, StartLessonError>
     lateinit var givenClassName: ClassName
     lateinit var givenDate: LocalDate
+    lateinit var attemptedStartTime: LocalDateTime
     private val givenLessonHourNumber = lessonHourNumberOf(1)
 
     init {
@@ -49,10 +50,11 @@ class StartLessonSteps : En {
             checkLessonStarted = { true }
         }
         When("Lesson is started at {word}") { startTime: String ->
+            attemptedStartTime = LocalDateTime.parse(startTime)
             val result =
                 startLesson(checkLessonStarted, scheduledLessonProvider, classRegistryProvider)(
                     teacher,
-                    LocalDateTime.parse(startTime)
+                    attemptedStartTime
                 )
             currentLessonOrError = result.evaluate()
         }
@@ -64,6 +66,8 @@ class StartLessonSteps : En {
             assertThat(lessonBeforeAttendance.id.className, equalTo(givenClassName))
             assertThat(lessonBeforeAttendance.id.date, equalTo(givenDate))
             assertThat(lessonBeforeAttendance.id.lessonHourNumber, equalTo(givenLessonHourNumber))
+            assertThat(lessonBeforeAttendance.clazz, equalTo(classRegistryProvider(givenClassName).evaluate().getSuccess()))
+            assertThat(lessonBeforeAttendance.lessonStart.time, equalTo(attemptedStartTime))
         }
         Then("Lesson should not be started because no scheduled lesson") {
             assertTrue { this.currentLessonOrError.isError() }

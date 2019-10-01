@@ -4,14 +4,16 @@ import com.krzykrucz.elesson.currentlesson.domain.failIf
 import com.krzykrucz.elesson.currentlesson.domain.flatMapSuccess
 import com.krzykrucz.elesson.currentlesson.domain.mapError
 import com.krzykrucz.elesson.currentlesson.domain.mapSuccess
-import com.krzykrucz.elesson.currentlesson.domain.startlesson.StartLessonError.*
+import com.krzykrucz.elesson.currentlesson.domain.startlesson.StartLessonError.ClassRegistryUnavailable
+import com.krzykrucz.elesson.currentlesson.domain.startlesson.StartLessonError.LessonAlreadyStarted
+import com.krzykrucz.elesson.currentlesson.domain.startlesson.StartLessonError.NotScheduledLesson
 
 
 private fun ScheduledLesson.lessonIdentifier() =
         LessonIdentifier(this.scheduledTime.toLocalDate(), this.lessonHourNumber, this.className)
 
-private fun ScheduledLesson.toCurrentLessonWithClass(classRegistry: ClassRegistry, attemptedLessonStartTime: AttemptedLessonStartTime) =
-        LessonBeforeAttendance(this.lessonIdentifier(), LessonStartTime(attemptedLessonStartTime), classRegistry)
+private fun ScheduledLesson.toCurrentLessonWithClass(classRegistry: ClassRegistry) =
+    StartedLesson(this.lessonIdentifier(), classRegistry)
 
 
 fun startLesson(checkLessonStarted: CheckLessonStarted,
@@ -25,7 +27,7 @@ fun startLesson(checkLessonStarted: CheckLessonStarted,
         // ^ TODO extract a separate function with invariant
         .flatMapSuccess { scheduledLesson ->
             fetchClassRegistry(scheduledLesson.className)
-                .mapSuccess { classRegistry -> scheduledLesson.toCurrentLessonWithClass(classRegistry, attemptedStartTime) }
+                .mapSuccess(scheduledLesson::toCurrentLessonWithClass)
                 .mapError { _ -> ClassRegistryUnavailable() }
         }
         .failIf({ lesson -> checkLessonStarted(lesson.id) }, LessonAlreadyStarted())

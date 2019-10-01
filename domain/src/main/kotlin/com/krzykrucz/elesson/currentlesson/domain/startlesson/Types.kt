@@ -16,7 +16,9 @@ data class Student(val firstName: FirstName,
                    val secondName: SecondName,
                    val numberInRegister: NumberInRegister)
 
-data class ClassRegistry(val students: List<Student>,
+typealias StudentList = List<Student>
+
+data class ClassRegistry(val students: StudentList,
                          val className: ClassName)
 
 data class Teacher(val firstName: FirstName,
@@ -32,9 +34,8 @@ data class ScheduledLesson(val scheduledTime: ScheduledLessonStartTime,
 data class LessonHourNumber(val number: NaturalNumber)
 
 data class LessonStartTime(val time: LocalDateTime)
-data class LessonBeforeAttendance(val id: LessonIdentifier,
-                                  val lessonStart: LessonStartTime,
-                                  val clazz: ClassRegistry)
+data class StartedLesson(val id: LessonIdentifier,
+                         val clazz: ClassRegistry)
 
 data class LessonIdentifier(val date: LocalDate,
                             val lessonHourNumber: LessonHourNumber,

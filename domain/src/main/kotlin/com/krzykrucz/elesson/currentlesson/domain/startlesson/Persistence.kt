@@ -1,6 +1,6 @@
 package com.krzykrucz.elesson.currentlesson.domain.startlesson
 
 
-typealias PersistLesson = (LessonBeforeAttendance) -> LessonIdentifier
+typealias PersistLesson = (StartedLesson) -> LessonIdentifier
 
-typealias QueryLessonBeforeAttendance = (LessonIdentifier) -> LessonBeforeAttendance
+typealias QueryLessonBeforeAttendance = (LessonIdentifier) -> StartedLesson

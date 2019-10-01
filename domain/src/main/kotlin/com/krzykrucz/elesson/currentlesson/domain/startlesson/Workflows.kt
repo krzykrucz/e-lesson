@@ -1,5 +1,6 @@
-package com.krzykrucz.elesson.currentlesson.domain
+package com.krzykrucz.elesson.currentlesson.domain.startlesson
 
+import com.krzykrucz.elesson.currentlesson.domain.AsyncOutput
 import java.time.LocalDateTime
 
 

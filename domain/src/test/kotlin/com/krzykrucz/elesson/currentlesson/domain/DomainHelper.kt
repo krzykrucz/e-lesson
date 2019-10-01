@@ -2,6 +2,7 @@ package com.krzykrucz.elesson.currentlesson.domain
 
 import arrow.core.orNull
 import arrow.effects.typeclasses.Duration
+import com.krzykrucz.elesson.currentlesson.domain.startlesson.*
 import java.util.concurrent.TimeUnit
 
 fun newTeacher(firstName: String, secondName: String): Teacher =

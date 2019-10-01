@@ -1,15 +1,17 @@
-package com.krzykrucz.elesson.currentlesson.domain
+package com.krzykrucz.elesson.currentlesson.domain.startlesson
 
-import com.krzykrucz.elesson.currentlesson.domain.StartLessonError.ClassRegistryUnavailable
-import com.krzykrucz.elesson.currentlesson.domain.StartLessonError.LessonAlreadyStarted
-import com.krzykrucz.elesson.currentlesson.domain.StartLessonError.NotScheduledLesson
+import com.krzykrucz.elesson.currentlesson.domain.failIf
+import com.krzykrucz.elesson.currentlesson.domain.flatMapSuccess
+import com.krzykrucz.elesson.currentlesson.domain.mapError
+import com.krzykrucz.elesson.currentlesson.domain.mapSuccess
+import com.krzykrucz.elesson.currentlesson.domain.startlesson.StartLessonError.*
 
 
 private fun ScheduledLesson.lessonIdentifier() =
-    LessonIdentifier(this.scheduledTime.toLocalDate(), this.lessonHourNumber, this.className)
+        LessonIdentifier(this.scheduledTime.toLocalDate(), this.lessonHourNumber, this.className)
 
 private fun ScheduledLesson.toCurrentLessonWithClass(classRegistry: ClassRegistry, attemptedLessonStartTime: AttemptedLessonStartTime) =
-    LessonBeforeAttendance(this.lessonIdentifier(), LessonStartTime(attemptedLessonStartTime), classRegistry)
+        LessonBeforeAttendance(this.lessonIdentifier(), LessonStartTime(attemptedLessonStartTime), classRegistry)
 
 
 fun startLesson(checkLessonStarted: CheckLessonStarted,

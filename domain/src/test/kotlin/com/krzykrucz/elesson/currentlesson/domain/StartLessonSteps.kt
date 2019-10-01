@@ -1,6 +1,7 @@
 package com.krzykrucz.elesson.currentlesson.domain
 
 import arrow.effects.IO
+import com.krzykrucz.elesson.currentlesson.domain.startlesson.*
 import io.cucumber.java8.En
 import org.hamcrest.CoreMatchers.instanceOf
 import org.hamcrest.MatcherAssert.assertThat
@@ -26,12 +27,13 @@ class StartLessonSteps : En {
         }
         Given("Scheduled lesson for class {word} and {word}") { className: String, time: String ->
             givenDate = LocalDateTime.parse(time).toLocalDate()
-            scheduledLessonProvider = { teacher, localDateTime ->
-                val scheduledTime = LocalDateTime.parse(time)
-                val className1 = newClassName(className)
-                val teacherCalendar = TeacherCalendar(emptyList())
-                val scheduledLesson = ScheduledLesson(scheduledTime, givenLessonHourNumber, teacher, className1, teacherCalendar)
-                AsyncFactory.justSuccess(scheduledLesson)
+            scheduledLessonProvider = { teacher, _ ->
+                AsyncFactory.justSuccess(
+                        ScheduledLesson(
+                                LocalDateTime.parse(time),
+                                givenLessonHourNumber,
+                                teacher,
+                                newClassName(className)))
             }
         }
         Given("Class registry for class {word}") { className: String ->

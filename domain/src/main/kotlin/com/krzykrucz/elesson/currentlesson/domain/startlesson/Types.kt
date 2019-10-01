@@ -2,6 +2,7 @@ package com.krzykrucz.elesson.currentlesson.domain.startlesson
 
 import com.krzykrucz.elesson.currentlesson.domain.NaturalNumber
 import com.krzykrucz.elesson.currentlesson.domain.NonEmptyText
+import com.krzykrucz.elesson.currentlesson.domain.attendance.Student
 import java.time.LocalDate
 import java.time.LocalDateTime
 
@@ -11,10 +12,6 @@ data class FirstName(val name: NonEmptyText)
 data class SecondName(val name: NonEmptyText)
 
 data class ClassName(val name: NonEmptyText)
-
-data class Student(val firstName: FirstName,
-                   val secondName: SecondName,
-                   val numberInRegister: NumberInRegister)
 
 typealias StudentList = List<Student>
 
@@ -39,7 +36,8 @@ data class StartedLesson(val id: LessonIdentifier,
 
 data class LessonIdentifier(val date: LocalDate,
                             val lessonHourNumber: LessonHourNumber,
-                            val className: ClassName)
+                            val className: ClassName,
+                            val lessonStartTime: LessonStartTime)
 
 sealed class StartLessonError {
     data class NotScheduledLesson(val error: String = "Cannot start a lesson outside of a lesson hour for which it's scheduled") : StartLessonError()

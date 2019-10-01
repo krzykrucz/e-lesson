@@ -1,27 +1,28 @@
 package com.krzykrucz.elesson.currentlesson.domain.attendance
 
 import arrow.core.Either
-import com.krzykrucz.elesson.currentlesson.domain.startlesson.ClassName
-import com.krzykrucz.elesson.currentlesson.domain.startlesson.ClassRegistry
-import com.krzykrucz.elesson.currentlesson.domain.startlesson.LessonHourNumber
-import com.krzykrucz.elesson.currentlesson.domain.startlesson.LessonIdentifier
-import com.krzykrucz.elesson.currentlesson.domain.startlesson.Student
+import com.krzykrucz.elesson.currentlesson.domain.startlesson.*
 import java.time.LocalDate
+import java.time.LocalDateTime
 
 
-data class UncheckedStudent(val student: Student)
+sealed class Attendance {
+    data class NotCompletedAttendance(val attendance: AttendanceList)
+    data class CompletedAttendance(val attendance: AttendanceList)
+}
 
-data class AbsentStudent(val student: Student)
+sealed class AttendanceError {
+    data class StudentNotInRegistry(val error: String = "Student is not in registry") : AttendanceError()
+    data class LessonWasNotStarted(val error: String = "Lesson was not started"): AttendanceError()
+}
 
-data class PresentStudent(val student: Student)
-
-data class CompletedAttendance(val attendance: AttendanceList)
 
 data class AttendanceList(val className: ClassName,
                           val date: LocalDate,
                           val lessonHourNumber: LessonHourNumber,
-                          val presentStudents: List<PresentStudent> = emptyList(),
-                          val absentStudents: List<AbsentStudent> = emptyList())
+                          val presentStudents: List<Student.PresentStudent> = emptyList(),
+                          val absentStudents: List<Student.AbsentStudent> = emptyList(),
+                          val lateStudents: List<Student.LateStudent> = emptyList())
 
 // TODO include events needed to be published in the workflows
 //class AttendanceCheckFinished
@@ -29,9 +30,13 @@ data class AttendanceList(val className: ClassName,
 //class StudentNotedAbsent
 //class StudentNotedLate
 
+typealias CurrentTime = LocalDateTime
+
 typealias IsLessonStarted = (LessonIdentifier) -> Boolean
 typealias IsInRegistry = (Student, ClassRegistry) -> Boolean
+typealias AreAllStudentsChecked = (AttendanceList, ClassRegistry) -> Boolean
+typealias IsNotTooLate = (LessonStartTime, CurrentTime) -> Boolean
 
-typealias NotePresence = (UncheckedStudent, AttendanceList, ClassRegistry) -> Either<AttendanceList, CompletedAttendance>
-typealias NoteAbsence = (UncheckedStudent, AttendanceList, ClassRegistry) -> Either<AttendanceList, CompletedAttendance>
-typealias NoteLate = (AbsentStudent, CompletedAttendance, ClassRegistry) -> CompletedAttendance
+typealias NotePresence = (LessonIdentifier, Student.UncheckedStudent, AttendanceList, ClassRegistry) -> Either<AttendanceError, Attendance>
+typealias NoteAbsence = (LessonIdentifier, Student.UncheckedStudent, AttendanceList, ClassRegistry) -> Either<AttendanceError, Attendance>
+typealias NoteLate = (LessonIdentifier, Student.AbsentStudent, Attendance.CompletedAttendance) -> Attendance.CompletedAttendance

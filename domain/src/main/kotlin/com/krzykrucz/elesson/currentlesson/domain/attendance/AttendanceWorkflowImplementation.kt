@@ -1,76 +1,71 @@
 package com.krzykrucz.elesson.currentlesson.domain.attendance
 
-import arrow.core.Either
 import arrow.core.left
 import arrow.core.right
-import com.krzykrucz.elesson.currentlesson.domain.startlesson.ClassRegistry
-import com.krzykrucz.elesson.currentlesson.domain.startlesson.LessonIdentifier
 import java.time.LocalDateTime
+import java.time.temporal.ChronoUnit
 
 fun noteAbsence(
-        isLessonStarted: IsLessonStarted,
         isInRegistry: IsInRegistry,
         areAllStudentsChecked: AreAllStudentsChecked
-): NoteAbsence = { lessonId, uncheckedStudent, attendanceList, classRegistry ->
-    noteStudent(isLessonStarted, lessonId, isInRegistry, uncheckedStudent, classRegistry, attendanceList, areAllStudentsChecked, addAbsentStudent())
+): NoteAbsence = { uncheckedStudent, notCompletedAttendance, classRegistry ->
+    if (isInRegistry(uncheckedStudent, classRegistry)) {
+        val updatedAttendanceList = notCompletedAttendance.attendance.addAbsentStudent(uncheckedStudent)
+        if (areAllStudentsChecked(updatedAttendanceList, classRegistry)) {
+            CheckedAttendance(updatedAttendanceList).right()
+        } else {
+            NotCompletedAttendance(updatedAttendanceList).right()
+        }
+    } else {
+        AttendanceError.StudentNotInRegistry().left()
+    }
 }
 
 fun notePresence(
-        isLessonStarted: IsLessonStarted,
         isInRegistry: IsInRegistry,
         areAllStudentsChecked: AreAllStudentsChecked
-): NotePresence = { lessonId, uncheckedStudent, attendanceList, classRegistry ->
-    noteStudent(isLessonStarted, lessonId, isInRegistry, uncheckedStudent, classRegistry, attendanceList, areAllStudentsChecked, addPresentStudent())
+): NotePresence = { uncheckedStudent, notCompletedAttendance, classRegistry ->
+    if (isInRegistry(uncheckedStudent, classRegistry)) {
+        val updatedAttendanceList = notCompletedAttendance.attendance.addPresentStudent(uncheckedStudent)
+        if (areAllStudentsChecked(updatedAttendanceList, classRegistry)) {
+            CheckedAttendance(updatedAttendanceList).right()
+        } else {
+            NotCompletedAttendance(updatedAttendanceList).right()
+        }
+    } else {
+        AttendanceError.StudentNotInRegistry().left()
+    }
 }
 
 fun noteLate(
         isNotTooLate: IsNotTooLate
-): NoteLate = { lessonId, absentStudent, completedAttendance ->
-    if (isNotTooLate(lessonId.lessonStartTime, LocalDateTime.now())) {
-        val attendance = completedAttendance.attendance
+): NoteLate = { lessonId, absentStudent, checkedAttendance ->
+    if (isNotTooLate(lessonId.lessonHourNumber, LocalDateTime.now())) {
+        val attendance = checkedAttendance.attendance
         val updatedAbsentStudents = attendance.absentStudents.minusElement(absentStudent)
-        val updatedLateStudents = attendance.lateStudents.plusElement(absentStudent.toLate())
+        val updatedPresentStudents = attendance.presentStudents.plusElement(absentStudent.toPresent())
         val updatedAttendance = attendance.copy(
                 absentStudents = updatedAbsentStudents,
-                lateStudents = updatedLateStudents
+                presentStudents = updatedPresentStudents
         )
-        completedAttendance.copy(
+        checkedAttendance.copy(
                 attendance = updatedAttendance
         )
     } else {
-        completedAttendance
+        checkedAttendance
     }
 }
 
-private fun <T: Student> noteStudent(
-        isLessonStarted: IsLessonStarted,
-        lessonId: LessonIdentifier,
-        isInRegistry: IsInRegistry,
-        student: T,
-        classRegistry: ClassRegistry,
-        attendanceList: AttendanceList,
-        areAllStudentsChecked: AreAllStudentsChecked,
-        updateAttendanceList: (AttendanceList, T) -> AttendanceList
-): Either<AttendanceError, Attendance> =
-        if (isLessonStarted(lessonId)) {
-            if (isInRegistry(student, classRegistry)) {
-                val updatedAttendanceList = updateAttendanceList(attendanceList, student)
-                if (areAllStudentsChecked(updatedAttendanceList, classRegistry)) {
-                    Attendance.CompletedAttendance(updatedAttendanceList).right() as Either<AttendanceError, Attendance>
-                } else {
-                    Attendance.NotCompletedAttendance(updatedAttendanceList).right() as Either<AttendanceError, Attendance>
-                }
-            } else {
-                AttendanceError.StudentNotInRegistry().left()
-            }
-        } else {
-            AttendanceError.LessonWasNotStarted().left()
-        }
-
-private fun addAbsentStudent(): (AttendanceList, Student.UncheckedStudent) -> AttendanceList = { attendanceList, uncheckedStudent ->
-    attendanceList.copy(absentStudents = attendanceList.absentStudents.plusElement(uncheckedStudent.toAbsent()))
+fun isNotTooLate(getLessonStartTime: GetLessonStartTime): IsNotTooLate = { lessonHour, currentTime ->
+    val lessonStartTime = getLessonStartTime(lessonHour).time
+    val timeDifference: Long = ChronoUnit.MINUTES.between(lessonStartTime, currentTime)
+    timeDifference <= 15
 }
 
-private fun addPresentStudent(): (AttendanceList, Student.UncheckedStudent) -> AttendanceList = { attendanceList, uncheckedStudent ->
-    attendanceList.copy(presentStudents = attendanceList.presentStudents.plusElement(uncheckedStudent.toPresent()))
-}
+
+private fun AttendanceList.addAbsentStudent(student: UncheckedStudent): AttendanceList =
+        this.copy(absentStudents = this.absentStudents.plusElement(student.toAbsent()))
+
+
+private fun AttendanceList.addPresentStudent(student: UncheckedStudent): AttendanceList =
+        this.copy(presentStudents = this.presentStudents.plusElement(student.toPresent()))

@@ -6,24 +6,35 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 
 
-sealed class Attendance {
-    data class NotCompletedAttendance(val attendance: AttendanceList)
-    data class CompletedAttendance(val attendance: AttendanceList)
+sealed class Student {
+    abstract val firstName: FirstName
+    abstract val secondName: SecondName
+    abstract val numberInRegister: NumberInRegister
 }
+data class UncheckedStudent(override val firstName: FirstName, override val secondName: SecondName, override val numberInRegister: NumberInRegister) : Student()
+data class AbsentStudent(override val firstName: FirstName, override val secondName: SecondName, override val numberInRegister: NumberInRegister) : Student()
+data class PresentStudent(override val firstName: FirstName, override val secondName: SecondName, override val numberInRegister: NumberInRegister) : Student()
+
+fun UncheckedStudent.toAbsent(): AbsentStudent = AbsentStudent(this.firstName, this.secondName, this.numberInRegister)
+fun UncheckedStudent.toPresent(): PresentStudent = PresentStudent(this.firstName, this.secondName, this.numberInRegister)
+fun AbsentStudent.toPresent(): PresentStudent = PresentStudent(this.firstName, this.secondName, this.numberInRegister)
+
+sealed class Attendance
+data class NotCompletedAttendance(val attendance: AttendanceList) : Attendance()
+data class CheckedAttendance(val attendance: AttendanceList) : Attendance()
+
 
 sealed class AttendanceError {
     data class StudentNotInRegistry(val error: String = "Student is not in registry") : AttendanceError()
-    data class LessonWasNotStarted(val error: String = "Lesson was not started"): AttendanceError()
 }
 
 
 data class AttendanceList(val className: ClassName,
                           val date: LocalDate,
                           val lessonHourNumber: LessonHourNumber,
-                          val presentStudents: List<Student.PresentStudent> = emptyList(),
-                          val absentStudents: List<Student.AbsentStudent> = emptyList(),
-                          val lateStudents: List<Student.LateStudent> = emptyList())
-
+                          val presentStudents: List<PresentStudent> = emptyList(),
+                          val absentStudents: List<AbsentStudent> = emptyList()
+)
 // TODO include events needed to be published in the workflows
 //class AttendanceCheckFinished
 //class StudentNotedPresent
@@ -32,11 +43,11 @@ data class AttendanceList(val className: ClassName,
 
 typealias CurrentTime = LocalDateTime
 
-typealias IsLessonStarted = (LessonIdentifier) -> Boolean
 typealias IsInRegistry = (Student, ClassRegistry) -> Boolean
 typealias AreAllStudentsChecked = (AttendanceList, ClassRegistry) -> Boolean
-typealias IsNotTooLate = (LessonStartTime, CurrentTime) -> Boolean
+typealias GetLessonStartTime = (LessonHourNumber) -> LessonStartTime
+typealias IsNotTooLate = (LessonHourNumber, CurrentTime) -> Boolean
 
-typealias NotePresence = (LessonIdentifier, Student.UncheckedStudent, AttendanceList, ClassRegistry) -> Either<AttendanceError, Attendance>
-typealias NoteAbsence = (LessonIdentifier, Student.UncheckedStudent, AttendanceList, ClassRegistry) -> Either<AttendanceError, Attendance>
-typealias NoteLate = (LessonIdentifier, Student.AbsentStudent, Attendance.CompletedAttendance) -> Attendance.CompletedAttendance
+typealias NotePresence = (UncheckedStudent, NotCompletedAttendance, ClassRegistry) -> Either<AttendanceError, Attendance>
+typealias NoteAbsence = (UncheckedStudent, NotCompletedAttendance, ClassRegistry) -> Either<AttendanceError, Attendance>
+typealias NoteLate = (LessonIdentifier, AbsentStudent, CheckedAttendance) -> CheckedAttendance

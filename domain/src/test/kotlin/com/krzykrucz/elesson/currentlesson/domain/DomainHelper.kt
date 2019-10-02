@@ -11,8 +11,8 @@ fun newTeacher(firstName: String, secondName: String): Teacher =
                 SecondName(NonEmptyText.of(secondName)!!)
         )
 
-fun newStudent(firstName: String, secondName: String, numberInRegister: Int): Student =
-        Student(
+fun newStudent(firstName: String, secondName: String, numberInRegister: Int): StudentRecord =
+        StudentRecord(
                 FirstName(NonEmptyText.of(firstName)!!),
                 SecondName(NonEmptyText.of(secondName)!!),
                 NumberInRegister(NaturalNumber.of(numberInRegister)!!)

@@ -1,5 +1,7 @@
 # E-Lesson (functional DDD showcase)
 
+[![Build Status](https://travis-ci.org/krzykrucz/e-lesson.svg?branch=master)](https://travis-ci.org/krzykrucz/e-lesson)
+
 ### Table of Contents
 1. [Overview](#overview)
 2. [Event storming](#event-storming)

@@ -12,11 +12,11 @@ data class SecondName(val name: NonEmptyText)
 
 data class ClassName(val name: NonEmptyText)
 
-class Student(val firstName: FirstName,
-              val secondName: SecondName,
-              val numberInRegister: NumberInRegister)
+data class StudentRecord(val firstName: FirstName,
+                         val secondName: SecondName,
+                         val numberInRegister: NumberInRegister)
 
-typealias StudentList = List<Student>
+typealias StudentList = List<StudentRecord>
 
 data class ClassRegistry(val students: StudentList,
                          val className: ClassName)

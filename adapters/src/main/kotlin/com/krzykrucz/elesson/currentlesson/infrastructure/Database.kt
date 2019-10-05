@@ -3,8 +3,12 @@ package com.krzykrucz.elesson.currentlesson.infrastructure
 import com.krzykrucz.elesson.currentlesson.domain.NaturalNumber
 import com.krzykrucz.elesson.currentlesson.domain.NonEmptyText
 import com.krzykrucz.elesson.currentlesson.domain.attendance.Attendance
+import com.krzykrucz.elesson.currentlesson.domain.attendance.AttendanceList
+import com.krzykrucz.elesson.currentlesson.domain.attendance.LessonTime
+import com.krzykrucz.elesson.currentlesson.domain.attendance.NotCompletedAttendance
 import com.krzykrucz.elesson.currentlesson.domain.startlesson.*
 import java.time.LocalDate
+import java.time.LocalTime
 import java.util.concurrent.ConcurrentHashMap
 
 class Database {
@@ -26,15 +30,34 @@ class Database {
                 className = classNameOf("1A")
         )
 
-        val STARTED_LESSON_DATABASE: Map<LessonIdentifier, StartedLesson> = ConcurrentHashMap(mutableMapOf(
-                lessonId1 to StartedLesson(lessonId1, classRegistryOf1A),
-                lessonId2 to StartedLesson(lessonId2, classRegistryOf1A),
-                lessonId3 to StartedLesson(lessonId3, classRegistryOf1A)
+        val CLASS_REGISTRY_DATABASE: ConcurrentHashMap<ClassName, ClassRegistry> = ConcurrentHashMap(mutableMapOf(
+                classNameOf("1A") to classRegistryOf1A
         ))
 
-        val ATTENDANCE_DATABASE: Map<LessonIdentifier, Attendance> = ConcurrentHashMap()
 
-        private fun lessonIdOf(date: String, number: Int, className: String) =
+        val SCHEDULE: ConcurrentHashMap<LessonHourNumber, LessonTime> = ConcurrentHashMap(mutableMapOf(
+                lessonHourNumberOf(1) to lessonTimeOf("10:00:00"),
+                lessonHourNumberOf(2) to lessonTimeOf("10:55:00"),
+                lessonHourNumberOf(3) to lessonTimeOf("11:45:00")
+        ))
+
+        val ATTENDANCE_DATABASE: ConcurrentHashMap<LessonIdentifier, Attendance> = ConcurrentHashMap(mutableMapOf(
+                lessonId1 to notCompletedAttendanceOf("2019-09-09", 1, "1A"),
+                lessonId2 to notCompletedAttendanceOf("2019-09-09", 2, "1A"),
+                lessonId3 to notCompletedAttendanceOf("2019-09-09", 3, "1A")
+        ))
+
+        private fun lessonTimeOf(time: String): LessonTime =
+                LocalTime.parse(time)
+
+        private fun notCompletedAttendanceOf(date: String, number: Int, className: String): NotCompletedAttendance =
+                NotCompletedAttendance(AttendanceList(
+                        className = classNameOf(className),
+                        date = LocalDate.parse(date),
+                        lessonHourNumber = lessonHourNumberOf(number)
+                ))
+
+        fun lessonIdOf(date: String, number: Int, className: String) =
                 LessonIdentifier(LocalDate.parse(date), lessonHourNumberOf(number), classNameOf(className))
 
         private fun lessonHourNumberOf(number: Int) =

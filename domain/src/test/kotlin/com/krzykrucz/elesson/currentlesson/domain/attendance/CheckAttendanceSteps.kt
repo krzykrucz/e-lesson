@@ -6,6 +6,7 @@ import com.krzykrucz.elesson.currentlesson.domain.startlesson.*
 import io.cucumber.java8.En
 import org.assertj.core.api.Assertions.assertThat
 import java.time.LocalDate
+import java.time.LocalDateTime
 
 class CheckAttendanceSteps : En {
     lateinit var student: Student
@@ -87,7 +88,8 @@ class CheckAttendanceSteps : En {
             currentCheckedAttendance = noteLate(isNotTooLate)(
                     LessonIdentifier(LocalDate.now(), lessonHourNumber, className),
                     absentStudent,
-                    checkedAttendance
+                    checkedAttendance,
+                    LocalDateTime.now()
             )
         }
 

@@ -53,4 +53,4 @@ typealias IsNotTooLate = (LessonHourNumber, CurrentTime) -> Boolean
 
 typealias NotePresence = (UncheckedStudent, NotCompletedAttendance, ClassRegistry) -> Either<AttendanceError, Attendance>
 typealias NoteAbsence = (UncheckedStudent, NotCompletedAttendance, ClassRegistry) -> Either<AttendanceError, Attendance>
-typealias NoteLate = (LessonIdentifier, AbsentStudent, CheckedAttendance) -> CheckedAttendance
+typealias NoteLate = (LessonIdentifier, AbsentStudent, CheckedAttendance, CurrentTime) -> CheckedAttendance

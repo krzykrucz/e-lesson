@@ -12,6 +12,7 @@ import org.springframework.web.reactive.function.BodyInserters
 import org.springframework.web.reactive.function.server.ServerRequest
 import org.springframework.web.reactive.function.server.ServerResponse
 import reactor.core.publisher.Mono
+import java.time.LocalDateTime
 
 
 internal fun handleNoteAbsentRequest(): (ServerRequest) -> Mono<ServerResponse> {
@@ -77,7 +78,8 @@ internal fun handleNoteLateRequest(): (ServerRequest) -> Mono<ServerResponse> = 
                 )(
                         lateAttendanceDto.lessonId,
                         lateAttendanceDto.absentStudent,
-                        lateAttendanceDto.checkedAttendance
+                        lateAttendanceDto.checkedAttendance,
+                        LocalDateTime.parse(lateAttendanceDto.currentTime)
                 )
             }
             .flatMap { updatedAttendance ->
@@ -86,9 +88,9 @@ internal fun handleNoteLateRequest(): (ServerRequest) -> Mono<ServerResponse> = 
 }
 
 internal fun handleGetAttendanceRequest(): (ServerRequest) -> Mono<ServerResponse> = { request ->
-    val date = request.pathVariable("date")
-    val lessonHourNumber = request.pathVariable("lessonHourNumber").toInt()
-    val className = request.pathVariable("className")
+    val date = request.queryParam("date").orElse("")
+    val lessonHourNumber = request.queryParam("lessonHourNumber").map { it.toInt() }.orElse(0)
+    val className = request.queryParam("className").orElse("")
     val lessonId = lessonIdOf(date, lessonHourNumber, className)
     val uncheckedAttendance = ATTENDANCE_DATABASE[lessonId].toOption()
     uncheckedAttendance

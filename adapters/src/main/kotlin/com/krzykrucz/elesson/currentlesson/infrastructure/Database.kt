@@ -21,10 +21,7 @@ class Database {
         private val classRegistryOf1A = ClassRegistry(
                 students = listOf(
                         createStudentRecord("Harry", "Potter", 1),
-                        createStudentRecord("Tom", "Riddle", 2),
-                        createStudentRecord("Hermiona", "Granger", 3),
-                        createStudentRecord("Luna", "Lovegood", 4),
-                        createStudentRecord("Albus", "Dumbledore", 5)
+                        createStudentRecord("Tom", "Riddle", 2)
 
                 ),
                 className = classNameOf("1A")

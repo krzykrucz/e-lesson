@@ -2,17 +2,17 @@ package com.krzykrucz.elesson.currentlesson.domain.attendance
 
 import com.krzykrucz.elesson.currentlesson.domain.NaturalNumber
 import com.krzykrucz.elesson.currentlesson.domain.startlesson.LessonHourNumber
-import com.krzykrucz.elesson.currentlesson.domain.startlesson.LessonStartTime
 import io.cucumber.java8.En
 import org.assertj.core.api.Assertions.assertThat
 import java.time.LocalDateTime
+import java.time.LocalTime
 
 
 class IsNotTooLateSteps : En {
     lateinit var lessonHourNumber: LessonHourNumber
     lateinit var currentTime: CurrentTime
     private val getLessonStartTime: GetLessonStartTime = { _ ->
-        LessonStartTime(LocalDateTime.of(2019, 9, 9, 10, 30))
+        LocalTime.of(10, 30, 0)
     }
     var isNotTooLate: Boolean = true
 

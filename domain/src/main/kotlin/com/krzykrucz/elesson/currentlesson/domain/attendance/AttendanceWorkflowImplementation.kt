@@ -2,6 +2,7 @@ package com.krzykrucz.elesson.currentlesson.domain.attendance
 
 import arrow.core.left
 import arrow.core.right
+import com.krzykrucz.elesson.currentlesson.domain.startlesson.StudentRecord
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 
@@ -57,11 +58,39 @@ fun noteLate(
 }
 
 fun isNotTooLate(getLessonStartTime: GetLessonStartTime): IsNotTooLate = { lessonHour, currentTime ->
-    val lessonStartTime = getLessonStartTime(lessonHour).time
+    val lessonStartTime = getLessonStartTime(lessonHour)
     val timeDifference: Long = ChronoUnit.MINUTES.between(lessonStartTime, currentTime)
     timeDifference <= 15
 }
 
+fun isInRegistry(): IsInRegistry = { student, classRegistry ->
+    classRegistry.students.contains(StudentRecord(
+            firstName = student.firstName,
+            secondName = student.secondName,
+            numberInRegister = student.numberInRegister
+    ))
+}
+
+fun areAllStudentsChecked(): AreAllStudentsChecked = { attendanceList, classRegistry ->
+    val absentStudents = attendanceList.absentStudents
+            .map { student ->
+                StudentRecord(
+                        firstName = student.firstName,
+                        secondName = student.secondName,
+                        numberInRegister = student.numberInRegister
+                )
+            }
+    val presentStudents = attendanceList.presentStudents
+            .map { student ->
+                StudentRecord(
+                        firstName = student.firstName,
+                        secondName = student.secondName,
+                        numberInRegister = student.numberInRegister
+                )
+            }
+
+    (absentStudents + presentStudents).containsAll(classRegistry.students)
+}
 
 private fun AttendanceList.addAbsentStudent(student: UncheckedStudent): AttendanceList =
         this.copy(absentStudents = this.absentStudents.plusElement(student.toAbsent()))

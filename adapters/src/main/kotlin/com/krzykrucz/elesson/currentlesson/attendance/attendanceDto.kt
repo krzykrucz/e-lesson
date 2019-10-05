@@ -16,7 +16,8 @@ data class AttendanceDto(
 data class LateAttendanceDto(
         val lessonId: LessonIdentifier,
         val absentStudent: AbsentStudent,
-        val checkedAttendance: CheckedAttendance
+        val checkedAttendance: CheckedAttendance,
+        val currentTime: String
 )
 
 data class FinishAttendanceDto(

@@ -3,7 +3,6 @@ package com.krzykrucz.elesson.currentlesson.domain.attendance
 import arrow.core.left
 import arrow.core.right
 import com.krzykrucz.elesson.currentlesson.domain.startlesson.StudentRecord
-import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 
 fun noteAbsence(
@@ -40,8 +39,8 @@ fun notePresence(
 
 fun noteLate(
         isNotTooLate: IsNotTooLate
-): NoteLate = { lessonId, absentStudent, checkedAttendance ->
-    if (isNotTooLate(lessonId.lessonHourNumber, LocalDateTime.now())) {
+): NoteLate = { lessonId, absentStudent, checkedAttendance, currentTime ->
+    if (isNotTooLate(lessonId.lessonHourNumber, currentTime)) {
         val attendance = checkedAttendance.attendance
         val updatedAbsentStudents = attendance.absentStudents.minusElement(absentStudent)
         val updatedPresentStudents = attendance.presentStudents.plusElement(absentStudent.toPresent())

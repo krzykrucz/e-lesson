@@ -1,7 +1,10 @@
 package com.krzykrucz.elesson.currentlesson.attendance
 
 import arrow.core.Either
+import arrow.core.getOrElse
 import arrow.core.toOption
+import arrow.effects.IO
+import arrow.effects.typeclasses.Duration
 import com.krzykrucz.elesson.currentlesson.attendance.infrastructure.fetchClassRegistry
 import com.krzykrucz.elesson.currentlesson.attendance.infrastructure.getLessonStartTime
 import com.krzykrucz.elesson.currentlesson.attendance.infrastructure.persistCheckedAttendance
@@ -13,6 +16,7 @@ import org.springframework.web.reactive.function.server.ServerRequest
 import org.springframework.web.reactive.function.server.ServerResponse
 import reactor.core.publisher.Mono
 import java.time.LocalDateTime
+import java.util.concurrent.TimeUnit
 
 
 internal fun handleNoteAbsentRequest(): (ServerRequest) -> Mono<ServerResponse> {
@@ -21,24 +25,28 @@ internal fun handleNoteAbsentRequest(): (ServerRequest) -> Mono<ServerResponse> 
                 .bodyToMono(AttendanceDto::class.java)
                 .map { attendanceDto ->
                     val classRegistryFromDb = fetchClassRegistry()(attendanceDto.className)
-                    noteAbsence(
-                            isInRegistry = isInRegistry(),
-                            areAllStudentsChecked = areAllStudentsChecked()
-                    )(
-                            attendanceDto.uncheckedStudent,
-                            attendanceDto.notCompletedAttendance,
-                            classRegistryFromDb
-                    )
-                }
-                .flatMap { result ->
-                    when (result) {
-                        is Either.Left -> ServerResponse
-                                .badRequest()
-                                .body(BodyInserters.fromObject(result.a))
-                        is Either.Right -> ServerResponse
-                                .ok()
-                                .body(BodyInserters.fromObject(result.b))
+                    classRegistryFromDb.map { classRegistry ->
+                        noteAbsence(
+                                isInRegistry = isInRegistry(),
+                                areAllStudentsChecked = areAllStudentsChecked()
+                        )(
+                                attendanceDto.uncheckedStudent,
+                                attendanceDto.notCompletedAttendance,
+                                classRegistry
+                        )
                     }
+                }
+                .flatMap { resultIO ->
+                    resultIO.map { result ->
+                        when (result) {
+                            is Either.Left -> ServerResponse
+                                    .badRequest()
+                                    .body(BodyInserters.fromObject(result.a))
+                            is Either.Right -> ServerResponse
+                                    .ok()
+                                    .body(BodyInserters.fromObject(result.b))
+                        }
+                    }.run()
                 }
     }
 }
@@ -48,24 +56,28 @@ internal fun handleNotePresentRequest(): (ServerRequest) -> Mono<ServerResponse>
             .bodyToMono(AttendanceDto::class.java)
             .map { attendanceDto ->
                 val classRegistryFromDb = fetchClassRegistry()(attendanceDto.className)
-                notePresence(
-                        isInRegistry = isInRegistry(),
-                        areAllStudentsChecked = areAllStudentsChecked()
-                )(
-                        attendanceDto.uncheckedStudent,
-                        attendanceDto.notCompletedAttendance,
-                        classRegistryFromDb
-                )
-            }
-            .flatMap { result ->
-                when (result) {
-                    is Either.Left -> ServerResponse
-                            .badRequest()
-                            .body(BodyInserters.fromObject(result.a))
-                    is Either.Right -> ServerResponse
-                            .ok()
-                            .body(BodyInserters.fromObject(result.b))
+                classRegistryFromDb.map { classRegistry ->
+                    notePresence(
+                            isInRegistry = isInRegistry(),
+                            areAllStudentsChecked = areAllStudentsChecked()
+                    )(
+                            attendanceDto.uncheckedStudent,
+                            attendanceDto.notCompletedAttendance,
+                            classRegistry
+                    )
                 }
+            }
+            .flatMap { resultIO ->
+                resultIO.map { result ->
+                    when (result) {
+                        is Either.Left -> ServerResponse
+                                .badRequest()
+                                .body(BodyInserters.fromObject(result.a))
+                        is Either.Right -> ServerResponse
+                                .ok()
+                                .body(BodyInserters.fromObject(result.b))
+                    }
+                }.run()
             }
 }
 
@@ -104,5 +116,9 @@ internal fun handleFinishAttendanceRequest(): (ServerRequest) -> Mono<ServerResp
     request
             .bodyToMono(FinishAttendanceDto::class.java)
             .map { (lessonId, checkedAttendance) -> persistCheckedAttendance()(lessonId, checkedAttendance) }
-            .flatMap { ServerResponse.ok().build() }
+            .flatMap { persistIO -> persistIO.map { ServerResponse.ok().build() }.run() }
 }
+
+private fun IO<Mono<ServerResponse>>.run(): Mono<ServerResponse> =
+        this.unsafeRunTimed(Duration(3, TimeUnit.SECONDS))
+                .getOrElse { ServerResponse.badRequest().build() }

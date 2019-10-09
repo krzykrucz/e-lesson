@@ -6,7 +6,7 @@ import org.springframework.http.MediaType
 import org.springframework.web.reactive.function.server.router
 
 @Configuration
-class AttendanceWorkflowAdapter {
+class AttendanceRouterConfig {
 
     @Bean
     fun attendanceRouter() = router {
@@ -15,7 +15,6 @@ class AttendanceWorkflowAdapter {
             POST("/present", handleNotePresentRequest())
             POST("/late", handleNoteLateRequest())
             GET("", handleGetAttendanceRequest())
-            POST("", handleFinishAttendanceRequest())
         }
     }
 }

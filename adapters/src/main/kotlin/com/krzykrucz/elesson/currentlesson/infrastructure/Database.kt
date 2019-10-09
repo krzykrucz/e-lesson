@@ -27,25 +27,24 @@ class Database {
                 className = classNameOf("1A")
         )
 
-        val CLASS_REGISTRY_DATABASE: ConcurrentHashMap<ClassName, ClassRegistry> = ConcurrentHashMap(mutableMapOf(
-                classNameOf("1A") to classRegistryOf1A
+        val STARTED_LESSON_DATABASE: ConcurrentHashMap<LessonIdentifier, StartedLesson> = ConcurrentHashMap(mutableMapOf(
+                lessonId1 to startedLessonOf(lessonId1)
         ))
 
 
-        val SCHEDULE: ConcurrentHashMap<LessonHourNumber, LessonTime> = ConcurrentHashMap(mutableMapOf(
-                lessonHourNumberOf(1) to lessonTimeOf("10:00:00"),
-                lessonHourNumberOf(2) to lessonTimeOf("10:55:00"),
-                lessonHourNumberOf(3) to lessonTimeOf("11:45:00")
-        ))
+
 
         val ATTENDANCE_DATABASE: ConcurrentHashMap<LessonIdentifier, Attendance> = ConcurrentHashMap(mutableMapOf(
-                lessonId1 to notCompletedAttendanceOf("2019-09-09", 1, "1A"),
-                lessonId2 to notCompletedAttendanceOf("2019-09-09", 2, "1A"),
-                lessonId3 to notCompletedAttendanceOf("2019-09-09", 3, "1A")
         ))
 
         private fun lessonTimeOf(time: String): LessonTime =
                 LocalTime.parse(time)
+
+        private fun startedLessonOf(lessonIdentifier: LessonIdentifier): StartedLesson =
+                StartedLesson(
+                        lessonIdentifier,
+                        classRegistryOf1A
+                )
 
         private fun notCompletedAttendanceOf(date: String, number: Int, className: String): NotCompletedAttendance =
                 NotCompletedAttendance(AttendanceList(

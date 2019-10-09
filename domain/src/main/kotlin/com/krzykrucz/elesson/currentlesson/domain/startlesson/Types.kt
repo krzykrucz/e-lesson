@@ -4,6 +4,7 @@ import com.krzykrucz.elesson.currentlesson.domain.NaturalNumber
 import com.krzykrucz.elesson.currentlesson.domain.NonEmptyText
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.LocalTime
 
 
 data class NumberInRegister(val number: NaturalNumber)
@@ -31,7 +32,17 @@ data class ScheduledLesson(val scheduledTime: ScheduledLessonStartTime,
                            val teacher: Teacher,
                            val className: ClassName)
 
-data class LessonHourNumber(val number: NaturalNumber)
+data class LessonHourNumber(val number: NaturalNumber) {
+    companion object {
+        private val SCHEDULE: Map<NaturalNumber, LocalTime> = mapOf(
+                NaturalNumber.ONE to LocalTime.parse("10:00:00"),
+                NaturalNumber.TWO to LocalTime.parse("10:55:00"),
+                NaturalNumber.THREE to LocalTime.parse("11:45:00")
+        )
+    }
+
+    fun getLessonScheduledStartTime(): LocalTime = SCHEDULE[this.number]!!
+}
 
 data class LessonStartTime(val time: LocalDateTime)
 data class StartedLesson(val id: LessonIdentifier,

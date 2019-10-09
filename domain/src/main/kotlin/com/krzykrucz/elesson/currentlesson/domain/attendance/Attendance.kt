@@ -21,9 +21,12 @@ fun UncheckedStudent.toAbsent(): AbsentStudent = AbsentStudent(this.firstName, t
 fun UncheckedStudent.toPresent(): PresentStudent = PresentStudent(this.firstName, this.secondName, this.numberInRegister)
 fun AbsentStudent.toPresent(): PresentStudent = PresentStudent(this.firstName, this.secondName, this.numberInRegister)
 
-sealed class Attendance
-data class NotCompletedAttendance(val attendance: AttendanceList) : Attendance()
-data class CheckedAttendance(val attendance: AttendanceList) : Attendance()
+sealed class Attendance {
+    abstract val attendance: AttendanceList
+}
+
+data class NotCompletedAttendance(override val attendance: AttendanceList) : Attendance()
+data class CheckedAttendance(override val attendance: AttendanceList) : Attendance()
 
 
 sealed class AttendanceError {

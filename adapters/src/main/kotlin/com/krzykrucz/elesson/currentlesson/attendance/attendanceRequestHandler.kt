@@ -122,18 +122,17 @@ internal fun handleGetAttendanceRequest(): (ServerRequest) -> Mono<ServerRespons
             )
 }
 
-private fun handleNotingResult(result: Either<AttendanceError, IO<AttendanceResponseDto>>): Mono<ServerResponse> {
-    return when (result) {
-        is Either.Left -> ServerResponse
-                .badRequest()
-                .body(BodyInserters.fromObject(result.a))
-        is Either.Right -> result.b.map {
-            ServerResponse
-                    .ok()
-                    .body(BodyInserters.fromObject(it))
-        }.run()
-    }
-}
+private fun handleNotingResult(result: Either<AttendanceError, IO<AttendanceResponseDto>>): Mono<ServerResponse> =
+        when (result) {
+            is Either.Left -> ServerResponse
+                    .badRequest()
+                    .body(BodyInserters.fromObject(result.a))
+            is Either.Right -> result.b.map {
+                ServerResponse
+                        .ok()
+                        .body(BodyInserters.fromObject(it))
+            }.run()
+        }
 
 private fun getClassRegistry(attendanceAndStudent: OptionT<ForIO, AttendanceAndStudentDto>): OptionT<ForIO, NoteStudentDto> =
         attendanceAndStudent

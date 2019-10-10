@@ -3,20 +3,14 @@ package com.krzykrucz.elesson.currentlesson.infrastructure
 import com.krzykrucz.elesson.currentlesson.domain.NaturalNumber
 import com.krzykrucz.elesson.currentlesson.domain.NonEmptyText
 import com.krzykrucz.elesson.currentlesson.domain.attendance.Attendance
-import com.krzykrucz.elesson.currentlesson.domain.attendance.AttendanceList
-import com.krzykrucz.elesson.currentlesson.domain.attendance.LessonTime
-import com.krzykrucz.elesson.currentlesson.domain.attendance.NotCompletedAttendance
 import com.krzykrucz.elesson.currentlesson.domain.startlesson.*
 import java.time.LocalDate
-import java.time.LocalTime
 import java.util.concurrent.ConcurrentHashMap
 
 class Database {
 
     companion object {
         private val lessonId1 = lessonIdOf("2019-09-09", 1, "1A")
-        private val lessonId2 = lessonIdOf("2019-09-09", 2, "1A")
-        private val lessonId3 = lessonIdOf("2019-09-09", 3, "1A")
 
         private val classRegistryOf1A = ClassRegistry(
                 students = listOf(
@@ -31,14 +25,8 @@ class Database {
                 lessonId1 to startedLessonOf(lessonId1)
         ))
 
-
-
-
         val ATTENDANCE_DATABASE: ConcurrentHashMap<LessonIdentifier, Attendance> = ConcurrentHashMap(mutableMapOf(
         ))
-
-        private fun lessonTimeOf(time: String): LessonTime =
-                LocalTime.parse(time)
 
         private fun startedLessonOf(lessonIdentifier: LessonIdentifier): StartedLesson =
                 StartedLesson(
@@ -46,18 +34,11 @@ class Database {
                         classRegistryOf1A
                 )
 
-        private fun notCompletedAttendanceOf(date: String, number: Int, className: String): NotCompletedAttendance =
-                NotCompletedAttendance(AttendanceList(
-                        className = classNameOf(className),
-                        date = LocalDate.parse(date),
-                        lessonHourNumber = lessonHourNumberOf(number)
-                ))
-
         fun lessonIdOf(date: String, number: Int, className: String) =
                 LessonIdentifier(LocalDate.parse(date), lessonHourNumberOf(number), classNameOf(className))
 
         private fun lessonHourNumberOf(number: Int) =
-                LessonHourNumber(NaturalNumber.of(number)!!)
+                LessonHourNumber.of(NaturalNumber.of(number)!!).orNull()!!
 
         private fun classNameOf(name: String) =
                 ClassName(NonEmptyText.of(name)!!)

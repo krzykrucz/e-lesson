@@ -20,7 +20,7 @@ fun newStudent(firstName: String, secondName: String, numberInRegister: Int): St
 
 fun newClassName(name: String): ClassName = ClassName(NonEmptyText.of(name)!!)
 
-fun lessonHourNumberOf(number: Int) = LessonHourNumber(NaturalNumber.of(number)!!)
+fun lessonHourNumberOf(number: Int) = LessonHourNumber.of(NaturalNumber.of(number)!!).orNull()!!
 
 fun <T, E> AsyncOutput<T, E>.evaluate() = this.unsafeRunTimed(Duration(5, TimeUnit.SECONDS)).orNull()!!
 fun <T, E> Output<T, E>.getError() = this.swap().orNull()!!

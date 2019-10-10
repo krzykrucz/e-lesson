@@ -19,7 +19,7 @@ class CheckAttendanceSteps : En {
     lateinit var currentCheckedAttendance: CheckedAttendance
     lateinit var checkedAttendance: CheckedAttendance
     private val className = newClassName("Slytherin")
-    private val lessonHourNumber = LessonHourNumber(NaturalNumber.of(1)!!)
+    private val lessonHourNumber = LessonHourNumber.of(NaturalNumber.ONE).orNull()!!
 
     init {
         Given("Student has unchecked attendance") {

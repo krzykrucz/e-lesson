@@ -33,6 +33,11 @@ data class NaturalNumber private constructor(val number: Int) {
         val ONE = NaturalNumber(1)
         val TWO = NaturalNumber(2)
         val THREE = NaturalNumber(3)
+        val FOUR = NaturalNumber(4)
+        val FIVE = NaturalNumber(5)
+        val SIX = NaturalNumber(6)
+        val SEVEN = NaturalNumber(7)
+        val EIGHT = NaturalNumber(8)
         fun of(int: Int): NaturalNumber? =
                 if (int > 0) NaturalNumber(int)
                 else null

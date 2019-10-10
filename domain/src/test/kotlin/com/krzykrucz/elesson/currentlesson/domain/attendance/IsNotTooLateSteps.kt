@@ -18,7 +18,7 @@ class IsNotTooLateSteps : En {
 
     init {
         Given("Lesson hour number is {word}") { lessonHour: String ->
-            lessonHourNumber = LessonHourNumber(NaturalNumber.of(lessonHour.toInt())!!)
+            lessonHourNumber = LessonHourNumber.of(NaturalNumber.of(lessonHour.toInt())!!).orNull()!!
         }
         And("Time is at {word}") { time: String ->
             currentTime = LocalDateTime.parse(time)

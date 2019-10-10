@@ -6,6 +6,7 @@ import arrow.data.OptionT
 import arrow.effects.ForIO
 import arrow.effects.IO
 import arrow.effects.extensions.io.applicative.applicative
+import arrow.effects.extensions.io.functor.functor
 import com.krzykrucz.elesson.currentlesson.attendance.AttendanceResponseDto
 import com.krzykrucz.elesson.currentlesson.domain.attendance.*
 import com.krzykrucz.elesson.currentlesson.domain.startlesson.ClassRegistry
@@ -16,34 +17,27 @@ import com.krzykrucz.elesson.currentlesson.infrastructure.Database.Companion.STA
 
 typealias PersistAttendance = (Attendance) -> IO<AttendanceResponseDto>
 typealias FetchAttendance = (LessonIdentifier) -> OptionT<ForIO, Attendance>
-typealias FetchCheckedAttendance = (LessonIdentifier) -> IO<CheckedAttendance>
-typealias FetchStartedLesson = (LessonIdentifier) -> IO<StartedLesson>
-typealias FetchClassRegistry = (Attendance) -> IO<ClassRegistry>
-typealias FetchStartedLessonAsAttendance = (LessonIdentifier) -> IO<NotCompletedAttendance>
+typealias FetchStartedLesson = (LessonIdentifier) -> OptionT<ForIO, StartedLesson>
+typealias FetchClassRegistry = (Attendance) -> OptionT<ForIO, ClassRegistry>
+typealias FetchStartedLessonAsAttendance = (LessonIdentifier) -> OptionT<ForIO, NotCompletedAttendance>
 
 
 fun fetchAttendance(): FetchAttendance = { lessonIdentifier ->
     OptionT.fromOption(IO.applicative(), ATTENDANCE_DATABASE.get(lessonIdentifier).toOption())
 }
 
-fun fetchCheckedAttendance(): FetchCheckedAttendance = { lessonIdentifier ->
-    IO.just(ATTENDANCE_DATABASE.get(lessonIdentifier)!! as CheckedAttendance)
-}
-
 fun fetchStartedLesson(): FetchStartedLesson = { lessonIdentifier ->
-    IO.just(STARTED_LESSON_DATABASE.get(lessonIdentifier)!!)
+    OptionT.fromOption(IO.applicative(), STARTED_LESSON_DATABASE.get(lessonIdentifier).toOption())
 }
 
 fun fetchStartedLessonAsAttendance(): FetchStartedLessonAsAttendance =
         fetchStartedLesson().andThen { startedLessonIo ->
-            startedLessonIo.map { startedLesson ->
-                startedLesson.toNotCompletedAttendance()
-            }
+            startedLessonIo.map(IO.functor()) { it.toNotCompletedAttendance() }
         }
 
 fun fetchClassRegistry(): FetchClassRegistry = { attendance ->
     fetchStartedLesson()(attendance.toLessonId())
-            .map { it.clazz }
+            .map(IO.functor()) { it.clazz }
 }
 
 fun StartedLesson.toNotCompletedAttendance() = NotCompletedAttendance(attendance = AttendanceList(

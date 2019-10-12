@@ -1,6 +1,5 @@
 package com.krzykrucz.elesson.currentlesson.domain.attendance
 
-import com.krzykrucz.elesson.currentlesson.domain.NaturalNumber
 import com.krzykrucz.elesson.currentlesson.domain.startlesson.LessonHourNumber
 import io.cucumber.java8.En
 import org.assertj.core.api.Assertions.assertThat
@@ -18,7 +17,7 @@ class IsNotTooLateSteps : En {
 
     init {
         Given("Lesson hour number is {word}") { lessonHour: String ->
-            lessonHourNumber = LessonHourNumber.of(NaturalNumber.of(lessonHour.toInt())!!).orNull()!!
+            lessonHourNumber = LessonHourNumber.of(lessonHour.toInt()).orNull()!!
         }
         And("Time is at {word}") { time: String ->
             currentTime = LocalDateTime.parse(time)

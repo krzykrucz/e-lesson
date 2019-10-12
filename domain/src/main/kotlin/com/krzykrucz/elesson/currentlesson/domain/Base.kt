@@ -1,7 +1,10 @@
 package com.krzykrucz.elesson.currentlesson.domain
 
 import arrow.core.Either
+import arrow.core.None
+import arrow.core.Option
 import arrow.core.Predicate
+import arrow.core.Some
 import arrow.core.flatMap
 import arrow.core.getOrHandle
 import arrow.effects.IO
@@ -38,9 +41,9 @@ data class NaturalNumber private constructor(val number: Int) {
         val SIX = NaturalNumber(6)
         val SEVEN = NaturalNumber(7)
         val EIGHT = NaturalNumber(8)
-        fun of(int: Int): NaturalNumber? =
-                if (int > 0) NaturalNumber(int)
-                else null
+        fun of(int: Int): Option<NaturalNumber> =
+            if (int > 0) Some(NaturalNumber(int))
+            else None
     }
 }
 

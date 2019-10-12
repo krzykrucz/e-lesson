@@ -3,7 +3,15 @@ package com.krzykrucz.elesson.currentlesson.infrastructure
 import com.krzykrucz.elesson.currentlesson.domain.NaturalNumber
 import com.krzykrucz.elesson.currentlesson.domain.NonEmptyText
 import com.krzykrucz.elesson.currentlesson.domain.attendance.Attendance
-import com.krzykrucz.elesson.currentlesson.domain.startlesson.*
+import com.krzykrucz.elesson.currentlesson.domain.startlesson.ClassName
+import com.krzykrucz.elesson.currentlesson.domain.startlesson.ClassRegistry
+import com.krzykrucz.elesson.currentlesson.domain.startlesson.FirstName
+import com.krzykrucz.elesson.currentlesson.domain.startlesson.LessonHourNumber
+import com.krzykrucz.elesson.currentlesson.domain.startlesson.LessonIdentifier
+import com.krzykrucz.elesson.currentlesson.domain.startlesson.NumberInRegister
+import com.krzykrucz.elesson.currentlesson.domain.startlesson.SecondName
+import com.krzykrucz.elesson.currentlesson.domain.startlesson.StartedLesson
+import com.krzykrucz.elesson.currentlesson.domain.startlesson.StudentRecord
 import java.time.LocalDate
 import java.util.concurrent.ConcurrentHashMap
 
@@ -38,7 +46,7 @@ class Database {
                 LessonIdentifier(LocalDate.parse(date), lessonHourNumberOf(number), classNameOf(className))
 
         private fun lessonHourNumberOf(number: Int) =
-                LessonHourNumber.of(NaturalNumber.of(number)!!).orNull()!!
+            LessonHourNumber.of(number).orNull()!!
 
         private fun classNameOf(name: String) =
                 ClassName(NonEmptyText.of(name)!!)
@@ -47,7 +55,9 @@ class Database {
                 StudentRecord(
                         firstName = FirstName(NonEmptyText.of(name)!!),
                         secondName = SecondName(NonEmptyText.of(surname)!!),
-                        numberInRegister = NumberInRegister(NaturalNumber.of(numberInRegister)!!)
+                    numberInRegister = NaturalNumber.of(numberInRegister)
+                        .map(::NumberInRegister)
+                        .orNull()!!
                 )
 
     }

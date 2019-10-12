@@ -24,7 +24,7 @@ class StartLessonSteps : En {
     lateinit var teacher: Teacher
     var scheduledLessonProvider: CheckScheduledLesson = { teacher, localDateTime -> IO.never }
     var classRegistryProvider: FetchClassRegistry = { className -> IO.never }
-    var checkLessonStarted: CheckLessonStarted = { false }
+    //    var checkLessonStarted: CheckLessonStarted = { false }
     lateinit var currentLessonOrError: Output<StartedLesson, StartLessonError>
     lateinit var givenClassName: ClassName
     lateinit var givenDate: LocalDate
@@ -58,13 +58,13 @@ class StartLessonSteps : En {
         Given("Failed to fetch class registry") {
             classRegistryProvider = { _ -> AsyncFactory.justError(RuntimeException()) }
         }
-        Given("Lesson was already started") {
-            checkLessonStarted = { true }
-        }
+//        Given("Lesson was already started") {
+//            checkLessonStarted = { true }
+//        }
         When("Lesson is started at {word}") { startTime: String ->
             attemptedStartTime = LocalDateTime.parse(startTime)
             val result =
-                startLesson(checkLessonStarted, scheduledLessonProvider, classRegistryProvider)(
+                startLesson(/*checkLessonStarted, */scheduledLessonProvider, classRegistryProvider)(
                     teacher,
                     attemptedStartTime
                 )
@@ -90,11 +90,11 @@ class StartLessonSteps : En {
             val error = currentLessonOrError.getError()
             assertThat(error, instanceOf(StartLessonError.ClassRegistryUnavailable::class.java))
         }
-        Then("Lesson should not be started because it's already started") {
-            assertTrue { this.currentLessonOrError.isError() }
-            val error = currentLessonOrError.getError()
-            assertThat(error, instanceOf(StartLessonError.LessonAlreadyStarted::class.java))
-        }
+//        Then("Lesson should not be started because it's already started") {
+//            assertTrue { this.currentLessonOrError.isError() }
+//            val error = currentLessonOrError.getError()
+//            assertThat(error, instanceOf(StartLessonError.LessonAlreadyStarted::class.java))
+//        }
     }
 
 }

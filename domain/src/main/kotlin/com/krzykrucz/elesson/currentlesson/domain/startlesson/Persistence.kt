@@ -1,6 +1,6 @@
 package com.krzykrucz.elesson.currentlesson.domain.startlesson
 
+import arrow.effects.IO
 
-typealias PersistLesson = (StartedLesson) -> LessonIdentifier
 
-typealias QueryLessonBeforeAttendance = (LessonIdentifier) -> StartedLesson
+typealias PersistStartedLessonIfDoesNotExist = (StartedLesson) -> IO<LessonIdentifier>

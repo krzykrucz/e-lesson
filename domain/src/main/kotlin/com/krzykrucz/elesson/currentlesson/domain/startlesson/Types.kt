@@ -55,6 +55,10 @@ data class LessonHourNumber private constructor(val number: NaturalNumber) {
                 } else {
                     None
                 }
+
+        fun of(num: Number): Option<LessonHourNumber> =
+            NaturalNumber.of(num.toInt())
+                .flatMap(::of)
     }
 
     // Exception won't be thrown because creation of LessonHourNumber is validated
@@ -72,7 +76,6 @@ data class LessonIdentifier(val date: LocalDate,
 sealed class StartLessonError {
     data class NotScheduledLesson(val error: String = "Cannot start a lesson outside of a lesson hour for which it's scheduled") : StartLessonError()
     data class ClassRegistryUnavailable(val error: String = "Class registry unavailable") : StartLessonError()
-    data class LessonAlreadyStarted(val error: String = "Lesson already started") : StartLessonError()
 }
 
 //data class AbsentStudent(val student: Student)

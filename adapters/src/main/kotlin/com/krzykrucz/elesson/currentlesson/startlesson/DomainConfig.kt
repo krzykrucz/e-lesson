@@ -1,7 +1,6 @@
 package com.krzykrucz.elesson.currentlesson.startlesson
 
-import com.krzykrucz.elesson.currentlesson.domain.startlesson.CheckScheduledLesson
-import com.krzykrucz.elesson.currentlesson.domain.startlesson.FetchClassRegistry
+import com.krzykrucz.elesson.currentlesson.domain.startlesson.StartLesson
 import com.krzykrucz.elesson.currentlesson.domain.startlesson.startLesson
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -10,7 +9,7 @@ import org.springframework.context.annotation.Configuration
 class DomainConfig {
 
     @Bean
-    fun createStartLesson(checkScheduledLesson: CheckScheduledLesson, fetchClassRegistry: FetchClassRegistry) =
-        startLesson(checkScheduledLesson, fetchClassRegistry)
+    fun createStartLesson(): StartLesson =
+        startLesson(LessonSchedulesClient(), ERegisterClient())
 
 }

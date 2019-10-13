@@ -11,8 +11,6 @@ import com.krzykrucz.elesson.currentlesson.domain.startlesson.ClassName
 import com.krzykrucz.elesson.currentlesson.domain.startlesson.LessonHourNumber
 import com.krzykrucz.elesson.currentlesson.domain.startlesson.ScheduledLesson
 import com.krzykrucz.elesson.currentlesson.domain.startlesson.Teacher
-import org.springframework.context.annotation.Bean
-import org.springframework.context.annotation.Configuration
 import java.time.LocalDateTime
 
 class NoSuchLessonError : RuntimeException("NoSuchLessonError")
@@ -30,10 +28,4 @@ class LessonSchedulesClient : CheckScheduledLesson {
             }
             .map { IO { Either.right(it) } }
             .getOrElse { IO { Either.left(NoSuchLessonError()) } }
-}
-
-@Configuration
-class CheckScheduledLessonAdapterConfig {
-    @Bean
-    fun checkScheduledLessonAdapter(): CheckScheduledLesson = LessonSchedulesClient()
 }

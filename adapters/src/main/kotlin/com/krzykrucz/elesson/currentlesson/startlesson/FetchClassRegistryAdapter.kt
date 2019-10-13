@@ -11,8 +11,6 @@ import com.krzykrucz.elesson.currentlesson.domain.startlesson.FirstName
 import com.krzykrucz.elesson.currentlesson.domain.startlesson.NumberInRegister
 import com.krzykrucz.elesson.currentlesson.domain.startlesson.SecondName
 import com.krzykrucz.elesson.currentlesson.domain.startlesson.StudentRecord
-import org.springframework.context.annotation.Bean
-import org.springframework.context.annotation.Configuration
 
 
 class ERegisterClient : FetchClassRegistry {
@@ -32,10 +30,4 @@ class ERegisterClient : FetchClassRegistry {
             .let { ClassRegistry(it, p1) }
             .let { AsyncOutput.just(Either.right(it)) }
 
-}
-
-@Configuration
-class FetchClassRegistryAdapterConfig {
-    @Bean
-    fun fetchClassRegistryAdapter(): FetchClassRegistry = ERegisterClient()
 }

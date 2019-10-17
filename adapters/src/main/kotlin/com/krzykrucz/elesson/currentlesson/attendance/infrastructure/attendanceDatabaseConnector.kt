@@ -1,5 +1,6 @@
 package com.krzykrucz.elesson.currentlesson.attendance.infrastructure
 
+import arrow.core.Option
 import arrow.core.andThen
 import arrow.core.toOption
 import arrow.data.OptionT
@@ -20,10 +21,15 @@ typealias FetchAttendance = (LessonIdentifier) -> OptionT<ForIO, Attendance>
 typealias FetchStartedLesson = (LessonIdentifier) -> OptionT<ForIO, StartedLesson>
 typealias FetchClassRegistry = (Attendance) -> OptionT<ForIO, ClassRegistry>
 typealias FetchStartedLessonAsAttendance = (LessonIdentifier) -> OptionT<ForIO, NotCompletedAttendance>
+typealias FetchAttendanceIO = (LessonIdentifier) -> arrow.fx.IO<Option<Attendance>>
 
 
 fun fetchAttendance(): FetchAttendance = { lessonIdentifier ->
     OptionT.fromOption(IO.applicative(), ATTENDANCE_DATABASE.get(lessonIdentifier).toOption())
+}
+
+fun fetchAttendanceIO(): FetchAttendanceIO = { lessonIdentifier ->
+    arrow.fx.IO.just(ATTENDANCE_DATABASE.get(lessonIdentifier).toOption())
 }
 
 fun fetchStartedLesson(): FetchStartedLesson = { lessonIdentifier ->

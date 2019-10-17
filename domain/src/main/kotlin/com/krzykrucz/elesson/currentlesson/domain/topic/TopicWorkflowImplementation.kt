@@ -1,12 +1,12 @@
 package com.krzykrucz.elesson.currentlesson.domain.topic
 
-import arrow.core.left
-import arrow.core.right
+import com.krzykrucz.elesson.currentlesson.domain.startlesson.LessonIdentifier
 
-fun chooseTopic(isAttendanceChecked: IsAttendanceChecked): ChooseTopic = { topicTitle, lessonIdentifier ->
-    if (isAttendanceChecked(lessonIdentifier)) {
-        InProgressLesson(lessonIdentifier, LessonTopic(topicTitle)).right()
-    } else {
-        ChooseTopicError.AttendanceIsNotChecked().left()
-    }
+fun chooseTopic(): ChooseTopic = { topicTitle, checkedAttendance ->
+    val attendance = checkedAttendance.attendance
+    InProgressLesson(LessonIdentifier(
+            date = attendance.date,
+            lessonHourNumber = attendance.lessonHourNumber,
+            className = attendance.className
+    ), LessonTopic(topicTitle))
 }

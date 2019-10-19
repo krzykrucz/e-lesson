@@ -27,8 +27,9 @@ fun UncheckedStudent.toAbsent(): AbsentStudent = AbsentStudent(this.firstName, t
 fun UncheckedStudent.toPresent(): PresentStudent = PresentStudent(this.firstName, this.secondName, this.numberInRegister)
 fun AbsentStudent.toPresent(): PresentStudent = PresentStudent(this.firstName, this.secondName, this.numberInRegister)
 
-sealed class Attendance {
+sealed class Attendance { // TODO remove abstract if possible
     abstract val attendance: AttendanceList
+    abstract val classRegistry: ClassRegistry
 }
 
 fun Attendance.lessonId() = LessonIdentifier(
@@ -37,8 +38,15 @@ fun Attendance.lessonId() = LessonIdentifier(
         className = this.attendance.className
 )
 
-data class NotCompletedAttendance(override val attendance: AttendanceList) : Attendance()
-data class CheckedAttendance(override val attendance: AttendanceList) : Attendance()
+data class NotCompletedAttendance(
+        override val attendance: AttendanceList,
+        override val classRegistry: ClassRegistry
+) : Attendance()
+
+data class CheckedAttendance(
+        override val attendance: AttendanceList,
+        override val classRegistry: ClassRegistry
+) : Attendance()
 
 
 sealed class AttendanceError {
@@ -66,6 +74,6 @@ typealias AreAllStudentsChecked = (AttendanceList, ClassRegistry) -> Boolean
 typealias GetLessonStartTime = (LessonHourNumber) -> LessonTime
 typealias IsNotTooLate = (LessonHourNumber, CurrentTime) -> Boolean
 
-typealias NotePresence = (UncheckedStudent, NotCompletedAttendance, ClassRegistry) -> Either<AttendanceError, Attendance>
-typealias NoteAbsence = (UncheckedStudent, NotCompletedAttendance, ClassRegistry) -> Either<AttendanceError, Attendance>
+typealias NotePresence = (UncheckedStudent, NotCompletedAttendance) -> Either<AttendanceError, Attendance>
+typealias NoteAbsence = (UncheckedStudent, NotCompletedAttendance) -> Either<AttendanceError, Attendance>
 typealias NoteLate = (LessonIdentifier, AbsentStudent, CheckedAttendance, CurrentTime) -> CheckedAttendance

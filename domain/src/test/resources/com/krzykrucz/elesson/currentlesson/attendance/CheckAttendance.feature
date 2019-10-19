@@ -1,8 +1,8 @@
 Feature: Check Attendance
   Scenario: Should note student's presence
     Given Student has unchecked attendance
-    And Attendance is not completed
     And Class registry of student
+    And Attendance is not completed
     And Not all students are checked
     And Student is in registry
     When Noting Student Presence
@@ -10,8 +10,8 @@ Feature: Check Attendance
 
   Scenario: Should note student's absence
     Given Student has unchecked attendance
-    And Attendance is not completed
     And Class registry of student
+    And Attendance is not completed
     And Not all students are checked
     And Student is in registry
     When Noting Student Absence
@@ -19,8 +19,8 @@ Feature: Check Attendance
 
   Scenario: Should return error when student is not in registry when noting presence
     Given Student has unchecked attendance
-    And Attendance is not completed
     And Class registry of student
+    And Attendance is not completed
     And Not all students are checked
     And Student is not in registry
     When Noting Student Presence
@@ -28,8 +28,8 @@ Feature: Check Attendance
 
   Scenario: Should return error when student is not in registry when noting absence
     Given Student has unchecked attendance
-    And Attendance is not completed
     And Class registry of student
+    And Attendance is not completed
     And Not all students are checked
     And Student is not in registry
     When Noting Student Absence
@@ -37,8 +37,8 @@ Feature: Check Attendance
 
   Scenario: Should complete attendance when noting presence of last student
     Given Student has unchecked attendance
-    And Attendance is not completed
     And Class registry of student
+    And Attendance is not completed
     And All students are checked
     And Student is in registry
     When Noting Student Presence
@@ -46,8 +46,8 @@ Feature: Check Attendance
 
   Scenario: Should complete attendance when noting absence of last student
     Given Student has unchecked attendance
-    And Attendance is not completed
     And Class registry of student
+    And Attendance is not completed
     And All students are checked
     And Student is in registry
     When Noting Student Absence
@@ -55,16 +55,16 @@ Feature: Check Attendance
 
   Scenario: Should note student's late if he or she is not late less than 15 minutes
     Given Student is absent
-    And Checked attendance
     And Class registry of student
+    And Checked attendance
     And It is not too late
     When Noting Student is late
     Then Student is present
 
   Scenario: Should leave student absent when he or she is late more than 15 minutes
     Given Student is absent
-    And Checked attendance
     And Class registry of student
+    And Checked attendance
     And It is too late
     When Noting Student is late
     Then Student is still absent

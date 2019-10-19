@@ -8,13 +8,14 @@ import java.time.temporal.ChronoUnit
 fun noteAbsence(
         isInRegistry: IsInRegistry,
         areAllStudentsChecked: AreAllStudentsChecked
-): NoteAbsence = { uncheckedStudent, notCompletedAttendance, classRegistry ->
+): NoteAbsence = { uncheckedStudent, notCompletedAttendance ->
+    val classRegistry = notCompletedAttendance.classRegistry
     if (isInRegistry(uncheckedStudent, classRegistry)) {
         val updatedAttendanceList = notCompletedAttendance.attendance.addAbsentStudent(uncheckedStudent)
         if (areAllStudentsChecked(updatedAttendanceList, classRegistry)) {
-            CheckedAttendance(updatedAttendanceList).right()
+            CheckedAttendance(updatedAttendanceList, classRegistry).right()
         } else {
-            NotCompletedAttendance(updatedAttendanceList).right()
+            NotCompletedAttendance(updatedAttendanceList, classRegistry).right()
         }
     } else {
         AttendanceError.StudentNotInRegistry().left()
@@ -24,13 +25,14 @@ fun noteAbsence(
 fun notePresence(
         isInRegistry: IsInRegistry,
         areAllStudentsChecked: AreAllStudentsChecked
-): NotePresence = { uncheckedStudent, notCompletedAttendance, classRegistry ->
+): NotePresence = { uncheckedStudent, notCompletedAttendance ->
+    val classRegistry = notCompletedAttendance.classRegistry
     if (isInRegistry(uncheckedStudent, classRegistry)) {
         val updatedAttendanceList = notCompletedAttendance.attendance.addPresentStudent(uncheckedStudent)
         if (areAllStudentsChecked(updatedAttendanceList, classRegistry)) {
-            CheckedAttendance(updatedAttendanceList).right()
+            CheckedAttendance(updatedAttendanceList, classRegistry).right()
         } else {
-            NotCompletedAttendance(updatedAttendanceList).right()
+            NotCompletedAttendance(updatedAttendanceList, classRegistry).right()
         }
     } else {
         AttendanceError.StudentNotInRegistry().left()

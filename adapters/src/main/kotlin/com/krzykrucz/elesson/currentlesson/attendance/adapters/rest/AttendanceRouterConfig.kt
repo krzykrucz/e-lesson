@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.http.MediaType
 import org.springframework.web.reactive.function.server.router
 
+// TODO divide this config to 3 different adapters
 @Configuration
 class AttendanceRouterConfig {
 

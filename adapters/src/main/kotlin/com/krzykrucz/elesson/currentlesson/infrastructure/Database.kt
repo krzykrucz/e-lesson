@@ -3,15 +3,8 @@ package com.krzykrucz.elesson.currentlesson.infrastructure
 import com.krzykrucz.elesson.currentlesson.domain.NaturalNumber
 import com.krzykrucz.elesson.currentlesson.domain.NonEmptyText
 import com.krzykrucz.elesson.currentlesson.domain.attendance.Attendance
-import com.krzykrucz.elesson.currentlesson.domain.startlesson.ClassName
-import com.krzykrucz.elesson.currentlesson.domain.startlesson.ClassRegistry
-import com.krzykrucz.elesson.currentlesson.domain.startlesson.FirstName
-import com.krzykrucz.elesson.currentlesson.domain.startlesson.LessonHourNumber
-import com.krzykrucz.elesson.currentlesson.domain.startlesson.LessonIdentifier
-import com.krzykrucz.elesson.currentlesson.domain.startlesson.NumberInRegister
-import com.krzykrucz.elesson.currentlesson.domain.startlesson.SecondName
-import com.krzykrucz.elesson.currentlesson.domain.startlesson.StartedLesson
-import com.krzykrucz.elesson.currentlesson.domain.startlesson.StudentRecord
+import com.krzykrucz.elesson.currentlesson.domain.startlesson.*
+import com.krzykrucz.elesson.currentlesson.domain.topic.domain.InProgressLesson
 import java.time.LocalDate
 import java.util.concurrent.ConcurrentHashMap
 
@@ -35,6 +28,8 @@ class Database {
 
         val ATTENDANCE_DATABASE: ConcurrentHashMap<LessonIdentifier, Attendance> = ConcurrentHashMap(mutableMapOf(
         ))
+
+        val IN_PROGRESS_LESSON_DATABASE: ConcurrentHashMap<LessonIdentifier, InProgressLesson> = ConcurrentHashMap(mutableMapOf())
 
         private fun startedLessonOf(lessonIdentifier: LessonIdentifier): StartedLesson =
                 StartedLesson(

@@ -4,7 +4,10 @@ import com.krzykrucz.elesson.currentlesson.AcceptanceSpec
 import com.krzykrucz.elesson.currentlesson.domain.NaturalNumber
 import com.krzykrucz.elesson.currentlesson.domain.NonEmptyText
 import com.krzykrucz.elesson.currentlesson.domain.attendance.*
-import com.krzykrucz.elesson.currentlesson.domain.startlesson.*
+import com.krzykrucz.elesson.currentlesson.domain.startlesson.FirstName
+import com.krzykrucz.elesson.currentlesson.domain.startlesson.LessonHourNumber
+import com.krzykrucz.elesson.currentlesson.domain.startlesson.NumberInRegister
+import com.krzykrucz.elesson.currentlesson.domain.startlesson.SecondName
 
 import java.time.LocalDate
 
@@ -42,18 +45,6 @@ class AttendanceBaseSpec extends AcceptanceSpec {
                 new LinkedList<PresentStudent>(),
                 new LinkedList<AbsentStudent>()
         ))
-    }
-
-    protected static ClassName className1A() {
-        new ClassName(new NonEmptyText("1A"))
-    }
-
-    protected static LessonIdentifier lessonIdOfFirst1ALesson() {
-        new LessonIdentifier(
-                LocalDate.parse("2019-09-09"),
-                new LessonHourNumber(NaturalNumber.ONE),
-                className1A()
-        )
     }
 
 }

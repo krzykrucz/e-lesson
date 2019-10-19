@@ -1,11 +1,13 @@
 package com.krzykrucz.elesson.currentlesson.domain.topic
 
+import com.krzykrucz.elesson.currentlesson.domain.NaturalNumber
 import com.krzykrucz.elesson.currentlesson.domain.NonEmptyText
 import com.krzykrucz.elesson.currentlesson.domain.attendance.AttendanceList
 import com.krzykrucz.elesson.currentlesson.domain.attendance.CheckedAttendance
 import com.krzykrucz.elesson.currentlesson.domain.lessonHourNumberOf
 import com.krzykrucz.elesson.currentlesson.domain.newClassName
 import com.krzykrucz.elesson.currentlesson.domain.startlesson.LessonIdentifier
+import com.krzykrucz.elesson.currentlesson.domain.topic.domain.*
 import io.cucumber.java8.En
 import org.assertj.core.api.Assertions.assertThat
 import java.time.LocalDate
@@ -14,6 +16,7 @@ class ChooseTopicSteps : En {
     lateinit var topicTitle: TopicTitle
     lateinit var inProgressLesson: InProgressLesson
     lateinit var checkedAttendance: CheckedAttendance
+    lateinit var finishedLessonsCount: FinishedLessonsCount
     private val now = LocalDate.now()
     private val lessonId = LessonIdentifier(now, lessonHourNumberOf(1), newClassName("Slytherin"))
 
@@ -29,10 +32,13 @@ class ChooseTopicSteps : En {
             ))
         }
         When("Choosing a topic") {
-            inProgressLesson = chooseTopic()(topicTitle, checkedAttendance)
+            inProgressLesson = chooseTopic()(topicTitle, finishedLessonsCount, checkedAttendance)
         }
         Then("Lesson is in progress") {
-            assertThat(inProgressLesson).isEqualToComparingFieldByField(InProgressLesson(lessonId, LessonTopic(topicTitle)))
+            assertThat(inProgressLesson).isEqualToComparingFieldByField(InProgressLesson(lessonId, LessonTopic(topicTitle), NaturalNumber.FIVE))
+        }
+        And("Finished Lessons Count") {
+            finishedLessonsCount = FinishedLessonsCount(NaturalNumber.FOUR)
         }
     }
 }

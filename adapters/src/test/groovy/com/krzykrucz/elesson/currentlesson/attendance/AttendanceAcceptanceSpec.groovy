@@ -67,8 +67,6 @@ class AttendanceAcceptanceSpec extends AttendanceBaseSpec {
                     presentStudentOf("Tom", "Riddle", 2),
             ]
             checkedAttendanceOf1A.attendance.absentStudents == []
-
-
     }
 
 

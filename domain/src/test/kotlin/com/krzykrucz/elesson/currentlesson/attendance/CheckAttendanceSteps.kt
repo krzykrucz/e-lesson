@@ -1,15 +1,6 @@
 package com.krzykrucz.elesson.currentlesson.attendance
 
 import arrow.core.Either
-import com.krzykrucz.elesson.currentlesson.shared.ClassName
-import com.krzykrucz.elesson.currentlesson.shared.ClassRegistry
-import com.krzykrucz.elesson.currentlesson.shared.FirstName
-import com.krzykrucz.elesson.currentlesson.shared.LessonHourNumber
-import com.krzykrucz.elesson.currentlesson.shared.LessonIdentifier
-import com.krzykrucz.elesson.currentlesson.shared.NaturalNumber
-import com.krzykrucz.elesson.currentlesson.shared.NonEmptyText
-import com.krzykrucz.elesson.currentlesson.shared.NumberInRegister
-import com.krzykrucz.elesson.currentlesson.shared.SecondName
 import com.krzykrucz.elesson.currentlesson.attendance.domain.AbsentStudent
 import com.krzykrucz.elesson.currentlesson.attendance.domain.AreAllStudentsChecked
 import com.krzykrucz.elesson.currentlesson.attendance.domain.Attendance
@@ -27,10 +18,19 @@ import com.krzykrucz.elesson.currentlesson.attendance.domain.noteLate
 import com.krzykrucz.elesson.currentlesson.attendance.domain.notePresence
 import com.krzykrucz.elesson.currentlesson.getError
 import com.krzykrucz.elesson.currentlesson.getSuccess
-import com.krzykrucz.elesson.currentlesson.shared.isError
-import com.krzykrucz.elesson.currentlesson.shared.isSuccess
 import com.krzykrucz.elesson.currentlesson.newClassName
 import com.krzykrucz.elesson.currentlesson.newStudent
+import com.krzykrucz.elesson.currentlesson.shared.ClassName
+import com.krzykrucz.elesson.currentlesson.shared.ClassRegistry
+import com.krzykrucz.elesson.currentlesson.shared.FirstName
+import com.krzykrucz.elesson.currentlesson.shared.LessonHourNumber
+import com.krzykrucz.elesson.currentlesson.shared.LessonIdentifier
+import com.krzykrucz.elesson.currentlesson.shared.NaturalNumber
+import com.krzykrucz.elesson.currentlesson.shared.NonEmptyText
+import com.krzykrucz.elesson.currentlesson.shared.NumberInRegister
+import com.krzykrucz.elesson.currentlesson.shared.SecondName
+import com.krzykrucz.elesson.currentlesson.shared.isError
+import com.krzykrucz.elesson.currentlesson.shared.isSuccess
 import io.cucumber.java8.En
 import org.assertj.core.api.Assertions.assertThat
 import java.time.LocalDate
@@ -70,7 +70,8 @@ class CheckAttendanceSteps : En {
                             className = ClassName(NonEmptyText("Black magic")),
                             date = LocalDate.now(),
                             lessonHourNumber = lessonHourNumber
-                    )
+                    ),
+                    classRegistry = classRegistry
             )
         }
         And("Checked attendance") {
@@ -80,7 +81,7 @@ class CheckAttendanceSteps : En {
                             date = LocalDate.now(),
                             lessonHourNumber = lessonHourNumber,
                             absentStudents = listOf(student as AbsentStudent)
-                    ))
+                    ), classRegistry = classRegistry)
         }
         And("Class registry of student") {
             classRegistry = ClassRegistry(
@@ -125,14 +126,14 @@ class CheckAttendanceSteps : En {
             currentAttendanceOrError = notePresence(
                     isInRegistry = isInRegistry,
                     areAllStudentsChecked = areAllStudentsChecked
-            )(student as UncheckedStudent, notCompletedAttendance, classRegistry)
+            )(student as UncheckedStudent, notCompletedAttendance)
         }
 
         When("Noting Student Absence") {
             currentAttendanceOrError = noteAbsence(
                     isInRegistry = isInRegistry,
                     areAllStudentsChecked = areAllStudentsChecked
-            )(student as UncheckedStudent, notCompletedAttendance, classRegistry)
+            )(student as UncheckedStudent, notCompletedAttendance)
         }
 
 

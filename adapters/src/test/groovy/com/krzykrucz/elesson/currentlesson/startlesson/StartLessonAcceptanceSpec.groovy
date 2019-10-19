@@ -1,7 +1,9 @@
 package com.krzykrucz.elesson.currentlesson.startlesson
 
 import com.krzykrucz.elesson.currentlesson.AcceptanceSpec
-import com.krzykrucz.elesson.currentlesson.infrastructure.Database
+import com.krzykrucz.elesson.currentlesson.monolith.Database
+import com.krzykrucz.elesson.currentlesson.startlesson.adapters.rest.ClassRegistryResponse
+import com.krzykrucz.elesson.currentlesson.startlesson.adapters.rest.StartLessonRequest
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpMethod
 

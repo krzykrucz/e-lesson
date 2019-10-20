@@ -41,21 +41,20 @@ class TopicRouterConfig {
                 .flatMap { handleChooseTopicDto(it) }
     }
 
-    private fun handleChooseTopicDto(dto: ChooseTopicDto): Mono<ServerResponse> {
-        return IO.fx {
-            val (checkedAttendance) = fetchAttendanceIO()(dto.lessonIdentifier)
-            val (finishedLessonsCount) = fetchFinishedLessonsCount()()
-            val (inProgressLessonOpt) = checkedAttendance
-                    .flatMap { (it as? CheckedAttendance).toOption() }
-                    .map { attendance -> chooseTopic()(dto.topicTitle, finishedLessonsCount, attendance) }
-                    .map { inProgressLesson ->
-                        persistInProgressLesson()(inProgressLesson)
-                                .map { inProgressLesson }
-                    }
-                    .sequence()
-            inProgressLessonOpt.toServerResponse()
-        }.run()
-    }
+    private fun handleChooseTopicDto(dto: ChooseTopicDto): Mono<ServerResponse> =
+            IO.fx {
+                val (checkedAttendance) = fetchAttendanceIO()(dto.lessonIdentifier)
+                val (finishedLessonsCount) = fetchFinishedLessonsCount()()
+                val (inProgressLessonOpt) = checkedAttendance
+                        .flatMap { (it as? CheckedAttendance).toOption() }
+                        .map { attendance -> chooseTopic()(dto.topicTitle, finishedLessonsCount, attendance) }
+                        .map { inProgressLesson ->
+                            persistInProgressLesson()(inProgressLesson)
+                                    .map { inProgressLesson }
+                        }
+                        .sequence()
+                inProgressLessonOpt.toServerResponse()
+            }.run()
 
     private fun <T> Option<IO<T>>.sequence(): IO<Option<T>> =
             this.sequence(IO.applicative()).fix()

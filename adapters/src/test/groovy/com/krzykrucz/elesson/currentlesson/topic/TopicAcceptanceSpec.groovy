@@ -8,6 +8,7 @@ import com.krzykrucz.elesson.currentlesson.domain.attendance.AttendanceList
 import com.krzykrucz.elesson.currentlesson.domain.attendance.CheckedAttendance
 import com.krzykrucz.elesson.currentlesson.domain.attendance.PresentStudent
 import com.krzykrucz.elesson.currentlesson.domain.topic.domain.InProgressLesson
+import com.krzykrucz.elesson.currentlesson.domain.topic.domain.LessonOrdinalNumber
 import com.krzykrucz.elesson.currentlesson.domain.topic.domain.LessonTopic
 import com.krzykrucz.elesson.currentlesson.domain.topic.domain.TopicTitle
 import com.krzykrucz.elesson.currentlesson.infrastructure.Database
@@ -20,15 +21,16 @@ class TopicAcceptanceSpec extends AcceptanceSpec {
     def "choose topic acceptance spec"() {
         given: 'choose topic dto and checked attendance in database'
             def lessonId = lessonIdOfFirst1ALesson()
-            Database.ATTENDANCE_DATABASE.put(lessonId, new CheckedAttendance(new AttendanceList(
+            def checkedAttendance = new CheckedAttendance(new AttendanceList(
                     lessonId.className,
                     lessonId.date,
                     lessonId.lessonHourNumber,
                     new ArrayList<PresentStudent>(),
                     new ArrayList<AbsentStudent>(),
-            )))
-            def title = new TopicTitle(new NonEmptyText("Three forbidden spells"))
-            def chooseTopicDto = new ChooseTopicDto(lessonId, title)
+            ))
+            Database.ATTENDANCE_DATABASE.put(lessonId, checkedAttendance)
+                def title = new TopicTitle(new NonEmptyText("Three forbidden spells"))
+                def chooseTopicDto = new ChooseTopicDto(lessonId, title)
 
         when: 'choosing topic for current lesson'
             def inProgressLesson = rest.exchange(
@@ -41,8 +43,8 @@ class TopicAcceptanceSpec extends AcceptanceSpec {
         then: 'In progress lesson is persisted to database'
             inProgressLesson.body == new InProgressLesson(
                     lessonId,
-                    new LessonTopic(title),
-                    NaturalNumber.FIVE
+                    new LessonTopic(new LessonOrdinalNumber(NaturalNumber.FIVE), title, lessonId.date),
+                    checkedAttendance
             )
             Database.IN_PROGRESS_LESSON_DATABASE.containsKey(lessonId)
     }

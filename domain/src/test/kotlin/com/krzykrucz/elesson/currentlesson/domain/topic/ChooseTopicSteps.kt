@@ -35,7 +35,8 @@ class ChooseTopicSteps : En {
             inProgressLesson = chooseTopic()(topicTitle, finishedLessonsCount, checkedAttendance)
         }
         Then("Lesson is in progress") {
-            assertThat(inProgressLesson).isEqualToComparingFieldByField(InProgressLesson(lessonId, LessonTopic(topicTitle), NaturalNumber.FIVE))
+            assertThat(inProgressLesson).isEqualToComparingFieldByField(InProgressLesson(lessonId,
+                    LessonTopic(LessonOrdinalNumber(NaturalNumber.FIVE), topicTitle, now), checkedAttendance))
         }
         And("Finished Lessons Count") {
             finishedLessonsCount = FinishedLessonsCount(NaturalNumber.FOUR)

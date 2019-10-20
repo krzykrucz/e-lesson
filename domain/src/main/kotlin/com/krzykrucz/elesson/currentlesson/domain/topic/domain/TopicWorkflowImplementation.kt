@@ -12,8 +12,11 @@ fun chooseTopic(): ChooseTopic = { topicTitle, finishedLessonsCount, checkedAtte
                     lessonHourNumber = attendance.lessonHourNumber,
                     className = attendance.className
             ),
-            LessonTopic(topicTitle),
-            NaturalNumber.of(finishedLessonsCount.count.number + NaturalNumber.ONE.number)
-                    .getOrElse { NaturalNumber.ONE }
+            LessonTopic(LessonOrdinalNumber(calculateLessonOrdinalNumber(finishedLessonsCount)), topicTitle, attendance.date),
+            checkedAttendance
     )
 }
+
+private fun calculateLessonOrdinalNumber(finishedLessonsCount: FinishedLessonsCount) =
+        NaturalNumber.of(finishedLessonsCount.count.number + NaturalNumber.ONE.number)
+                .getOrElse { NaturalNumber.ONE }

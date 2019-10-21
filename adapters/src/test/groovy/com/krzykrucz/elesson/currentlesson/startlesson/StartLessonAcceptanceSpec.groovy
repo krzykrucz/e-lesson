@@ -16,7 +16,7 @@ class StartLessonAcceptanceSpec extends AcceptanceSpec {
     def "should start lesson"() {
         when: 'Dark Arts classes started by Severus Snape'
         def lessonIdAndStudents = rest.exchange(
-                serverUrl + "/startlesson",
+                "/startlesson",
                 HttpMethod.POST,
                 new HttpEntity<>(new StartLessonRequest('Severus', 'Snape')),
                 ClassRegistryResponse

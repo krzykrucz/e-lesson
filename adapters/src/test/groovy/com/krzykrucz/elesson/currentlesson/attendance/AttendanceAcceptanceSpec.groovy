@@ -14,7 +14,7 @@ class AttendanceAcceptanceSpec extends AttendanceBaseSpec {
         def lessonId = lessonIdOfFirst1ALesson()
         when: 'Note Harry Potter present'
         def attendanceWithHarryPotter = rest.exchange(
-                serverUrl + "/attendance/present",
+                "/attendance/present",
                 HttpMethod.POST,
                 new HttpEntity<>(new AttendanceDto(
                         uncheckedStudentOf("Harry", "Potter", 1),
@@ -28,7 +28,7 @@ class AttendanceAcceptanceSpec extends AttendanceBaseSpec {
 
         when: 'Note Tom Riddle absent and attendance is checked, class has only 2 students'
         def attendanceWithTomRiddle = rest.exchange(
-                serverUrl + "/attendance/absent",
+                "/attendance/absent",
                 HttpMethod.POST,
                 new HttpEntity<>(new AttendanceDto(
                         uncheckedStudentOf("Tom", "Riddle", 2),
@@ -42,7 +42,7 @@ class AttendanceAcceptanceSpec extends AttendanceBaseSpec {
 
         when: 'Tom Riddle shows up, we note him late'
         def attendanceWithLateTomRiddle = rest.exchange(
-                serverUrl + "/attendance/late",
+                "/attendance/late",
                 HttpMethod.POST,
                 new HttpEntity<>(new LateAttendanceDto(
                         lessonIdOfFirst1ALesson(),
@@ -60,7 +60,7 @@ class AttendanceAcceptanceSpec extends AttendanceBaseSpec {
         def lessonHourNumber = 1
         def className = "1A"
         def checkedAttendanceOf1A = rest.getForObject(
-                serverUrl + "/attendance?date=${date}&lessonHourNumber=${lessonHourNumber}&className=${className}",
+                "/attendance?date=${date}&lessonHourNumber=${lessonHourNumber}&className=${className}",
                 CheckedAttendance
         )
 

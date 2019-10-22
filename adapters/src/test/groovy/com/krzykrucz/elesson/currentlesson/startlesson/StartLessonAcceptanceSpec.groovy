@@ -29,7 +29,7 @@ class StartLessonAcceptanceSpec extends AcceptanceSpec {
         lessonIdAndStudents.students*.name == ['Harry Potter', 'Hermione Granger']
 
         and:
-        Database.STARTED_LESSON_DATABASE.containsKey(lessonIdAndStudents.lessonId)
+        Database.LESSON_DATABASE.containsKey(lessonIdAndStudents.lessonId)
     }
 
 }

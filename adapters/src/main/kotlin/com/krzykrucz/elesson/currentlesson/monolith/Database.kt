@@ -1,13 +1,7 @@
 package com.krzykrucz.elesson.currentlesson.monolith
 
-import arrow.core.toOption
-import arrow.data.OptionT
-import arrow.effects.IO
-import arrow.effects.extensions.io.applicative.applicative
-import arrow.effects.extensions.io.functor.functor
 import com.krzykrucz.elesson.currentlesson.attendance.domain.Attendance
-import com.krzykrucz.elesson.currentlesson.attendance.domain.AttendanceList
-import com.krzykrucz.elesson.currentlesson.attendance.domain.NotCompletedAttendance
+import com.krzykrucz.elesson.currentlesson.attendance.domain.IncompleteAttendanceList
 import com.krzykrucz.elesson.currentlesson.shared.ClassName
 import com.krzykrucz.elesson.currentlesson.shared.ClassRegistry
 import com.krzykrucz.elesson.currentlesson.shared.FirstName
@@ -18,34 +12,19 @@ import com.krzykrucz.elesson.currentlesson.shared.NonEmptyText
 import com.krzykrucz.elesson.currentlesson.shared.NumberInRegister
 import com.krzykrucz.elesson.currentlesson.shared.SecondName
 import com.krzykrucz.elesson.currentlesson.shared.StudentRecord
-import com.krzykrucz.elesson.currentlesson.startlesson.domain.StartedLesson
 import java.time.LocalDate
 import java.util.concurrent.ConcurrentHashMap
 
-fun StartedLesson.toNotCompletedAttendance() =
-        NotCompletedAttendance(
-                attendance = AttendanceList(
-                        className = this.id.className,
-                        date = this.id.date,
-                        lessonHourNumber = this.id.lessonHourNumber
-                ),
-                classRegistry = clazz
-        )
+
+data class PersistentCurrentLesson(
+        val lessonId: LessonIdentifier,
+        val classRegistry: ClassRegistry,
+        val attendance: Attendance = IncompleteAttendanceList()
+)
 
 class Database {
 
     companion object {
-
-        fun fetchAttendance(lessonIdentifier: LessonIdentifier) =
-                OptionT.fromOption(IO.applicative(), Database.ATTENDANCE_DATABASE[lessonIdentifier].toOption())
-
-
-        fun fetchStartedLesson(lessonIdentifier: LessonIdentifier) =
-                OptionT.fromOption(IO.applicative(), Database.STARTED_LESSON_DATABASE[lessonIdentifier].toOption())
-
-        fun fetchStartedLessonAsAttendance(lessonIdentifier: LessonIdentifier) =
-                fetchStartedLesson(lessonIdentifier)
-                        .map(IO.functor()) { it.toNotCompletedAttendance() }
 
         private val lessonId1 = lessonIdOf("2019-09-09", 1, "1A")
 
@@ -58,18 +37,12 @@ class Database {
                 className = classNameOf("1A")
         )
 
-        val STARTED_LESSON_DATABASE: ConcurrentHashMap<LessonIdentifier, StartedLesson> = ConcurrentHashMap(mutableMapOf(
-                lessonId1 to startedLessonOf(lessonId1)
-        ))
-
-        val ATTENDANCE_DATABASE: ConcurrentHashMap<LessonIdentifier, Attendance> = ConcurrentHashMap(mutableMapOf(
-        ))
-
-        private fun startedLessonOf(lessonIdentifier: LessonIdentifier): StartedLesson =
-                StartedLesson(
-                        lessonIdentifier,
+        val LESSON_DATABASE: ConcurrentHashMap<LessonIdentifier, PersistentCurrentLesson> = ConcurrentHashMap(mutableMapOf(
+                lessonId1 to PersistentCurrentLesson(
+                        lessonId1,
                         classRegistryOf1A
                 )
+        ))
 
         fun lessonIdOf(date: String, number: Int, className: String) =
                 LessonIdentifier(LocalDate.parse(date), lessonHourNumberOf(number), classNameOf(className))

@@ -15,9 +15,11 @@ import arrow.effects.typeclasses.Duration
 import com.krzykrucz.elesson.currentlesson.attendance.domain.AttendanceError
 import com.krzykrucz.elesson.currentlesson.attendance.domain.FetchCheckedAttendance
 import com.krzykrucz.elesson.currentlesson.attendance.domain.FetchNotCompletedAttendanceAndRegistry
-import com.krzykrucz.elesson.currentlesson.attendance.domain.GetLessonStartTime
 import com.krzykrucz.elesson.currentlesson.attendance.domain.PersistAttendance
-import com.krzykrucz.elesson.currentlesson.attendance.domain.areAllStudentsChecked
+import com.krzykrucz.elesson.currentlesson.attendance.domain.addAbsentStudent
+import com.krzykrucz.elesson.currentlesson.attendance.domain.addPresentStudent
+import com.krzykrucz.elesson.currentlesson.attendance.domain.completeList
+import com.krzykrucz.elesson.currentlesson.attendance.domain.getLessonStartTime
 import com.krzykrucz.elesson.currentlesson.attendance.domain.isInRegistry
 import com.krzykrucz.elesson.currentlesson.attendance.domain.isNotTooLate
 import com.krzykrucz.elesson.currentlesson.attendance.domain.noteAbsence
@@ -48,7 +50,8 @@ internal fun handleNoteAbsentRequest(
                     it.map(IO.functor()) { (student, attendance, clazz, lessonId) ->
                         noteAbsence(
                                 isInRegistry = isInRegistry(),
-                                areAllStudentsChecked = areAllStudentsChecked()
+                                completeListIfAllStudentsChecked = completeList(),
+                                addAbsentStudent = addAbsentStudent()
                         )(
                                 student,
                                 attendance,
@@ -84,7 +87,8 @@ internal fun handleNotePresentRequest(
                 it.map(IO.functor()) { (student, attendance, clazz, lessonId) ->
                     notePresence(
                             isInRegistry = isInRegistry(),
-                            areAllStudentsChecked = areAllStudentsChecked()
+                            completeListIfAllStudentsChecked = completeList(),
+                            addPresentStudent = addPresentStudent()
                     )(
                             student,
                             attendance,
@@ -171,7 +175,3 @@ private fun OptionT<ForIO, Mono<ServerResponse>>.run(): Mono<ServerResponse> =
 private fun IO<Mono<ServerResponse>>.run(): Mono<ServerResponse> =
         this.unsafeRunTimed(Duration(3, TimeUnit.SECONDS))
                 .getOrElse { ServerResponse.badRequest().build() }
-
-private fun getLessonStartTime(): GetLessonStartTime = { lessonHourNumber ->
-    lessonHourNumber.getLessonScheduledStartTime()
-}

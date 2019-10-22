@@ -51,10 +51,15 @@ typealias CurrentTime = LocalDateTime
 typealias LessonTime = LocalTime
 
 typealias IsInRegistry = (Student, ClassRegistry) -> Boolean
-typealias AreAllStudentsChecked = (IncompleteAttendanceList, ClassRegistry) -> Boolean
 typealias GetLessonStartTime = (LessonHourNumber) -> LessonTime
 typealias IsNotTooLate = (LessonHourNumber, CurrentTime) -> Boolean
+
+typealias AddAbsentStudent = (IncompleteAttendanceList, UncheckedStudent) -> IncompleteAttendanceList
+typealias AddPresentStudent = (IncompleteAttendanceList, UncheckedStudent) -> IncompleteAttendanceList
+
+typealias CompleteListIfAllStudentsChecked = (IncompleteAttendanceList, ClassRegistry) -> Attendance
 
 typealias NotePresence = (UncheckedStudent, IncompleteAttendanceList, ClassRegistry) -> Either<AttendanceError, Attendance>
 typealias NoteAbsence = (UncheckedStudent, IncompleteAttendanceList, ClassRegistry) -> Either<AttendanceError, Attendance>
 typealias NoteLate = (LessonHourNumber, AbsentStudent, CheckedAttendanceList, CurrentTime) -> CheckedAttendanceList
+

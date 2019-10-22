@@ -27,11 +27,13 @@ fun AbsentStudent.toPresent(): PresentStudent = PresentStudent(this.firstName, t
 sealed class Attendance
 
 data class IncompleteAttendanceList(
-        val attendance: AttendanceList = AttendanceList()
+        val presentStudents: List<PresentStudent> = emptyList(),
+        val absentStudents: List<AbsentStudent> = emptyList()
 ) : Attendance()
 
 data class CheckedAttendanceList(
-        val attendance: AttendanceList
+        val presentStudents: List<PresentStudent>,
+        val absentStudents: List<AbsentStudent>
 ) : Attendance()
 
 
@@ -39,11 +41,6 @@ sealed class AttendanceError {
     data class StudentNotInRegistry(val error: String = "Student is not in registry") : AttendanceError()
 }
 
-
-data class AttendanceList(
-        val presentStudents: List<PresentStudent> = emptyList(),
-        val absentStudents: List<AbsentStudent> = emptyList()
-)
 // TODO include events needed to be published in the workflows
 //class AttendanceCheckFinished
 //class StudentNotedPresent
@@ -54,7 +51,7 @@ typealias CurrentTime = LocalDateTime
 typealias LessonTime = LocalTime
 
 typealias IsInRegistry = (Student, ClassRegistry) -> Boolean
-typealias AreAllStudentsChecked = (AttendanceList, ClassRegistry) -> Boolean
+typealias AreAllStudentsChecked = (IncompleteAttendanceList, ClassRegistry) -> Boolean
 typealias GetLessonStartTime = (LessonHourNumber) -> LessonTime
 typealias IsNotTooLate = (LessonHourNumber, CurrentTime) -> Boolean
 

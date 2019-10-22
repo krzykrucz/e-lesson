@@ -42,8 +42,8 @@ data class NaturalNumber private constructor(val number: Int) {
         val SEVEN = NaturalNumber(7)
         val EIGHT = NaturalNumber(8)
         fun of(int: Int): Option<NaturalNumber> =
-            if (int > 0) Some(NaturalNumber(int))
-            else None
+                if (int > 0) Some(NaturalNumber(int))
+                else None
     }
 }
 
@@ -69,7 +69,18 @@ class NonEmptySet<T> private constructor(private val elements: Set<T>) : Set<T> 
 
         fun <T> create(set: Set<T>): NonEmptySet<T>? = NonEmptySet(set)
     }
+}
 
+class NonEmptyList<T> private constructor(private val elements: List<T>) : List<T> by elements {
+    companion object {
+        fun <T> create(element: T): NonEmptyList<T> = NonEmptyList(listOf(element))
+
+        fun <T> create(first: T, vararg rest: T): NonEmptyList<T> = NonEmptyList(listOf(first) + rest)
+
+        fun <T> create(list: List<T>): Option<NonEmptyList<T>> =
+                if (list.isEmpty()) Option.empty()
+                else Option.just(NonEmptyList(list))
+    }
 }
 
 typealias Output<Success, Error> = Either<Error, Success>

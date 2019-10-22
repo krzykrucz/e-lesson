@@ -59,17 +59,17 @@ class AttendanceAcceptanceSpec extends AttendanceBaseSpec {
         def date = "2019-09-09"
         def lessonHourNumber = 1
         def className = "1A"
-        def checkedAttendanceOf1A = rest.getForObject(
+        def checkedAttendanceOf1A = rest.<CheckedAttendanceList> getForObject(
                 "/attendance?date=${date}&lessonHourNumber=${lessonHourNumber}&className=${className}",
                 CheckedAttendanceList
         )
 
         then: 'It is checked with Tom and Harry present and no absent students'
-        checkedAttendanceOf1A.attendance.presentStudents == [
+        checkedAttendanceOf1A.presentStudents == [
                 presentStudentOf("Harry", "Potter", 1),
                 presentStudentOf("Tom", "Riddle", 2),
         ]
-        checkedAttendanceOf1A.attendance.absentStudents == []
+        checkedAttendanceOf1A.absentStudents == []
 
 
     }

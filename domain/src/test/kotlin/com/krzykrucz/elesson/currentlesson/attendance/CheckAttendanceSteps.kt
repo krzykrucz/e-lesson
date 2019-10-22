@@ -5,7 +5,6 @@ import com.krzykrucz.elesson.currentlesson.attendance.domain.AbsentStudent
 import com.krzykrucz.elesson.currentlesson.attendance.domain.AreAllStudentsChecked
 import com.krzykrucz.elesson.currentlesson.attendance.domain.Attendance
 import com.krzykrucz.elesson.currentlesson.attendance.domain.AttendanceError
-import com.krzykrucz.elesson.currentlesson.attendance.domain.AttendanceList
 import com.krzykrucz.elesson.currentlesson.attendance.domain.CheckedAttendanceList
 import com.krzykrucz.elesson.currentlesson.attendance.domain.IncompleteAttendanceList
 import com.krzykrucz.elesson.currentlesson.attendance.domain.IsInRegistry
@@ -66,9 +65,9 @@ class CheckAttendanceSteps : En {
         }
         And("Checked attendance") {
             checkedAttendance = CheckedAttendanceList(
-                    attendance = AttendanceList(
-                            absentStudents = listOf(student as AbsentStudent)
-                    ))
+                    absentStudents = listOf(student as AbsentStudent),
+                    presentStudents = emptyList()
+            )
         }
         And("Class registry of student") {
             classRegistry = ClassRegistry(
@@ -127,7 +126,7 @@ class CheckAttendanceSteps : En {
         Then("Attendance has another present student") {
             assertThat(currentAttendanceOrError.isSuccess()).isTrue()
             val updatedAttendance = currentAttendanceOrError.getSuccess() as IncompleteAttendanceList
-            val presentStudents = updatedAttendance.attendance.presentStudents
+            val presentStudents = updatedAttendance.presentStudents
             assertThat(presentStudents).hasSize(1)
             assertThat(presentStudents[0]).isEqualToComparingFieldByField(PresentStudent(
                     firstName = student.firstName,
@@ -139,7 +138,7 @@ class CheckAttendanceSteps : En {
         Then("Attendance has another absent student") {
             assertThat(currentAttendanceOrError.isSuccess()).isTrue()
             val updatedAttendance = currentAttendanceOrError.getSuccess() as IncompleteAttendanceList
-            val absentStudents = updatedAttendance.attendance.absentStudents
+            val absentStudents = updatedAttendance.absentStudents
             assertThat(absentStudents).hasSize(1)
             assertThat(absentStudents[0]).isEqualToComparingFieldByField(AbsentStudent(
                     firstName = student.firstName,
@@ -153,14 +152,14 @@ class CheckAttendanceSteps : En {
         }
 
         Then("Student is present") {
-            assertThat(currentCheckedAttendance.attendance.absentStudents).doesNotContain(student as AbsentStudent)
-            assertThat(currentCheckedAttendance.attendance.presentStudents)
+            assertThat(currentCheckedAttendance.absentStudents).doesNotContain(student as AbsentStudent)
+            assertThat(currentCheckedAttendance.presentStudents)
                     .contains(PresentStudent(student.firstName, student.secondName, student.numberInRegister))
         }
 
         Then("Student is still absent") {
-            assertThat(currentCheckedAttendance.attendance.absentStudents).contains(student as AbsentStudent)
-            assertThat(currentCheckedAttendance.attendance.presentStudents)
+            assertThat(currentCheckedAttendance.absentStudents).contains(student as AbsentStudent)
+            assertThat(currentCheckedAttendance.presentStudents)
                     .doesNotContain(PresentStudent(student.firstName, student.secondName, student.numberInRegister))
         }
 

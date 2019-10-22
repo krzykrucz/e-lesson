@@ -1,7 +1,9 @@
 package com.krzykrucz.elesson.currentlesson.attendance
 
 import com.krzykrucz.elesson.currentlesson.AcceptanceSpec
-import com.krzykrucz.elesson.currentlesson.attendance.domain.*
+import com.krzykrucz.elesson.currentlesson.attendance.domain.AbsentStudent
+import com.krzykrucz.elesson.currentlesson.attendance.domain.PresentStudent
+import com.krzykrucz.elesson.currentlesson.attendance.domain.UncheckedStudent
 import com.krzykrucz.elesson.currentlesson.shared.*
 
 import java.time.LocalDate
@@ -30,16 +32,6 @@ class AttendanceBaseSpec extends AcceptanceSpec {
                 new SecondName(new NonEmptyText(surname)),
                 new NumberInRegister(new NaturalNumber(number))
         )
-    }
-
-    protected static IncompleteAttendanceList createEmptyAttendance() {
-        new IncompleteAttendanceList(new AttendanceList(
-                className1A(),
-                LocalDate.parse("2019-09-09"),
-                new LessonHourNumber(NaturalNumber.ONE),
-                new LinkedList<PresentStudent>(),
-                new LinkedList<AbsentStudent>()
-        ))
     }
 
     protected static ClassName className1A() {

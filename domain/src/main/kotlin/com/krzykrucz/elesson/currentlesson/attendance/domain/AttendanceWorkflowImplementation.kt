@@ -10,11 +10,14 @@ fun noteAbsence(
         areAllStudentsChecked: AreAllStudentsChecked
 ): NoteAbsence = { uncheckedStudent, notCompletedAttendance, classRegistry ->
     if (isInRegistry(uncheckedStudent, classRegistry)) {
-        val updatedAttendanceList = notCompletedAttendance.attendance.addAbsentStudent(uncheckedStudent)
+        val updatedAttendanceList = addAbsentStudent(notCompletedAttendance, uncheckedStudent)
         if (areAllStudentsChecked(updatedAttendanceList, classRegistry)) {
-            CheckedAttendanceList(updatedAttendanceList).right()
+            CheckedAttendanceList(
+                    updatedAttendanceList.presentStudents,
+                    updatedAttendanceList.absentStudents
+            ).right()
         } else {
-            IncompleteAttendanceList(updatedAttendanceList).right()
+            updatedAttendanceList.right()
         }
     } else {
         AttendanceError.StudentNotInRegistry().left()
@@ -26,11 +29,14 @@ fun notePresence(
         areAllStudentsChecked: AreAllStudentsChecked
 ): NotePresence = { uncheckedStudent, notCompletedAttendance, classRegistry ->
     if (isInRegistry(uncheckedStudent, classRegistry)) {
-        val updatedAttendanceList = notCompletedAttendance.attendance.addPresentStudent(uncheckedStudent)
-        if (areAllStudentsChecked(updatedAttendanceList, classRegistry)) {
-            CheckedAttendanceList(updatedAttendanceList).right()
+        val updatedAttendanceList = addPresentStudent(notCompletedAttendance, uncheckedStudent)
+        if (areAllStudentsChecked(updatedAttendanceList, classRegistry)) {// TODO move all that logic to the areAll... fun; convert to workflow
+            CheckedAttendanceList(
+                    updatedAttendanceList.presentStudents,
+                    updatedAttendanceList.absentStudents
+            ).right()
         } else {
-            IncompleteAttendanceList(updatedAttendanceList).right()
+            updatedAttendanceList.right()
         }
     } else {
         AttendanceError.StudentNotInRegistry().left()
@@ -41,15 +47,11 @@ fun noteLate(
         isNotTooLate: IsNotTooLate
 ): NoteLate = { lessonHourNumber, absentStudent, checkedAttendance, currentTime ->
     if (isNotTooLate(lessonHourNumber, currentTime)) {
-        val attendance = checkedAttendance.attendance
-        val updatedAbsentStudents = attendance.absentStudents.minusElement(absentStudent)
-        val updatedPresentStudents = attendance.presentStudents.plusElement(absentStudent.toPresent())
-        val updatedAttendance = attendance.copy(
+        val updatedAbsentStudents = checkedAttendance.absentStudents - absentStudent
+        val updatedPresentStudents = checkedAttendance.presentStudents + absentStudent.toPresent()
+        checkedAttendance.copy(
                 absentStudents = updatedAbsentStudents,
                 presentStudents = updatedPresentStudents
-        )
-        checkedAttendance.copy(
-                attendance = updatedAttendance
         )
     } else {
         checkedAttendance
@@ -91,9 +93,11 @@ fun areAllStudentsChecked(): AreAllStudentsChecked = { attendanceList, classRegi
     (absentStudents + presentStudents).containsAll(classRegistry.students)
 }
 
-private fun AttendanceList.addAbsentStudent(student: UncheckedStudent): AttendanceList =
-        this.copy(absentStudents = this.absentStudents.plusElement(student.toAbsent()))
+
+// TODO wrap 2 below in workflows
+private fun addAbsentStudent(attendanceList: IncompleteAttendanceList, student: UncheckedStudent): IncompleteAttendanceList =
+        attendanceList.copy(absentStudents = attendanceList.absentStudents + student.toAbsent())
 
 
-private fun AttendanceList.addPresentStudent(student: UncheckedStudent): AttendanceList =
-        this.copy(presentStudents = this.presentStudents.plusElement(student.toPresent()))
+private fun addPresentStudent(attendanceList: IncompleteAttendanceList, student: UncheckedStudent): IncompleteAttendanceList =
+        attendanceList.copy(presentStudents = attendanceList.presentStudents + student.toPresent())

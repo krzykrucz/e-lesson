@@ -37,6 +37,7 @@ import java.util.concurrent.TimeUnit
 
 
 internal fun handleNoteAbsentRequest(
+        // TODO move all the domain functions definitions to config and pass them here
         persistAttendance: PersistAttendance,
         fetchNotCompletedAttendance: FetchNotCompletedAttendanceAndRegistry
 ): (ServerRequest) -> Mono<ServerResponse> {

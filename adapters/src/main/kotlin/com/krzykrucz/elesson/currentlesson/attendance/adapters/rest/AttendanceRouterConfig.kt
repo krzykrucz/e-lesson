@@ -1,7 +1,7 @@
 package com.krzykrucz.elesson.currentlesson.attendance.adapters.rest
 
 import com.krzykrucz.elesson.currentlesson.attendance.domain.FetchCheckedAttendance
-import com.krzykrucz.elesson.currentlesson.attendance.domain.FetchNotCompletedAttendance
+import com.krzykrucz.elesson.currentlesson.attendance.domain.FetchNotCompletedAttendanceAndRegistry
 import com.krzykrucz.elesson.currentlesson.attendance.domain.PersistAttendance
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -15,7 +15,7 @@ class AttendanceRouterConfig {
     @Bean
     fun attendanceRouter(
             persistAttendance: PersistAttendance,
-            fetchNotCompletedAttendance: FetchNotCompletedAttendance,
+            fetchNotCompletedAttendance: FetchNotCompletedAttendanceAndRegistry,
             fetchCheckedAttendance: FetchCheckedAttendance
     ) = router {
         (path("/attendance") and accept(MediaType.APPLICATION_JSON)).nest {

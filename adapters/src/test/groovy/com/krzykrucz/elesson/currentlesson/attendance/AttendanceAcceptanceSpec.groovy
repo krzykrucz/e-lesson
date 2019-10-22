@@ -3,7 +3,7 @@ package com.krzykrucz.elesson.currentlesson.attendance
 import com.krzykrucz.elesson.currentlesson.attendance.adapters.rest.AttendanceDto
 import com.krzykrucz.elesson.currentlesson.attendance.adapters.rest.AttendanceResponseDto
 import com.krzykrucz.elesson.currentlesson.attendance.adapters.rest.LateAttendanceDto
-import com.krzykrucz.elesson.currentlesson.attendance.domain.CheckedAttendance
+import com.krzykrucz.elesson.currentlesson.attendance.domain.CheckedAttendanceList
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpMethod
 
@@ -61,7 +61,7 @@ class AttendanceAcceptanceSpec extends AttendanceBaseSpec {
         def className = "1A"
         def checkedAttendanceOf1A = rest.getForObject(
                 "/attendance?date=${date}&lessonHourNumber=${lessonHourNumber}&className=${className}",
-                CheckedAttendance
+                CheckedAttendanceList
         )
 
         then: 'It is checked with Tom and Harry present and no absent students'

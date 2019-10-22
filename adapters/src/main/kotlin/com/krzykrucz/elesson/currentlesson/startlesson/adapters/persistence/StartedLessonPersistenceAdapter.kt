@@ -2,28 +2,30 @@ package com.krzykrucz.elesson.currentlesson.startlesson.adapters.persistence
 
 import arrow.core.Option
 import arrow.effects.IO
+import com.krzykrucz.elesson.currentlesson.monolith.Database.Companion.LESSON_DATABASE
+import com.krzykrucz.elesson.currentlesson.monolith.PersistentCurrentLesson
 import com.krzykrucz.elesson.currentlesson.shared.LessonIdentifier
 import com.krzykrucz.elesson.currentlesson.startlesson.domain.PersistStartedLessonIfDoesNotExist
 import com.krzykrucz.elesson.currentlesson.startlesson.domain.StartedLesson
-import com.krzykrucz.elesson.currentlesson.monolith.Database.Companion.STARTED_LESSON_DATABASE
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
 class StartedLessonInMemoryRepository {
 
     fun store(startedLesson: StartedLesson) =
-        STARTED_LESSON_DATABASE.put(startedLesson.id, startedLesson)
+            LESSON_DATABASE.put(startedLesson.id, PersistentCurrentLesson(startedLesson.id, startedLesson.clazz))
 
-    fun contains(lessonIdentifier: LessonIdentifier): Boolean = STARTED_LESSON_DATABASE.containsKey(lessonIdentifier)
+    fun contains(lessonIdentifier: LessonIdentifier): Boolean = LESSON_DATABASE.containsKey(lessonIdentifier)
 
     fun get(lessonIdentifier: LessonIdentifier): Option<StartedLesson> =
-        STARTED_LESSON_DATABASE[lessonIdentifier]
-            .let { Option.fromNullable(it) }
+            LESSON_DATABASE[lessonIdentifier]
+                    .let { Option.fromNullable(it) }
+                    .map { StartedLesson(it.lessonId, it.classRegistry) }
 
 }
 
 class PersistStartedLessonInRepository(
-    private val repository: StartedLessonInMemoryRepository
+        private val repository: StartedLessonInMemoryRepository
 ) : PersistStartedLessonIfDoesNotExist { // TODO maybe check if lesson not started somewhere else
     override fun invoke(lesson: StartedLesson): IO<LessonIdentifier> = IO {
         if (!repository.contains(lesson.id)) {

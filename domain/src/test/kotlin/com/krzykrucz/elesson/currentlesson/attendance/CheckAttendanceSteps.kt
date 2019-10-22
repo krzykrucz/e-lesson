@@ -6,10 +6,10 @@ import com.krzykrucz.elesson.currentlesson.attendance.domain.AreAllStudentsCheck
 import com.krzykrucz.elesson.currentlesson.attendance.domain.Attendance
 import com.krzykrucz.elesson.currentlesson.attendance.domain.AttendanceError
 import com.krzykrucz.elesson.currentlesson.attendance.domain.AttendanceList
-import com.krzykrucz.elesson.currentlesson.attendance.domain.CheckedAttendance
+import com.krzykrucz.elesson.currentlesson.attendance.domain.CheckedAttendanceList
+import com.krzykrucz.elesson.currentlesson.attendance.domain.IncompleteAttendanceList
 import com.krzykrucz.elesson.currentlesson.attendance.domain.IsInRegistry
 import com.krzykrucz.elesson.currentlesson.attendance.domain.IsNotTooLate
-import com.krzykrucz.elesson.currentlesson.attendance.domain.NotCompletedAttendance
 import com.krzykrucz.elesson.currentlesson.attendance.domain.PresentStudent
 import com.krzykrucz.elesson.currentlesson.attendance.domain.Student
 import com.krzykrucz.elesson.currentlesson.attendance.domain.UncheckedStudent
@@ -20,11 +20,9 @@ import com.krzykrucz.elesson.currentlesson.getError
 import com.krzykrucz.elesson.currentlesson.getSuccess
 import com.krzykrucz.elesson.currentlesson.newClassName
 import com.krzykrucz.elesson.currentlesson.newStudent
-import com.krzykrucz.elesson.currentlesson.shared.ClassName
 import com.krzykrucz.elesson.currentlesson.shared.ClassRegistry
 import com.krzykrucz.elesson.currentlesson.shared.FirstName
 import com.krzykrucz.elesson.currentlesson.shared.LessonHourNumber
-import com.krzykrucz.elesson.currentlesson.shared.LessonIdentifier
 import com.krzykrucz.elesson.currentlesson.shared.NaturalNumber
 import com.krzykrucz.elesson.currentlesson.shared.NonEmptyText
 import com.krzykrucz.elesson.currentlesson.shared.NumberInRegister
@@ -33,19 +31,18 @@ import com.krzykrucz.elesson.currentlesson.shared.isError
 import com.krzykrucz.elesson.currentlesson.shared.isSuccess
 import io.cucumber.java8.En
 import org.assertj.core.api.Assertions.assertThat
-import java.time.LocalDate
 import java.time.LocalDateTime
 
 class CheckAttendanceSteps : En {
     lateinit var student: Student
-    lateinit var notCompletedAttendance: NotCompletedAttendance
+    lateinit var incompleteAttendance: IncompleteAttendanceList
     lateinit var classRegistry: ClassRegistry
     lateinit var currentAttendanceOrError: Either<AttendanceError, Attendance>
     lateinit var areAllStudentsChecked: AreAllStudentsChecked
     lateinit var isInRegistry: IsInRegistry
     lateinit var isNotTooLate: IsNotTooLate
-    lateinit var currentCheckedAttendance: CheckedAttendance
-    lateinit var checkedAttendance: CheckedAttendance
+    lateinit var currentCheckedAttendance: CheckedAttendanceList
+    lateinit var checkedAttendance: CheckedAttendanceList
     private val className = newClassName("Slytherin")
     private val lessonHourNumber = LessonHourNumber.of(NaturalNumber.ONE).orNull()!!
 
@@ -65,23 +62,13 @@ class CheckAttendanceSteps : En {
             )
         }
         And("Attendance is not completed") {
-            notCompletedAttendance = NotCompletedAttendance(
-                    attendance = AttendanceList(
-                            className = ClassName(NonEmptyText("Black magic")),
-                            date = LocalDate.now(),
-                            lessonHourNumber = lessonHourNumber
-                    ),
-                    classRegistry = classRegistry
-            )
+            incompleteAttendance = IncompleteAttendanceList()
         }
         And("Checked attendance") {
-            checkedAttendance = CheckedAttendance(
+            checkedAttendance = CheckedAttendanceList(
                     attendance = AttendanceList(
-                            className = ClassName(NonEmptyText("Black magic")),
-                            date = LocalDate.now(),
-                            lessonHourNumber = lessonHourNumber,
                             absentStudents = listOf(student as AbsentStudent)
-                    ), classRegistry = classRegistry)
+                    ))
         }
         And("Class registry of student") {
             classRegistry = ClassRegistry(
@@ -115,7 +102,7 @@ class CheckAttendanceSteps : En {
         When("Noting Student is late") {
             val absentStudent = student as AbsentStudent
             currentCheckedAttendance = noteLate(isNotTooLate)(
-                    LessonIdentifier(LocalDate.now(), lessonHourNumber, className),
+                    lessonHourNumber,
                     absentStudent,
                     checkedAttendance,
                     LocalDateTime.now()
@@ -126,20 +113,20 @@ class CheckAttendanceSteps : En {
             currentAttendanceOrError = notePresence(
                     isInRegistry = isInRegistry,
                     areAllStudentsChecked = areAllStudentsChecked
-            )(student as UncheckedStudent, notCompletedAttendance)
+            )(student as UncheckedStudent, incompleteAttendance, classRegistry)
         }
 
         When("Noting Student Absence") {
             currentAttendanceOrError = noteAbsence(
                     isInRegistry = isInRegistry,
                     areAllStudentsChecked = areAllStudentsChecked
-            )(student as UncheckedStudent, notCompletedAttendance)
+            )(student as UncheckedStudent, incompleteAttendance, classRegistry)
         }
 
 
         Then("Attendance has another present student") {
             assertThat(currentAttendanceOrError.isSuccess()).isTrue()
-            val updatedAttendance = currentAttendanceOrError.getSuccess() as NotCompletedAttendance
+            val updatedAttendance = currentAttendanceOrError.getSuccess() as IncompleteAttendanceList
             val presentStudents = updatedAttendance.attendance.presentStudents
             assertThat(presentStudents).hasSize(1)
             assertThat(presentStudents[0]).isEqualToComparingFieldByField(PresentStudent(
@@ -151,7 +138,7 @@ class CheckAttendanceSteps : En {
 
         Then("Attendance has another absent student") {
             assertThat(currentAttendanceOrError.isSuccess()).isTrue()
-            val updatedAttendance = currentAttendanceOrError.getSuccess() as NotCompletedAttendance
+            val updatedAttendance = currentAttendanceOrError.getSuccess() as IncompleteAttendanceList
             val absentStudents = updatedAttendance.attendance.absentStudents
             assertThat(absentStudents).hasSize(1)
             assertThat(absentStudents[0]).isEqualToComparingFieldByField(AbsentStudent(
@@ -162,7 +149,7 @@ class CheckAttendanceSteps : En {
         }
         Then("Attendance is completed") {
             assertThat(currentAttendanceOrError.isSuccess()).isTrue()
-            assertThat(currentAttendanceOrError.getSuccess()).isInstanceOf(CheckedAttendance::class.java)
+            assertThat(currentAttendanceOrError.getSuccess()).isInstanceOf(CheckedAttendanceList::class.java)
         }
 
         Then("Student is present") {

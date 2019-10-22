@@ -8,14 +8,13 @@ import java.time.temporal.ChronoUnit
 fun noteAbsence(
         isInRegistry: IsInRegistry,
         areAllStudentsChecked: AreAllStudentsChecked
-): NoteAbsence = { uncheckedStudent, notCompletedAttendance ->
-    val classRegistry = notCompletedAttendance.classRegistry
+): NoteAbsence = { uncheckedStudent, notCompletedAttendance, classRegistry ->
     if (isInRegistry(uncheckedStudent, classRegistry)) {
         val updatedAttendanceList = notCompletedAttendance.attendance.addAbsentStudent(uncheckedStudent)
         if (areAllStudentsChecked(updatedAttendanceList, classRegistry)) {
-            CheckedAttendance(updatedAttendanceList, classRegistry).right()
+            CheckedAttendanceList(updatedAttendanceList).right()
         } else {
-            NotCompletedAttendance(updatedAttendanceList, classRegistry).right()
+            IncompleteAttendanceList(updatedAttendanceList).right()
         }
     } else {
         AttendanceError.StudentNotInRegistry().left()
@@ -25,14 +24,13 @@ fun noteAbsence(
 fun notePresence(
         isInRegistry: IsInRegistry,
         areAllStudentsChecked: AreAllStudentsChecked
-): NotePresence = { uncheckedStudent, notCompletedAttendance ->
-    val classRegistry = notCompletedAttendance.classRegistry
+): NotePresence = { uncheckedStudent, notCompletedAttendance, classRegistry ->
     if (isInRegistry(uncheckedStudent, classRegistry)) {
         val updatedAttendanceList = notCompletedAttendance.attendance.addPresentStudent(uncheckedStudent)
         if (areAllStudentsChecked(updatedAttendanceList, classRegistry)) {
-            CheckedAttendance(updatedAttendanceList, classRegistry).right()
+            CheckedAttendanceList(updatedAttendanceList).right()
         } else {
-            NotCompletedAttendance(updatedAttendanceList, classRegistry).right()
+            IncompleteAttendanceList(updatedAttendanceList).right()
         }
     } else {
         AttendanceError.StudentNotInRegistry().left()
@@ -41,8 +39,8 @@ fun notePresence(
 
 fun noteLate(
         isNotTooLate: IsNotTooLate
-): NoteLate = { lessonId, absentStudent, checkedAttendance, currentTime ->
-    if (isNotTooLate(lessonId.lessonHourNumber, currentTime)) {
+): NoteLate = { lessonHourNumber, absentStudent, checkedAttendance, currentTime ->
+    if (isNotTooLate(lessonHourNumber, currentTime)) {
         val attendance = checkedAttendance.attendance
         val updatedAbsentStudents = attendance.absentStudents.minusElement(absentStudent)
         val updatedPresentStudents = attendance.presentStudents.plusElement(absentStudent.toPresent())

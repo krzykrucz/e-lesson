@@ -1,17 +1,17 @@
 package com.krzykrucz.elesson.currentlesson.attendance.adapters.persistence
 
+import arrow.core.Tuple2
+import arrow.core.toOption
+import arrow.data.OptionT
 import arrow.effects.IO
+import arrow.effects.extensions.io.applicative.applicative
 import arrow.effects.extensions.io.functor.functor
-import arrow.effects.extensions.io.monad.monad
-import com.krzykrucz.elesson.currentlesson.attendance.domain.CheckedAttendance
+import com.krzykrucz.elesson.currentlesson.attendance.domain.CheckedAttendanceList
 import com.krzykrucz.elesson.currentlesson.attendance.domain.FetchCheckedAttendance
-import com.krzykrucz.elesson.currentlesson.attendance.domain.FetchNotCompletedAttendance
-import com.krzykrucz.elesson.currentlesson.attendance.domain.NotCompletedAttendance
+import com.krzykrucz.elesson.currentlesson.attendance.domain.FetchNotCompletedAttendanceAndRegistry
+import com.krzykrucz.elesson.currentlesson.attendance.domain.IncompleteAttendanceList
 import com.krzykrucz.elesson.currentlesson.attendance.domain.PersistAttendance
-import com.krzykrucz.elesson.currentlesson.attendance.domain.lessonId
-import com.krzykrucz.elesson.currentlesson.monolith.Database.Companion.ATTENDANCE_DATABASE
-import com.krzykrucz.elesson.currentlesson.monolith.Database.Companion.fetchAttendance
-import com.krzykrucz.elesson.currentlesson.monolith.Database.Companion.fetchStartedLessonAsAttendance
+import com.krzykrucz.elesson.currentlesson.monolith.Database
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
@@ -20,28 +20,33 @@ import org.springframework.context.annotation.Configuration
 class DbConnectorFactory {
 
     @Bean
-    fun persistAttendance(): PersistAttendance = { attendance ->
+    fun persistAttendance(): PersistAttendance = { lessonId, attendance ->
         IO.just(
-                ATTENDANCE_DATABASE.put(attendance.lessonId(), attendance)
+                Database.LESSON_DATABASE.compute(lessonId) { _, lesson ->
+                    lesson?.copy(attendance = attendance)
+                }
         ).map {
             when (attendance) {
-                is NotCompletedAttendance -> false
-                is CheckedAttendance -> true
+                is IncompleteAttendanceList -> false
+                is CheckedAttendanceList -> true
             }
         }
     }
 
     @Bean
-    fun fetchCheckedAttendance(): FetchCheckedAttendance = { lessonId ->
-        fetchAttendance(lessonId)
-                .map(IO.functor()) { it as CheckedAttendance }
+    fun fetchCheckedAttendance(): FetchCheckedAttendance = { lessonIdentifier ->
+        OptionT.fromOption(IO.applicative(), Database.LESSON_DATABASE[lessonIdentifier].toOption())
+                .filter(IO.functor()) { it.attendance != null }
+                .filter(IO.functor()) { it.attendance is CheckedAttendanceList }
+                .map(IO.functor()) { it.attendance as CheckedAttendanceList }
     }
 
     @Bean
-    fun fetchNotCompletedAttendance(): FetchNotCompletedAttendance = { lessonId ->
-        fetchAttendance(lessonId)
-                .map(IO.functor()) { it as NotCompletedAttendance }
-                .orElse(IO.monad()) { fetchStartedLessonAsAttendance(lessonId) }
+    fun fetchNotCompletedAttendance(): FetchNotCompletedAttendanceAndRegistry = { lessonIdentifier ->
+        OptionT.fromOption(IO.applicative(), Database.LESSON_DATABASE[lessonIdentifier].toOption())
+                .filter(IO.functor()) { it.attendance != null }
+                .filter(IO.functor()) { it.attendance is IncompleteAttendanceList }
+                .map(IO.functor()) { Tuple2(it.attendance as IncompleteAttendanceList, it.classRegistry) }
     }
 
 }

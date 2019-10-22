@@ -1,7 +1,9 @@
 package com.krzykrucz.elesson.currentlesson.attendance.adapters.rest
 
 import arrow.core.Either
+import arrow.core.Option
 import arrow.core.Tuple2
+import arrow.core.Tuple4
 import arrow.core.getOrElse
 import arrow.core.toOption
 import arrow.data.OptionT
@@ -12,7 +14,7 @@ import arrow.effects.fix
 import arrow.effects.typeclasses.Duration
 import com.krzykrucz.elesson.currentlesson.attendance.domain.AttendanceError
 import com.krzykrucz.elesson.currentlesson.attendance.domain.FetchCheckedAttendance
-import com.krzykrucz.elesson.currentlesson.attendance.domain.FetchNotCompletedAttendance
+import com.krzykrucz.elesson.currentlesson.attendance.domain.FetchNotCompletedAttendanceAndRegistry
 import com.krzykrucz.elesson.currentlesson.attendance.domain.GetLessonStartTime
 import com.krzykrucz.elesson.currentlesson.attendance.domain.PersistAttendance
 import com.krzykrucz.elesson.currentlesson.attendance.domain.areAllStudentsChecked
@@ -21,8 +23,9 @@ import com.krzykrucz.elesson.currentlesson.attendance.domain.isNotTooLate
 import com.krzykrucz.elesson.currentlesson.attendance.domain.noteAbsence
 import com.krzykrucz.elesson.currentlesson.attendance.domain.noteLate
 import com.krzykrucz.elesson.currentlesson.attendance.domain.notePresence
-import com.krzykrucz.elesson.currentlesson.monolith.Database.Companion.ATTENDANCE_DATABASE
+import com.krzykrucz.elesson.currentlesson.monolith.Database
 import com.krzykrucz.elesson.currentlesson.monolith.Database.Companion.lessonIdOf
+import com.krzykrucz.elesson.currentlesson.monolith.PersistentCurrentLesson
 import org.springframework.web.reactive.function.BodyInserters
 import org.springframework.web.reactive.function.server.ServerRequest
 import org.springframework.web.reactive.function.server.ServerResponse
@@ -33,27 +36,29 @@ import java.util.concurrent.TimeUnit
 
 internal fun handleNoteAbsentRequest(
         persistAttendance: PersistAttendance,
-        fetchNotCompletedAttendance: FetchNotCompletedAttendance
+        fetchNotCompletedAttendance: FetchNotCompletedAttendanceAndRegistry
 ): (ServerRequest) -> Mono<ServerResponse> {
     return { request ->
-        request
-                .bodyToMono(AttendanceDto::class.java)
+        request.bodyToMono(AttendanceDto::class.java)
                 .map { (student, lessonId) ->
                     fetchNotCompletedAttendance(lessonId)
-                            .map(IO.functor()) { Tuple2(student, it) }
+                            .map(IO.functor()) { Tuple4(student, it.a, it.b, lessonId) }
                 }
                 .map {
-                    it.map(IO.functor()) { (student, attendance) ->
+                    it.map(IO.functor()) { (student, attendance, clazz, lessonId) ->
                         noteAbsence(
                                 isInRegistry = isInRegistry(),
                                 areAllStudentsChecked = areAllStudentsChecked()
                         )(
                                 student,
-                                attendance
-                        )
-                    }.map(IO.functor()) { notingResult ->
+                                attendance,
+                                clazz
+                        ).let {
+                            Tuple2(it, lessonId)
+                        }
+                    }.map(IO.functor()) { (notingResult, lessonId) ->
                         notingResult.map { attendance ->
-                            persistAttendance(attendance)
+                            persistAttendance(lessonId, attendance)
                                     .map(::AttendanceResponseDto)
                         }
                     }
@@ -68,25 +73,26 @@ internal fun handleNoteAbsentRequest(
 
 internal fun handleNotePresentRequest(
         persistAttendance: PersistAttendance,
-        fetchNotCompletedAttendance: FetchNotCompletedAttendance
-): (ServerRequest) -> Mono<ServerResponse> = {
-    it.bodyToMono(AttendanceDto::class.java)
+        fetchNotCompletedAttendance: FetchNotCompletedAttendanceAndRegistry
+): (ServerRequest) -> Mono<ServerResponse> = { request ->
+    request.bodyToMono(AttendanceDto::class.java)
             .map { (student, lessonId) ->
                 fetchNotCompletedAttendance(lessonId)
-                        .map(IO.functor()) { Tuple2(student, it) }
+                        .map(IO.functor()) { Tuple4(student, it.a, it.b, lessonId) }
             }
             .map {
-                it.map(IO.functor()) { (student, attendance) ->
+                it.map(IO.functor()) { (student, attendance, clazz, lessonId) ->
                     notePresence(
                             isInRegistry = isInRegistry(),
                             areAllStudentsChecked = areAllStudentsChecked()
                     )(
                             student,
-                            attendance
-                    )
-                }.map(IO.functor()) { notingResult ->
+                            attendance,
+                            clazz
+                    ).let { Tuple2(it, lessonId) }
+                }.map(IO.functor()) { (notingResult, lessonId) ->
                     notingResult.map { attendance ->
-                        persistAttendance(attendance)
+                        persistAttendance(lessonId, attendance)
                                 .map(::AttendanceResponseDto)
                     }
                 }
@@ -110,13 +116,15 @@ internal fun handleNoteLateRequest(
                             noteLate(
                                     isNotTooLate = isNotTooLate(getLessonStartTime())
                             )(
-                                    lateAttendanceDto.lessonId,
+                                    lateAttendanceDto.lessonId.lessonHourNumber,
                                     lateAttendanceDto.absentStudent,
                                     checkedAttendance,
                                     LocalDateTime.parse(lateAttendanceDto.currentTime)
                             )
                         }
-                        .map(IO.functor()) { checkedAttendance -> persistAttendance(checkedAttendance) }
+                        .map(IO.functor()) { checkedAttendance ->
+                            persistAttendance(lateAttendanceDto.lessonId, checkedAttendance)
+                        }
             }
             .flatMap {
                 it.map(IO.functor()) { attendanceIO ->
@@ -134,7 +142,9 @@ internal fun handleGetAttendanceRequest(): (ServerRequest) -> Mono<ServerRespons
     val lessonHourNumber = request.queryParam("lessonHourNumber").map { it.toInt() }.orElse(0)
     val className = request.queryParam("className").orElse("")
     val lessonId = lessonIdOf(date, lessonHourNumber, className)
-    val uncheckedAttendance = ATTENDANCE_DATABASE[lessonId].toOption()
+    val uncheckedAttendance = Database.LESSON_DATABASE[lessonId].toOption()
+            .map(PersistentCurrentLesson::attendance)
+            .flatMap { Option.fromNullable(it) }
     uncheckedAttendance
             .fold(
                     ifEmpty = { ServerResponse.noContent().build() },

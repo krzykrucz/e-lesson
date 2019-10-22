@@ -1,19 +1,8 @@
 package com.krzykrucz.elesson.currentlesson.attendance
 
 import com.krzykrucz.elesson.currentlesson.AcceptanceSpec
-import com.krzykrucz.elesson.currentlesson.shared.ClassName
-import com.krzykrucz.elesson.currentlesson.shared.FirstName
-import com.krzykrucz.elesson.currentlesson.shared.LessonHourNumber
-import com.krzykrucz.elesson.currentlesson.shared.LessonIdentifier
-import com.krzykrucz.elesson.currentlesson.shared.NaturalNumber
-import com.krzykrucz.elesson.currentlesson.shared.NonEmptyText
-import com.krzykrucz.elesson.currentlesson.shared.NumberInRegister
-import com.krzykrucz.elesson.currentlesson.shared.SecondName
-import com.krzykrucz.elesson.currentlesson.attendance.domain.AbsentStudent
-import com.krzykrucz.elesson.currentlesson.attendance.domain.AttendanceList
-import com.krzykrucz.elesson.currentlesson.attendance.domain.NotCompletedAttendance
-import com.krzykrucz.elesson.currentlesson.attendance.domain.PresentStudent
-import com.krzykrucz.elesson.currentlesson.attendance.domain.UncheckedStudent
+import com.krzykrucz.elesson.currentlesson.attendance.domain.*
+import com.krzykrucz.elesson.currentlesson.shared.*
 
 import java.time.LocalDate
 
@@ -43,8 +32,8 @@ class AttendanceBaseSpec extends AcceptanceSpec {
         )
     }
 
-    protected static NotCompletedAttendance createEmptyAttendance() {
-        new NotCompletedAttendance(new AttendanceList(
+    protected static IncompleteAttendanceList createEmptyAttendance() {
+        new IncompleteAttendanceList(new AttendanceList(
                 className1A(),
                 LocalDate.parse("2019-09-09"),
                 new LessonHourNumber(NaturalNumber.ONE),

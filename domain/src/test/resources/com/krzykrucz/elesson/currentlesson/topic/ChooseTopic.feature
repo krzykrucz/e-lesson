@@ -12,4 +12,4 @@ Feature: Choose Topic
     And Attendance is not checked
     And Finished Lessons Count
     When Choosing a topic
-    Then Lesson is in progress
+    Then Choose topic error is returned

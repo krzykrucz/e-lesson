@@ -2,6 +2,7 @@ package com.krzykrucz.elesson.currentlesson.topic
 
 
 import arrow.core.Either
+import com.krzykrucz.elesson.currentlesson.getSuccess
 import com.krzykrucz.elesson.currentlesson.shared.NaturalNumber
 import com.krzykrucz.elesson.currentlesson.shared.NonEmptyText
 import com.krzykrucz.elesson.currentlesson.topic.domain.*
@@ -33,12 +34,14 @@ class ChooseTopicSteps : En {
             inProgressLesson = chooseTopic()(isAttendanceChecked, topicTitle, finishedLessonsCount, now)
         }
         Then("Lesson is in progress") {
-            assertThat(inProgressLesson).isEqualToComparingFieldByField(
+            assertThat(inProgressLesson.getSuccess()).isEqualToComparingFieldByField(
                 InProgressLesson(
                     LessonTopic(LessonOrdinalNumber(NaturalNumber.FIVE), topicTitle, now)
                 )
             )
         }
-
+        Then("Choose topic error is returned") {
+            assertThat(inProgressLesson.isLeft()).isTrue()
+        }
     }
 }

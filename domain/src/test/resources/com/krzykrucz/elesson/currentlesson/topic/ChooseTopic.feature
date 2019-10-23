@@ -6,3 +6,10 @@ Feature: Choose Topic
     And Finished Lessons Count
     When Choosing a topic
     Then Lesson is in progress
+
+  Scenario: Should return error when attendance is not checked
+    Given Topic title
+    And Attendance is not checked
+    And Finished Lessons Count
+    When Choosing a topic
+    Then Lesson is in progress

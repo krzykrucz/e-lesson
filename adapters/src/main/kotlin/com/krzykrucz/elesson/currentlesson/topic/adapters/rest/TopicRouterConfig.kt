@@ -1,21 +1,13 @@
 package com.krzykrucz.elesson.currentlesson.topic.adapters.rest
 
 
-import arrow.core.Option
-import arrow.core.extensions.option.traverse.sequence
-import arrow.core.fix
+import arrow.core.Either
 import arrow.core.getOrElse
-import arrow.core.toOption
 import arrow.fx.IO
-import arrow.fx.extensions.fx
-import arrow.fx.extensions.io.applicative.applicative
-import arrow.fx.fix
 import arrow.fx.typeclasses.Duration
-import com.krzykrucz.elesson.currentlesson.attendance.infrastructure.fetchAttendanceIO
-import com.krzykrucz.elesson.currentlesson.domain.attendance.CheckedAttendance
-import com.krzykrucz.elesson.currentlesson.domain.topic.domain.chooseTopic
-import com.krzykrucz.elesson.currentlesson.topic.adapters.persistence.fetchFinishedLessonsCount
-import com.krzykrucz.elesson.currentlesson.topic.adapters.persistence.persistInProgressLesson
+import com.krzykrucz.elesson.currentlesson.topic.ChooseTopicDto
+
+import com.krzykrucz.elesson.currentlesson.topic.usecase.handleChooseTopicDto
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.MediaType
@@ -37,35 +29,24 @@ class TopicRouterConfig {
 
     private fun handleChooseTopicRequest(): (ServerRequest) -> Mono<ServerResponse> = { request ->
         request
-                .bodyToMono(ChooseTopicDto::class.java)
-                .flatMap { handleChooseTopicDto(it) }
+            .bodyToMono(ChooseTopicDto::class.java)
+            .flatMap { chooseTopicDto ->
+                handleChooseTopicDto()(chooseTopicDto).map {
+                    it.toServerResponse()
+                }.run()
+            }
+
     }
 
-    private fun handleChooseTopicDto(dto: ChooseTopicDto): Mono<ServerResponse> =
-            IO.fx {
-                val (checkedAttendance) = fetchAttendanceIO()(dto.lessonIdentifier)
-                val (finishedLessonsCount) = fetchFinishedLessonsCount()()
-                val (inProgressLessonOpt) = checkedAttendance
-                        .flatMap { (it as? CheckedAttendance).toOption() }
-                        .map { attendance -> chooseTopic()(dto.topicTitle, finishedLessonsCount, attendance) }
-                        .map { inProgressLesson ->
-                            persistInProgressLesson()(inProgressLesson)
-                                    .map { inProgressLesson }
-                        }
-                        .sequence()
-                inProgressLessonOpt.toServerResponse()
-            }.run()
-
-    private fun <T> Option<IO<T>>.sequence(): IO<Option<T>> =
-            this.sequence(IO.applicative()).fix()
-                    .map { it.fix() }
-
-    private fun <T> Option<T>.toServerResponse(): Mono<ServerResponse> =
-            this.map { ServerResponse.ok().body(BodyInserters.fromObject(it)) }
-                    .getOrElse { ServerResponse.noContent().build() }
-
     private fun IO<Mono<ServerResponse>>.run(): Mono<ServerResponse> =
-            this.unsafeRunTimed(Duration(3, TimeUnit.SECONDS))
-                    .getOrElse { ServerResponse.badRequest().build() }
+        this.unsafeRunTimed(Duration(3, TimeUnit.SECONDS))
+            .getOrElse { ServerResponse.badRequest().build() }
 
+    private fun <A, B> Either<A, B>.toServerResponse(): Mono<ServerResponse> =
+        this.fold(
+            ifLeft = { ServerResponse.badRequest().body(BodyInserters.fromObject(it)) },
+            ifRight = { ServerResponse.ok().body(BodyInserters.fromObject(it)) }
+        )
 }
+
+

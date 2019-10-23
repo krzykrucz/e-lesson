@@ -1,12 +1,6 @@
 package com.krzykrucz.elesson.currentlesson.shared
 
-import arrow.core.Either
-import arrow.core.None
-import arrow.core.Option
-import arrow.core.Predicate
-import arrow.core.Some
-import arrow.core.flatMap
-import arrow.core.getOrHandle
+import arrow.core.*
 import arrow.effects.IO
 
 data class NonEmptyText(val text: String) {
@@ -45,6 +39,8 @@ data class NaturalNumber private constructor(val number: Int) {
                 if (int > 0) Some(NaturalNumber(int))
                 else None
     }
+    operator fun plus(that: NaturalNumber): NaturalNumber =
+        NaturalNumber(this.number + that.number)
 }
 
 data class NonNegativeRealNumber private constructor(val number: Double) {

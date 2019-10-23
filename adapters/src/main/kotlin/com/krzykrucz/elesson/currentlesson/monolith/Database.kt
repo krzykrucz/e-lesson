@@ -2,16 +2,8 @@ package com.krzykrucz.elesson.currentlesson.monolith
 
 import com.krzykrucz.elesson.currentlesson.attendance.domain.Attendance
 import com.krzykrucz.elesson.currentlesson.attendance.domain.IncompleteAttendanceList
-import com.krzykrucz.elesson.currentlesson.shared.ClassName
-import com.krzykrucz.elesson.currentlesson.shared.ClassRegistry
-import com.krzykrucz.elesson.currentlesson.shared.FirstName
-import com.krzykrucz.elesson.currentlesson.shared.LessonHourNumber
-import com.krzykrucz.elesson.currentlesson.shared.LessonIdentifier
-import com.krzykrucz.elesson.currentlesson.shared.NaturalNumber
-import com.krzykrucz.elesson.currentlesson.shared.NonEmptyText
-import com.krzykrucz.elesson.currentlesson.shared.NumberInRegister
-import com.krzykrucz.elesson.currentlesson.shared.SecondName
-import com.krzykrucz.elesson.currentlesson.shared.StudentRecord
+import com.krzykrucz.elesson.currentlesson.shared.*
+import com.krzykrucz.elesson.currentlesson.topic.domain.LessonTopic
 import java.time.LocalDate
 import java.util.concurrent.ConcurrentHashMap
 
@@ -19,6 +11,7 @@ import java.util.concurrent.ConcurrentHashMap
 data class PersistentCurrentLesson(
         val lessonId: LessonIdentifier,
         val classRegistry: ClassRegistry,
+        val lessonTopic: LessonTopic? = null,
         val attendance: Attendance = IncompleteAttendanceList()
 )
 

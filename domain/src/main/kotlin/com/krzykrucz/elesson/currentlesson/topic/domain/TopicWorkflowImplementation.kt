@@ -1,22 +1,20 @@
-package com.krzykrucz.elesson.currentlesson.domain.topic.domain
+package com.krzykrucz.elesson.currentlesson.topic.domain
+
 
 import arrow.core.getOrElse
-import com.krzykrucz.elesson.currentlesson.domain.NaturalNumber
-import com.krzykrucz.elesson.currentlesson.domain.startlesson.LessonIdentifier
+import arrow.core.maybe
+import com.krzykrucz.elesson.currentlesson.shared.NaturalNumber
 
-fun chooseTopic(): ChooseTopic = { topicTitle, finishedLessonsCount, checkedAttendance ->
-    val attendance = checkedAttendance.attendance
-    InProgressLesson(
-            LessonIdentifier(
-                    date = attendance.date,
-                    lessonHourNumber = attendance.lessonHourNumber,
-                    className = attendance.className
-            ),
-            LessonTopic(LessonOrdinalNumber(calculateLessonOrdinalNumber(finishedLessonsCount)), topicTitle, attendance.date),
-            checkedAttendance
-    )
+fun chooseTopic(): ChooseTopic = { isAttendanceChecked, topicTitle, finishedLessonsCount, date ->
+    isAttendanceChecked.maybe {
+        NaturalNumber.of(finishedLessonsCount.count.number)
+            .map { it + NaturalNumber.ONE }
+            .getOrElse { NaturalNumber.ONE }
+            .let { LessonOrdinalNumber(it) }
+            .let { lessonOrdinalNumber ->
+                InProgressLesson(
+                    LessonTopic(lessonOrdinalNumber, topicTitle, date)
+                )
+            }
+    }.toEither { ChooseTopicError.AttendanceNotChecked() }
 }
-
-private fun calculateLessonOrdinalNumber(finishedLessonsCount: FinishedLessonsCount) =
-        NaturalNumber.of(finishedLessonsCount.count.number + NaturalNumber.ONE.number)
-                .getOrElse { NaturalNumber.ONE }

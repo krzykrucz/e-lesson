@@ -1,15 +1,15 @@
-package com.krzykrucz.elesson.currentlesson.topic.adapters.persistence
+package com.krzykrucz.elesson.currentlesson.topic.usecase.persistence
 
 import arrow.core.getOrElse
 import arrow.core.toOption
 import arrow.fx.IO
 import com.krzykrucz.elesson.currentlesson.attendance.domain.CheckedAttendanceList
-import com.krzykrucz.elesson.currentlesson.topic.domain.CountFinishedLessons
-import com.krzykrucz.elesson.currentlesson.topic.domain.PersistInProgressLesson
 import com.krzykrucz.elesson.currentlesson.monolith.Database
 import com.krzykrucz.elesson.currentlesson.shared.NaturalNumber
 import com.krzykrucz.elesson.currentlesson.topic.domain.CheckIfAttendanceIsChecked
+import com.krzykrucz.elesson.currentlesson.topic.domain.CountFinishedLessons
 import com.krzykrucz.elesson.currentlesson.topic.domain.FinishedLessonsCount
+import com.krzykrucz.elesson.currentlesson.topic.domain.PersistInProgressLesson
 
 
 fun fetchFinishedLessonsCount(): CountFinishedLessons = {

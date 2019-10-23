@@ -17,6 +17,7 @@
         <kotlin.version>1.3.50</kotlin.version>
         <spring-boot.version>2.1.4.RELEASE</spring-boot.version>
         <kotlinx-coroutines.version>1.3.2</kotlinx-coroutines.version>
+        <archunit.version>0.11.0</archunit.version>
     </properties>
 
     <dependencyManagement>
@@ -86,7 +87,7 @@
             <artifactId>spring-retry</artifactId>
         </dependency>
 
-        <!-- TEST TODO-->
+        <!-- TEST -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
@@ -108,6 +109,12 @@
             <groupId>org.spockframework</groupId>
             <artifactId>spock-spring</artifactId>
             <version>1.3-groovy-2.4</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.tngtech.archunit</groupId>
+            <artifactId>archunit-junit4</artifactId>
+            <version>${archunit.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -232,6 +239,18 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.18.1</version>
+                <configuration>
+                    <!-- Includes both Java and Groovy tests -->
+                    <includes>
+                        <include>**/*Test.java</include>
+                        <include>**/*Spec.java</include>
+                    </includes>
+                </configuration>
             </plugin>
         </plugins>
     </build>

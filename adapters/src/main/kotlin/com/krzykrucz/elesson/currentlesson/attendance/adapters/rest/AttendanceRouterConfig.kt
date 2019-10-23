@@ -1,0 +1,28 @@
+package com.krzykrucz.elesson.currentlesson.attendance.adapters.rest
+
+import com.krzykrucz.elesson.currentlesson.attendance.domain.FetchCheckedAttendance
+import com.krzykrucz.elesson.currentlesson.attendance.domain.FetchNotCompletedAttendanceAndRegistry
+import com.krzykrucz.elesson.currentlesson.attendance.domain.PersistAttendance
+import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Configuration
+import org.springframework.http.MediaType
+import org.springframework.web.reactive.function.server.router
+
+// TODO divide this config to 3 different adapters
+@Configuration
+class AttendanceRouterConfig {
+
+    @Bean
+    fun attendanceRouter(
+            persistAttendance: PersistAttendance,
+            fetchNotCompletedAttendance: FetchNotCompletedAttendanceAndRegistry,
+            fetchCheckedAttendance: FetchCheckedAttendance
+    ) = router {
+        (path("/attendance") and accept(MediaType.APPLICATION_JSON)).nest {
+            POST("/absent", handleNoteAbsentRequest(persistAttendance, fetchNotCompletedAttendance))
+            POST("/present", handleNotePresentRequest(persistAttendance, fetchNotCompletedAttendance))
+            POST("/late", handleNoteLateRequest(persistAttendance, fetchCheckedAttendance))
+            GET("", handleGetAttendanceRequest())
+        }
+    }
+}

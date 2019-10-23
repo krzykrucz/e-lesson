@@ -1,7 +1,9 @@
 package com.krzykrucz.elesson.currentlesson.startlesson
 
 import com.krzykrucz.elesson.currentlesson.AcceptanceSpec
-import com.krzykrucz.elesson.currentlesson.infrastructure.Database
+import com.krzykrucz.elesson.currentlesson.monolith.Database
+import com.krzykrucz.elesson.currentlesson.startlesson.adapters.rest.ClassRegistryResponse
+import com.krzykrucz.elesson.currentlesson.startlesson.adapters.rest.StartLessonRequest
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpMethod
 
@@ -14,7 +16,7 @@ class StartLessonAcceptanceSpec extends AcceptanceSpec {
     def "should start lesson"() {
         when: 'Dark Arts classes started by Severus Snape'
         def lessonIdAndStudents = rest.exchange(
-                serverUrl + "/startlesson",
+                "/startlesson",
                 HttpMethod.POST,
                 new HttpEntity<>(new StartLessonRequest('Severus', 'Snape')),
                 ClassRegistryResponse
@@ -27,7 +29,7 @@ class StartLessonAcceptanceSpec extends AcceptanceSpec {
         lessonIdAndStudents.students*.name == ['Harry Potter', 'Hermione Granger']
 
         and:
-        Database.STARTED_LESSON_DATABASE.containsKey(lessonIdAndStudents.lessonId)
+        Database.LESSON_DATABASE.containsKey(lessonIdAndStudents.lessonId)
     }
 
 }

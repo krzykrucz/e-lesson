@@ -34,5 +34,9 @@ data class StudentSubjectUnpreparednessInASemester private constructor(
 ) {
     companion object {
         fun createEmpty(student: StudentInSemester) = StudentSubjectUnpreparednessInASemester(student, WholeNumber.ZERO)
+        fun create(number: Int, student: StudentInSemester): Option<StudentSubjectUnpreparednessInASemester> =
+                WholeNumber.of(number)
+                        ?.let { StudentSubjectUnpreparednessInASemester(student, it) }
+                        .let { Option.fromNullable(it) }
     }
 }

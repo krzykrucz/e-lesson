@@ -10,15 +10,19 @@ import com.krzykrucz.elesson.currentlesson.shared.AsyncOutput
 import com.krzykrucz.elesson.currentlesson.shared.ClassName
 import com.krzykrucz.elesson.currentlesson.shared.CurrentLesson
 import com.krzykrucz.elesson.currentlesson.shared.FirstName
+import com.krzykrucz.elesson.currentlesson.shared.LessonIdentifier
 import com.krzykrucz.elesson.currentlesson.shared.Output
 import com.krzykrucz.elesson.currentlesson.shared.SecondName
+import java.time.Instant
+import java.time.LocalDateTime
+import java.time.LocalTime
 
 data class UnpreparedStudent(
         val firstName: FirstName,
         val secondName: SecondName
 )
 
-data class StudentsUnpreparedForLesson(val students: List<UnpreparedStudent>)
+data class StudentsUnpreparedForLesson(val students: List<UnpreparedStudent> = emptyList())
 
 sealed class UnpreparednessError {
     object AlreadyRaised : UnpreparednessError()
@@ -45,6 +49,7 @@ typealias NoteStudentUnpreparedInTheRegister = (UnpreparedStudent, StudentsUnpre
 
 typealias WriteUnpreparednessInTheRegister = (StudentSubjectUnpreparednessInASemester) -> StudentSubjectUnpreparednessInASemester
 
+typealias CreateEvent = (LessonIdentifier, StudentsUnpreparedForLesson) -> StudentMarkedUnprepared
 
 //pipeline
 // TODO validate
@@ -53,4 +58,11 @@ data class StudentReportingUnpreparedness(
         val secondName: SecondName
 )
 
-typealias ReportUnpreparedness = (StudentReportingUnpreparedness, CurrentLesson) -> AsyncOutput<StudentsUnpreparedForLesson, UnpreparednessError>
+//event
+data class StudentMarkedUnprepared(
+        val lessonId: LessonIdentifier,
+        val happenedAt: LocalDateTime = LocalDateTime.now(),
+        val editedUnpreparedStudentsList: StudentsUnpreparedForLesson
+)
+
+typealias ReportUnpreparedness = (StudentReportingUnpreparedness, CurrentLesson) -> AsyncOutput<StudentMarkedUnprepared, UnpreparednessError>

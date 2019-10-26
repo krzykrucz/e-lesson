@@ -46,7 +46,7 @@ fun checkStudentIsPresent(
 
 //workflows
 
-fun reportUnprepared(
+fun markStudentUnprepared(
         checkNumberOfTimesStudentWasUnpreparedInSemester: CheckNumberOfTimesStudentWasUnpreparedInSemester,
         hasStudentUsedAllUnpreparednesses: HasStudentUsedAllUnpreparednesses
 ): MarkStudentUnprepared = { presentStudent, className ->
@@ -74,11 +74,19 @@ val writeUnpreparednessInTheRegister: WriteUnpreparednessInTheRegister = { stude
 fun PresentStudent.toStudentInSemester(className: ClassName) =
         StudentInSemester(className, this.firstName, this.secondName)
 
+val createEvent: CreateEvent = { lessonIdentifier, studentsUnpreparedForLesson ->
+    StudentMarkedUnprepared(
+            lessonId = lessonIdentifier,
+            editedUnpreparedStudentsList = studentsUnpreparedForLesson
+    )
+}
+
 //pipeline
 fun reportUnpreparedness(
         markStudentUnprepared: MarkStudentUnprepared,
         noteStudentUnpreparedInTheRegister: NoteStudentUnpreparedInTheRegister,
-        checkStudentIsPresent: CheckStudentIsPresent
+        checkStudentIsPresent: CheckStudentIsPresent,
+        createEvent: CreateEvent
 ): ReportUnpreparedness = { studentReportingUnpreparedness, lesson ->
 
     when (lesson) {
@@ -87,6 +95,7 @@ fun reportUnpreparedness(
                     .let(AsyncOutputFactory::just)
                     .flatMapAsyncSuccess { markStudentUnprepared(it, lesson.identifier.className) }
                     .flatMapSuccess { noteStudentUnpreparedInTheRegister(it, lesson.unpreparedStudents) }
+                    .mapSuccess { createEvent(lesson.identifier, it) }
                     .mapError { UnpreparednessError.Unknown }
         else -> AsyncFactory.justError(UnpreparednessError.TooLateToRaiseUnpreparedness)
     }

@@ -1,5 +1,6 @@
 package com.krzykrucz.elesson.currentlesson
 
+import com.krzykrucz.elesson.currentlesson.monolith.Database
 import com.krzykrucz.elesson.currentlesson.shared.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
@@ -10,6 +11,10 @@ import java.time.LocalDate
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class AcceptanceSpec extends Specification {
+
+    def setup() {
+        Database.LESSON_DATABASE.clear()
+    }
 
     @Autowired
     protected TestRestTemplate rest

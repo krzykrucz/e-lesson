@@ -1,30 +1,13 @@
 package com.krzykrucz.elesson.currentlesson.attendance.adapters.rest
 
-import arrow.core.Either
-import arrow.core.Option
-import arrow.core.Tuple2
-import arrow.core.Tuple4
-import arrow.core.getOrElse
-import arrow.core.toOption
+import arrow.core.*
 import arrow.data.OptionT
 import arrow.effects.ForIO
 import arrow.effects.IO
 import arrow.effects.extensions.io.functor.functor
 import arrow.effects.fix
-import arrow.effects.typeclasses.Duration
-import com.krzykrucz.elesson.currentlesson.attendance.domain.AttendanceError
-import com.krzykrucz.elesson.currentlesson.attendance.domain.FetchCheckedAttendance
-import com.krzykrucz.elesson.currentlesson.attendance.domain.FetchNotCompletedAttendanceAndRegistry
-import com.krzykrucz.elesson.currentlesson.attendance.domain.PersistAttendance
-import com.krzykrucz.elesson.currentlesson.attendance.domain.addAbsentStudent
-import com.krzykrucz.elesson.currentlesson.attendance.domain.addPresentStudent
-import com.krzykrucz.elesson.currentlesson.attendance.domain.completeList
-import com.krzykrucz.elesson.currentlesson.attendance.domain.getLessonStartTime
-import com.krzykrucz.elesson.currentlesson.attendance.domain.isInRegistry
-import com.krzykrucz.elesson.currentlesson.attendance.domain.isNotTooLate
-import com.krzykrucz.elesson.currentlesson.attendance.domain.noteAbsence
-import com.krzykrucz.elesson.currentlesson.attendance.domain.noteLate
-import com.krzykrucz.elesson.currentlesson.attendance.domain.notePresence
+import com.krzykrucz.elesson.currentlesson.attendance.domain.*
+import com.krzykrucz.elesson.currentlesson.infrastructure.run
 import com.krzykrucz.elesson.currentlesson.monolith.Database
 import com.krzykrucz.elesson.currentlesson.monolith.Database.Companion.lessonIdOf
 import com.krzykrucz.elesson.currentlesson.monolith.PersistentCurrentLesson
@@ -33,7 +16,6 @@ import org.springframework.web.reactive.function.server.ServerRequest
 import org.springframework.web.reactive.function.server.ServerResponse
 import reactor.core.publisher.Mono
 import java.time.LocalDateTime
-import java.util.concurrent.TimeUnit
 
 
 internal fun handleNoteAbsentRequest(
@@ -172,7 +154,3 @@ private fun handleNotingResult(result: Either<AttendanceError, IO<AttendanceResp
 private fun OptionT<ForIO, Mono<ServerResponse>>.run(): Mono<ServerResponse> =
         this.getOrElse(IO.functor()) { ServerResponse.noContent().build() }
                 .fix().run()
-
-private fun IO<Mono<ServerResponse>>.run(): Mono<ServerResponse> =
-        this.unsafeRunTimed(Duration(3, TimeUnit.SECONDS))
-                .getOrElse { ServerResponse.badRequest().build() }

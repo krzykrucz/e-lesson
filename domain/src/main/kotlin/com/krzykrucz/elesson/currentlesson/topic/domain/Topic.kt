@@ -1,17 +1,14 @@
 package com.krzykrucz.elesson.currentlesson.topic.domain
 
 import arrow.core.Either
-import com.krzykrucz.elesson.currentlesson.shared.NaturalNumber
-import com.krzykrucz.elesson.currentlesson.shared.NonEmptyText
+import com.krzykrucz.elesson.currentlesson.shared.LessonTopic
+import com.krzykrucz.elesson.currentlesson.shared.TopicTitle
 import java.time.LocalDate
 
 
-data class LessonOrdinalNumber(val number: NaturalNumber)
-data class FinishedLessonsCount(val count: NaturalNumber)
+data class FinishedLessonsCount(val count: Int)
 typealias IsAttendanceChecked = Boolean
 
-data class TopicTitle(val title: NonEmptyText)
-data class LessonTopic(val lessonOrdinalNumber: LessonOrdinalNumber, val topicTitle: TopicTitle, val date: LocalDate)
 data class InProgressLesson(val lessonTopic: LessonTopic)
 
 sealed class ChooseTopicError {

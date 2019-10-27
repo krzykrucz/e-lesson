@@ -1,11 +1,6 @@
 package com.krzykrucz.elesson.currentlesson.startlesson.domain
 
-import com.krzykrucz.elesson.currentlesson.shared.ClassRegistry
-import com.krzykrucz.elesson.currentlesson.shared.LessonIdentifier
-import com.krzykrucz.elesson.currentlesson.shared.failIf
-import com.krzykrucz.elesson.currentlesson.shared.flatMapSuccess
-import com.krzykrucz.elesson.currentlesson.shared.mapError
-import com.krzykrucz.elesson.currentlesson.shared.mapSuccess
+import com.krzykrucz.elesson.currentlesson.shared.*
 import com.krzykrucz.elesson.currentlesson.startlesson.domain.StartLessonError.ClassRegistryUnavailable
 import com.krzykrucz.elesson.currentlesson.startlesson.domain.StartLessonError.NotScheduledLesson
 
@@ -14,7 +9,7 @@ private fun ScheduledLesson.lessonIdentifier() =
         LessonIdentifier(this.scheduledTime.toLocalDate(), this.lessonHourNumber, this.className)
 
 private fun ScheduledLesson.toCurrentLessonWithClass(classRegistry: ClassRegistry) =
-        StartedLesson(this.lessonIdentifier(), classRegistry)
+        StartedLesson(this.lessonIdentifier(), classRegistry, this.subject)
 
 
 fun startLesson(checkScheduledLesson: CheckScheduledLesson,

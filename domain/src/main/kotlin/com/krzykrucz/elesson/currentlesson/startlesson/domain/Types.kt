@@ -1,10 +1,6 @@
 package com.krzykrucz.elesson.currentlesson.startlesson.domain
 
-import com.krzykrucz.elesson.currentlesson.shared.ClassName
-import com.krzykrucz.elesson.currentlesson.shared.ClassRegistry
-import com.krzykrucz.elesson.currentlesson.shared.LessonHourNumber
-import com.krzykrucz.elesson.currentlesson.shared.LessonIdentifier
-import com.krzykrucz.elesson.currentlesson.shared.Teacher
+import com.krzykrucz.elesson.currentlesson.shared.*
 import java.time.LocalDateTime
 
 typealias ScheduledLessonStartTime = LocalDateTime
@@ -12,10 +8,12 @@ typealias ScheduledLessonStartTime = LocalDateTime
 data class ScheduledLesson(val scheduledTime: ScheduledLessonStartTime,
                            val lessonHourNumber: LessonHourNumber,
                            val teacher: Teacher,
-                           val className: ClassName)
+                           val className: ClassName,
+                           val subject: LessonSubject)
 
 data class StartedLesson(val id: LessonIdentifier,
-                         val clazz: ClassRegistry)
+                         val clazz: ClassRegistry,
+                         val subject: LessonSubject)
 
 sealed class StartLessonError {
     data class NotScheduledLesson(val error: String = "Cannot start a lesson outside of a lesson hour for which it's scheduled") : StartLessonError()

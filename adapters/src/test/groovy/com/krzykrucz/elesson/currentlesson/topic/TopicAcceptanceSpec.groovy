@@ -40,8 +40,8 @@ class TopicAcceptanceSpec extends AcceptanceSpec {
 
         then: 'In progress lesson is persisted to database'
         inProgressLesson.statusCode == HttpStatus.OK
-        Database.LESSON_DATABASE.get(lessonId).lessonTopic ==
-                new LessonTopic(new LessonOrdinalNumber(new NaturalNumber(5)), title, lessonId.date)
+        Database.LESSON_DATABASE.get(lessonId).lessonTopic.orNull() ==
+                new LessonTopic(new LessonOrdinalNumber(new NaturalNumber(1)), title, lessonId.date)
 
     }
 }

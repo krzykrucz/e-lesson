@@ -2,6 +2,7 @@ package com.krzykrucz.elesson.currentlesson.preparedness.readmodel
 
 import arrow.core.Option
 import arrow.core.getOrElse
+import com.krzykrucz.elesson.currentlesson.preparedness.domain.StudentMarkedUnprepared
 import com.krzykrucz.elesson.currentlesson.shared.AsyncFactory
 import com.krzykrucz.elesson.currentlesson.shared.AsyncOutput
 import com.krzykrucz.elesson.currentlesson.shared.ClassName
@@ -22,8 +23,17 @@ object StudentInSemesterReadModel {
                     .getOrElse { StudentSubjectUnpreparednessInASemester.createEmpty(student) }
                     .let(AsyncFactory.Companion::justSuccess)
 
-    fun apply(unpreparednessInASemester: StudentSubjectUnpreparednessInASemester) {
-        READ_MODEL[unpreparednessInASemester.student] = unpreparednessInASemester
+    fun apply(event: StudentMarkedUnprepared) {
+        val student = StudentInSemester(
+                event.lessonId.className,
+                event.unpreparedStudent.firstName,
+                event.unpreparedStudent.secondName
+        )
+        READ_MODEL.compute(student) { student: StudentInSemester, unpreparedness: StudentSubjectUnpreparednessInASemester? ->
+            Option.fromNullable(unpreparedness)
+                    .getOrElse { StudentSubjectUnpreparednessInASemester.createEmpty(student) }
+                    .let { it.copy(count = it.count.inc()) }
+        }
     }
 }
 

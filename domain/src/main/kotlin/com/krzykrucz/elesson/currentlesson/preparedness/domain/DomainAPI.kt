@@ -36,16 +36,16 @@ typealias CheckNumberOfTimesStudentWasUnpreparedInSemester = (PresentStudent, Cl
 
 typealias HasStudentUsedAllUnpreparednesses = (StudentSubjectUnpreparednessInASemester) -> Boolean
 
-typealias HasStudentAlreadyRaisedUnprepared = (StudentsUnpreparedForLesson, UnpreparedStudent) -> Boolean
+typealias HasStudentAlreadyRaisedUnprepared = (StudentsUnpreparedForLesson, PresentStudent) -> Boolean
 
 typealias CheckStudentIsPresent = (StudentReportingUnpreparedness, CheckedAttendanceList) -> Output<PresentStudent, StudentNotPresent>
 
 typealias AreStudentsEqual = (PresentStudent, StudentReportingUnpreparedness) -> Boolean
 
 //workflows
-typealias MarkStudentUnprepared = (PresentStudent, ClassName) -> AsyncOutput<UnpreparedStudent, UnpreparednessError>
+typealias CheckStudentCanReportUnprepared = (PresentStudent, ClassName) -> AsyncOutput<PresentStudent, UnpreparednessError>
 
-typealias NoteStudentUnpreparedInTheRegister = (UnpreparedStudent, StudentsUnpreparedForLesson) -> Output<StudentsUnpreparedForLesson, AlreadyRaised>
+typealias NoteStudentUnpreparedForLesson = (PresentStudent, StudentsUnpreparedForLesson) -> Output<StudentsUnpreparedForLesson, AlreadyRaised>
 
 typealias WriteUnpreparednessInTheRegister = (StudentSubjectUnpreparednessInASemester) -> StudentSubjectUnpreparednessInASemester
 
@@ -62,7 +62,8 @@ data class StudentReportingUnpreparedness(
 data class StudentMarkedUnprepared(
         val lessonId: LessonIdentifier,
         val happenedAt: LocalDateTime = LocalDateTime.now(),
-        val editedUnpreparedStudentsList: StudentsUnpreparedForLesson
+        val unpreparedStudent: UnpreparedStudent,
+        val studentsUnpreparedForLesson: StudentsUnpreparedForLesson
 )
 
 typealias ReportUnpreparedness = (StudentReportingUnpreparedness, CurrentLesson) -> AsyncOutput<StudentMarkedUnprepared, UnpreparednessError>

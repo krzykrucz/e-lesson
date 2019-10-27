@@ -20,11 +20,11 @@ import com.krzykrucz.elesson.currentlesson.preparedness.domain.hasStudentUsedAll
 import com.krzykrucz.elesson.currentlesson.preparedness.domain.markStudentUnprepared
 import com.krzykrucz.elesson.currentlesson.preparedness.domain.noteStudentUnprepared
 import com.krzykrucz.elesson.currentlesson.preparedness.domain.reportUnpreparedness
-import com.krzykrucz.elesson.currentlesson.preparedness.readmodel.StudentInSemester
-import com.krzykrucz.elesson.currentlesson.preparedness.readmodel.StudentSubjectUnpreparednessInASemester
+import com.krzykrucz.elesson.currentlesson.preparedness.readmodel.StudentInSemesterReadModel
 import com.krzykrucz.elesson.currentlesson.shared.ClassName
 import com.krzykrucz.elesson.currentlesson.shared.CurrentLesson
 import com.krzykrucz.elesson.currentlesson.shared.FirstName
+import com.krzykrucz.elesson.currentlesson.shared.InProgressLesson
 import com.krzykrucz.elesson.currentlesson.shared.LessonAfterAttendance
 import com.krzykrucz.elesson.currentlesson.shared.LessonHourNumber
 import com.krzykrucz.elesson.currentlesson.shared.LessonIdentifier
@@ -33,8 +33,12 @@ import com.krzykrucz.elesson.currentlesson.shared.NonEmptyText
 import com.krzykrucz.elesson.currentlesson.shared.NumberInRegister
 import com.krzykrucz.elesson.currentlesson.shared.Output
 import com.krzykrucz.elesson.currentlesson.shared.SecondName
+import com.krzykrucz.elesson.currentlesson.topic.domain.LessonOrdinalNumber
+import com.krzykrucz.elesson.currentlesson.topic.domain.LessonTopic
+import com.krzykrucz.elesson.currentlesson.topic.domain.TopicTitle
 import io.cucumber.java8.En
 import java.time.LocalDate
+import java.time.LocalDateTime
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
@@ -50,7 +54,6 @@ class StudentUnpreparedSteps : En {
     lateinit var lessonIdentifier: LessonIdentifier
     lateinit var currentLesson: CurrentLesson
     lateinit var studentsUnpreparedForLesson: StudentsUnpreparedForLesson
-    lateinit var studentSubjectUnpreparednessInASemester: StudentSubjectUnpreparednessInASemester
 
     lateinit var result: Output<StudentMarkedUnprepared, UnpreparednessError>
 
@@ -74,12 +77,26 @@ class StudentUnpreparedSteps : En {
             currentLesson = LessonAfterAttendance(lessonIdentifier, attendance, studentsUnpreparedForLesson)
         }
         Given("Lesson after topic assigned") {
-            TODO()
+            val anyTopic = LessonTopic(
+                    LessonOrdinalNumber(NaturalNumber.ONE),
+                    TopicTitle(NonEmptyText.of("Wingardium Leviosa charm")!!),
+                    LocalDate.now()
+            )
+            currentLesson = InProgressLesson(lessonIdentifier, attendance, studentsUnpreparedForLesson, anyTopic)
         }
         Given("{word} {word} reported unprepared {int} times in a semester") { firstName: String, secondName: String, number: Int ->
-            val studentInSemester = StudentInSemester(lessonIdentifier.className, FirstName(NonEmptyText.of(firstName)!!), SecondName(NonEmptyText.of(secondName)!!))
+            val unpreparedStudent = UnpreparedStudent(FirstName(NonEmptyText.of(firstName)!!), SecondName(NonEmptyText.of(secondName)!!))
 
-            studentSubjectUnpreparednessInASemester = StudentSubjectUnpreparednessInASemester.create(number, studentInSemester).orNull()!!
+            (1..number).forEach { _ ->
+                StudentInSemesterReadModel.apply(
+                        StudentMarkedUnprepared(
+                                lessonIdentifier,
+                                LocalDateTime.now(),
+                                unpreparedStudent,
+                                StudentsUnpreparedForLesson(listOf(unpreparedStudent))
+                        )
+                )
+            }
         }
         Given("Empty list of unprepared students") {
             studentsUnpreparedForLesson = StudentsUnpreparedForLesson()
@@ -105,8 +122,7 @@ class StudentUnpreparedSteps : En {
 
             assertTrue(result.isRight())
             assertEquals(result.orNull()?.lessonId, lessonIdentifier)
-            assertEquals(result.orNull()?.editedUnpreparedStudentsList?.students?.size, 1)
-            assertEquals(result.orNull()?.editedUnpreparedStudentsList?.students?.get(0), expectedStudent)
+            assertEquals(result.orNull()?.unpreparedStudent, expectedStudent)
         }
 
         Then("{word} {word} should not be noted unprepared for lesson") { firstName: String, secondName: String ->

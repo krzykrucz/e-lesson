@@ -5,6 +5,7 @@ import arrow.core.Option
 import arrow.core.Some
 import com.krzykrucz.elesson.currentlesson.attendance.domain.CheckedAttendanceList
 import com.krzykrucz.elesson.currentlesson.preparedness.domain.StudentsUnpreparedForLesson
+import com.krzykrucz.elesson.currentlesson.topic.domain.LessonTopic
 import java.time.LocalDate
 import java.time.LocalTime
 
@@ -59,10 +60,15 @@ data class LessonHourNumber private constructor(val number: NaturalNumber) {
 data class Teacher(val firstName: FirstName,
                    val secondName: SecondName)
 
-// TODO remove architecture test for domain dependencies
 sealed class CurrentLesson // TODO add the rest of lessons
 data class LessonAfterAttendance(
         val identifier: LessonIdentifier,
         val attendance: CheckedAttendanceList,
         val unpreparedStudents: StudentsUnpreparedForLesson
+) : CurrentLesson()
+data class InProgressLesson(
+        val lessonIdentifier: LessonIdentifier,
+        val attendance: CheckedAttendanceList,
+        val unpreparedStudents: StudentsUnpreparedForLesson,
+        val lessonTopic: LessonTopic
 ) : CurrentLesson()

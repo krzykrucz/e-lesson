@@ -1,41 +1,12 @@
 package com.krzykrucz.elesson.currentlesson.attendance
 
 import arrow.core.Either
-import com.krzykrucz.elesson.currentlesson.attendance.domain.AbsentStudent
-import com.krzykrucz.elesson.currentlesson.attendance.domain.Attendance
-import com.krzykrucz.elesson.currentlesson.attendance.domain.AttendanceError
-import com.krzykrucz.elesson.currentlesson.attendance.domain.CheckedAttendanceList
-import com.krzykrucz.elesson.currentlesson.attendance.domain.CompleteListIfAllStudentsChecked
-import com.krzykrucz.elesson.currentlesson.attendance.domain.IncompleteAttendanceList
-import com.krzykrucz.elesson.currentlesson.attendance.domain.IsInRegistry
-import com.krzykrucz.elesson.currentlesson.attendance.domain.NoteAbsence
-import com.krzykrucz.elesson.currentlesson.attendance.domain.NoteLate
-import com.krzykrucz.elesson.currentlesson.attendance.domain.NotePresence
-import com.krzykrucz.elesson.currentlesson.attendance.domain.PresentStudent
-import com.krzykrucz.elesson.currentlesson.attendance.domain.Student
-import com.krzykrucz.elesson.currentlesson.attendance.domain.UncheckedStudent
-import com.krzykrucz.elesson.currentlesson.attendance.domain.addAbsentStudent
-import com.krzykrucz.elesson.currentlesson.attendance.domain.addPresentStudent
-import com.krzykrucz.elesson.currentlesson.attendance.domain.completeList
-import com.krzykrucz.elesson.currentlesson.attendance.domain.getLessonStartTime
-import com.krzykrucz.elesson.currentlesson.attendance.domain.isInRegistry
-import com.krzykrucz.elesson.currentlesson.attendance.domain.isNotTooLate
-import com.krzykrucz.elesson.currentlesson.attendance.domain.noteAbsence
-import com.krzykrucz.elesson.currentlesson.attendance.domain.noteLate
-import com.krzykrucz.elesson.currentlesson.attendance.domain.notePresence
+import com.krzykrucz.elesson.currentlesson.attendance.domain.*
 import com.krzykrucz.elesson.currentlesson.getError
 import com.krzykrucz.elesson.currentlesson.getSuccess
 import com.krzykrucz.elesson.currentlesson.newClassName
 import com.krzykrucz.elesson.currentlesson.newStudent
-import com.krzykrucz.elesson.currentlesson.shared.ClassRegistry
-import com.krzykrucz.elesson.currentlesson.shared.FirstName
-import com.krzykrucz.elesson.currentlesson.shared.LessonHourNumber
-import com.krzykrucz.elesson.currentlesson.shared.NaturalNumber
-import com.krzykrucz.elesson.currentlesson.shared.NonEmptyText
-import com.krzykrucz.elesson.currentlesson.shared.NumberInRegister
-import com.krzykrucz.elesson.currentlesson.shared.SecondName
-import com.krzykrucz.elesson.currentlesson.shared.isError
-import com.krzykrucz.elesson.currentlesson.shared.isSuccess
+import com.krzykrucz.elesson.currentlesson.shared.*
 import io.cucumber.java8.En
 import org.assertj.core.api.Assertions.assertThat
 import java.time.LocalDateTime
@@ -47,6 +18,7 @@ class CheckAttendanceSteps : En {
     lateinit var currentAttendanceOrError: Either<AttendanceError, Attendance>
     lateinit var currentCheckedAttendance: CheckedAttendanceList
     lateinit var checkedAttendance: CheckedAttendanceList
+    lateinit var currentTime: LocalDateTime
 
     val completeListIfAllStudentsChecked: CompleteListIfAllStudentsChecked = completeList()
     val isInRegistry: IsInRegistry = isInRegistry()
@@ -66,6 +38,13 @@ class CheckAttendanceSteps : En {
                     numberInRegister = NaturalNumber.of(1).map(::NumberInRegister).orNull()!!
             )
         }
+        Given("Student that is not in registry") {
+            student = UncheckedStudent(
+                firstName = FirstName(NonEmptyText("Michael")),
+                secondName = SecondName(NonEmptyText("Scott")),
+                numberInRegister = NaturalNumber.of(1).map(::NumberInRegister).orNull()!!
+            )
+        }
         Given("Student is absent") {
             student = AbsentStudent(
                     firstName = FirstName(NonEmptyText("Salazar")),
@@ -76,6 +55,16 @@ class CheckAttendanceSteps : En {
         And("Attendance is not completed") {
             incompleteAttendance = IncompleteAttendanceList()
         }
+        And("Attendance has only one unchecked student") {
+            incompleteAttendance = IncompleteAttendanceList(
+                presentStudents = listOf(
+                    PresentStudent(FirstName(NonEmptyText("Ron")), SecondName(NonEmptyText("Weasley")),
+                    NumberInRegister(NaturalNumber.THREE)),
+                    PresentStudent(FirstName(NonEmptyText("Harry")), SecondName(NonEmptyText("Potter")),
+                        NumberInRegister(NaturalNumber.TWO))
+                )
+            )
+        }
         And("Checked attendance") {
             checkedAttendance = CheckedAttendanceList(
                     absentStudents = listOf(student as AbsentStudent),
@@ -84,18 +73,24 @@ class CheckAttendanceSteps : En {
         }
         And("Class registry of student") {
             classRegistry = ClassRegistry(
-                    students = listOf(newStudent("Tom", "Riddle", 1)),
+                    students = listOf(
+                        newStudent("Tom", "Riddle", 1),
+                        newStudent("Harry", "Potter", 2),
+                        newStudent("Ron", "Weasley", 3)
+                    ),
                     className = className
             )
         }
-
+        And("That the current time is {word}") { startTime: String ->
+            currentTime = LocalDateTime.parse(startTime)
+        }
         When("Noting Student is late") {
             val absentStudent = student as AbsentStudent
             currentCheckedAttendance = noteLate(
                     lessonHourNumber,
                     absentStudent,
                     checkedAttendance,
-                    LocalDateTime.now()
+                    currentTime
             )
         }
 

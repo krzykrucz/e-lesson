@@ -3,8 +3,6 @@ Feature: Check Attendance
     Given Student has unchecked attendance
     And Class registry of student
     And Attendance is not completed
-    And Not all students are checked
-    And Student is in registry
     When Noting Student Presence
     Then Attendance has another present student
 
@@ -12,44 +10,34 @@ Feature: Check Attendance
     Given Student has unchecked attendance
     And Class registry of student
     And Attendance is not completed
-    And Not all students are checked
-    And Student is in registry
     When Noting Student Absence
     Then Attendance has another absent student
 
   Scenario: Should return error when student is not in registry when noting presence
-    Given Student has unchecked attendance
+    Given Student that is not in registry
     And Class registry of student
     And Attendance is not completed
-    And Not all students are checked
-    And Student is not in registry
     When Noting Student Presence
     Then The result should be an error explaining that student is not in registry
 
   Scenario: Should return error when student is not in registry when noting absence
-    Given Student has unchecked attendance
+    Given Student that is not in registry
     And Class registry of student
     And Attendance is not completed
-    And Not all students are checked
-    And Student is not in registry
     When Noting Student Absence
     Then The result should be an error explaining that student is not in registry
 
   Scenario: Should complete attendance when noting presence of last student
     Given Student has unchecked attendance
     And Class registry of student
-    And Attendance is not completed
-    And All students are checked
-    And Student is in registry
+    And Attendance has only one unchecked student
     When Noting Student Presence
     Then Attendance is completed
 
   Scenario: Should complete attendance when noting absence of last student
     Given Student has unchecked attendance
     And Class registry of student
-    And Attendance is not completed
-    And All students are checked
-    And Student is in registry
+    And Attendance has only one unchecked student
     When Noting Student Absence
     Then Attendance is completed
 
@@ -57,7 +45,7 @@ Feature: Check Attendance
     Given Student is absent
     And Class registry of student
     And Checked attendance
-    And It is not too late
+    And That the current time is 2019-09-09T10:05
     When Noting Student is late
     Then Student is present
 
@@ -65,6 +53,6 @@ Feature: Check Attendance
     Given Student is absent
     And Class registry of student
     And Checked attendance
-    And It is too late
+    And That the current time is 2019-09-09T10:18
     When Noting Student is late
     Then Student is still absent

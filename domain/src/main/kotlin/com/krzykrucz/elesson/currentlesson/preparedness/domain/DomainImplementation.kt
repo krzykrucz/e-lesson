@@ -3,8 +3,8 @@ package com.krzykrucz.elesson.currentlesson.preparedness.domain
 import arrow.core.extensions.list.foldable.find
 import arrow.core.maybe
 import com.krzykrucz.elesson.currentlesson.attendance.domain.PresentStudent
+import com.krzykrucz.elesson.currentlesson.preparedness.readmodel.GetStudentSubjectUnpreparednessInASemester
 import com.krzykrucz.elesson.currentlesson.preparedness.readmodel.StudentInSemester
-import com.krzykrucz.elesson.currentlesson.preparedness.readmodel.StudentInSemesterReadModel
 import com.krzykrucz.elesson.currentlesson.preparedness.readmodel.StudentSubjectUnpreparednessInASemester
 import com.krzykrucz.elesson.currentlesson.shared.AsyncFactory
 import com.krzykrucz.elesson.currentlesson.shared.AsyncOutputFactory
@@ -19,9 +19,11 @@ import com.krzykrucz.elesson.currentlesson.shared.mapSuccess
 
 //dependency
 
-val checkNumberOfTimesStudentWasUnpreparedInSemester: CheckNumberOfTimesStudentWasUnpreparedInSemester = { student, className ->
+fun checkNumberOfTimesStudentWasUnpreparedInSemester(
+        getStudentSubjectUnpreparednessInASemester: GetStudentSubjectUnpreparednessInASemester
+): CheckNumberOfTimesStudentWasUnpreparedInSemester = { student, className ->
     StudentInSemester(className, student.firstName, student.secondName)
-            .let { StudentInSemesterReadModel.getStudentSubjectUnpreparednessInASemester(it) }
+            .let(getStudentSubjectUnpreparednessInASemester)
 }
 
 val hasStudentAlreadyRaisedUnprepared: HasStudentAlreadyRaisedUnprepared = { studentsUnpreparedForLesson, presentStudent ->
@@ -66,10 +68,6 @@ fun noteStudentUnprepared(
             .map { studentsUnpreparedForLesson.students + it }
             .map(studentsUnpreparedForLesson::copy)
             .toEither { UnpreparednessError.AlreadyRaised }
-}
-
-val writeUnpreparednessInTheRegister: WriteUnpreparednessInTheRegister = { studentSubjectUnpreparednessInASemester ->
-    studentSubjectUnpreparednessInASemester.copy(count = studentSubjectUnpreparednessInASemester.count.inc())
 }
 
 

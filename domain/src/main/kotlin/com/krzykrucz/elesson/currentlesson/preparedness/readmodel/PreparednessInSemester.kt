@@ -1,41 +1,19 @@
 package com.krzykrucz.elesson.currentlesson.preparedness.readmodel
 
 import arrow.core.Option
-import arrow.core.getOrElse
 import com.krzykrucz.elesson.currentlesson.preparedness.domain.StudentMarkedUnprepared
-import com.krzykrucz.elesson.currentlesson.shared.AsyncFactory
 import com.krzykrucz.elesson.currentlesson.shared.AsyncOutput
 import com.krzykrucz.elesson.currentlesson.shared.ClassName
 import com.krzykrucz.elesson.currentlesson.shared.FirstName
 import com.krzykrucz.elesson.currentlesson.shared.SecondName
 import com.krzykrucz.elesson.currentlesson.shared.WholeNumber
-import java.util.concurrent.ConcurrentHashMap
 
-data class StudentInSemester(val className: ClassName, val firstName: FirstName, val secondName: SecondName)
 
-object StudentInSemesterReadModel {
+typealias WriteUnpreparednessInTheRegister = (StudentMarkedUnprepared, StudentSubjectUnpreparednessInASemester?) -> StudentSubjectUnpreparednessInASemester
 
-    private val READ_MODEL: MutableMap<StudentInSemester, StudentSubjectUnpreparednessInASemester> = ConcurrentHashMap()
+typealias GetStudentSubjectUnpreparednessInASemester = (StudentInSemester) -> AsyncOutput<StudentSubjectUnpreparednessInASemester, StudentInSemesterReadError>
 
-    fun getStudentSubjectUnpreparednessInASemester(student: StudentInSemester): AsyncOutput<StudentSubjectUnpreparednessInASemester, StudentInSemesterReadError> =
-            READ_MODEL[student]
-                    .let { Option.fromNullable(it) }
-                    .getOrElse { StudentSubjectUnpreparednessInASemester.createEmpty(student) }
-                    .let(AsyncFactory.Companion::justSuccess)
-
-    fun apply(event: StudentMarkedUnprepared) {
-        val student = StudentInSemester(
-                event.lessonId.className,
-                event.unpreparedStudent.firstName,
-                event.unpreparedStudent.secondName
-        )
-        READ_MODEL.compute(student) { student: StudentInSemester, unpreparedness: StudentSubjectUnpreparednessInASemester? ->
-            Option.fromNullable(unpreparedness)
-                    .getOrElse { StudentSubjectUnpreparednessInASemester.createEmpty(student) }
-                    .let { it.copy(count = it.count.inc()) }
-        }
-    }
-}
+data class StudentInSemester(val className: ClassName, val firstName: FirstName, val secondName: SecondName) // todo add subject
 
 typealias StudentInSemesterReadError = String
 

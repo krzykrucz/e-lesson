@@ -20,7 +20,9 @@ import com.krzykrucz.elesson.currentlesson.preparedness.domain.hasStudentUsedAll
 import com.krzykrucz.elesson.currentlesson.preparedness.domain.markStudentUnprepared
 import com.krzykrucz.elesson.currentlesson.preparedness.domain.noteStudentUnprepared
 import com.krzykrucz.elesson.currentlesson.preparedness.domain.reportUnpreparedness
-import com.krzykrucz.elesson.currentlesson.preparedness.readmodel.StudentInSemesterReadModel
+import com.krzykrucz.elesson.currentlesson.preparedness.readmodel.StudentInSemester
+import com.krzykrucz.elesson.currentlesson.preparedness.readmodel.StudentSubjectUnpreparednessInASemester
+import com.krzykrucz.elesson.currentlesson.shared.AsyncFactory
 import com.krzykrucz.elesson.currentlesson.shared.ClassName
 import com.krzykrucz.elesson.currentlesson.shared.CurrentLesson
 import com.krzykrucz.elesson.currentlesson.shared.FirstName
@@ -38,22 +40,26 @@ import com.krzykrucz.elesson.currentlesson.topic.domain.LessonTopic
 import com.krzykrucz.elesson.currentlesson.topic.domain.TopicTitle
 import io.cucumber.java8.En
 import java.time.LocalDate
-import java.time.LocalDateTime
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 class StudentUnpreparedSteps : En {
 
-    val reportUnpreparednessFacade: ReportUnpreparedness = reportUnpreparedness(
-            markStudentUnprepared(checkNumberOfTimesStudentWasUnpreparedInSemester, hasStudentUsedAllUnpreparednesses),
-            noteStudentUnprepared(hasStudentAlreadyRaisedUnprepared),
-            checkStudentIsPresent(areStudentsEqual),
-            createEvent
-    )
     lateinit var attendance: CheckedAttendanceList
     lateinit var lessonIdentifier: LessonIdentifier
     lateinit var currentLesson: CurrentLesson
     lateinit var studentsUnpreparedForLesson: StudentsUnpreparedForLesson
+    lateinit var studentSubjectUnpreparednessInASemester: StudentSubjectUnpreparednessInASemester
+
+    val reportUnpreparednessFacade: ReportUnpreparedness = reportUnpreparedness(
+            markStudentUnprepared(checkNumberOfTimesStudentWasUnpreparedInSemester {
+                studentSubjectUnpreparednessInASemester
+                        .let { AsyncFactory.justSuccess(it) }
+            }, hasStudentUsedAllUnpreparednesses),
+            noteStudentUnprepared(hasStudentAlreadyRaisedUnprepared),
+            checkStudentIsPresent(areStudentsEqual),
+            createEvent
+    )
 
     lateinit var result: Output<StudentMarkedUnprepared, UnpreparednessError>
 
@@ -85,18 +91,14 @@ class StudentUnpreparedSteps : En {
             currentLesson = InProgressLesson(lessonIdentifier, attendance, studentsUnpreparedForLesson, anyTopic)
         }
         Given("{word} {word} reported unprepared {int} times in a semester") { firstName: String, secondName: String, number: Int ->
-            val unpreparedStudent = UnpreparedStudent(FirstName(NonEmptyText.of(firstName)!!), SecondName(NonEmptyText.of(secondName)!!))
+            val student = StudentInSemester(
+                    lessonIdentifier.className,
+                    FirstName(NonEmptyText.of(firstName)!!),
+                    SecondName(NonEmptyText.of(secondName)!!)
+            )
 
-            (1..number).forEach { _ ->
-                StudentInSemesterReadModel.apply(
-                        StudentMarkedUnprepared(
-                                lessonIdentifier,
-                                LocalDateTime.now(),
-                                unpreparedStudent,
-                                StudentsUnpreparedForLesson(listOf(unpreparedStudent))
-                        )
-                )
-            }
+            studentSubjectUnpreparednessInASemester =
+                    StudentSubjectUnpreparednessInASemester.create(number, student).orNull()!!
         }
         Given("Empty list of unprepared students") {
             studentsUnpreparedForLesson = StudentsUnpreparedForLesson()

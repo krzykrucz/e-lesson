@@ -13,9 +13,7 @@ import com.krzykrucz.elesson.currentlesson.shared.FirstName
 import com.krzykrucz.elesson.currentlesson.shared.LessonIdentifier
 import com.krzykrucz.elesson.currentlesson.shared.Output
 import com.krzykrucz.elesson.currentlesson.shared.SecondName
-import java.time.Instant
 import java.time.LocalDateTime
-import java.time.LocalTime
 
 data class UnpreparedStudent(
         val firstName: FirstName,
@@ -47,12 +45,9 @@ typealias CheckStudentCanReportUnprepared = (PresentStudent, ClassName) -> Async
 
 typealias NoteStudentUnpreparedForLesson = (PresentStudent, StudentsUnpreparedForLesson) -> Output<StudentsUnpreparedForLesson, AlreadyRaised>
 
-typealias WriteUnpreparednessInTheRegister = (StudentSubjectUnpreparednessInASemester) -> StudentSubjectUnpreparednessInASemester
-
 typealias CreateEvent = (LessonIdentifier, StudentsUnpreparedForLesson) -> StudentMarkedUnprepared
 
 //pipeline
-// TODO validate
 data class StudentReportingUnpreparedness(
         val firstName: FirstName,
         val secondName: SecondName

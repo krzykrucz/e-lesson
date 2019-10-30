@@ -15,6 +15,7 @@ import com.krzykrucz.elesson.currentlesson.shared.Output
 import com.krzykrucz.elesson.currentlesson.shared.SecondName
 import java.time.LocalDateTime
 
+//types
 data class UnpreparedStudent(
         val firstName: FirstName,
         val secondName: SecondName
@@ -27,8 +28,13 @@ sealed class UnpreparednessError {
     object UnpreparedTooManyTimes : UnpreparednessError()
     object TooLateToRaiseUnpreparedness : UnpreparednessError()
     object StudentNotPresent : UnpreparednessError()
-    object Unknown : UnpreparednessError()
 }
+
+data class StudentReportingUnpreparedness(
+        val firstName: FirstName,
+        val secondName: SecondName
+)
+
 //dependency
 typealias CheckNumberOfTimesStudentWasUnpreparedInSemester = (PresentStudent, ClassName) -> AsyncOutput<StudentSubjectUnpreparednessInASemester, StudentInSemesterReadError>
 
@@ -47,12 +53,6 @@ typealias NoteStudentUnpreparedForLesson = (PresentStudent, StudentsUnpreparedFo
 
 typealias CreateEvent = (LessonIdentifier, StudentsUnpreparedForLesson) -> StudentMarkedUnprepared
 
-//pipeline
-data class StudentReportingUnpreparedness(
-        val firstName: FirstName,
-        val secondName: SecondName
-)
-
 //event
 data class StudentMarkedUnprepared(
         val lessonId: LessonIdentifier,
@@ -61,4 +61,5 @@ data class StudentMarkedUnprepared(
         val studentsUnpreparedForLesson: StudentsUnpreparedForLesson
 )
 
+//pipeline
 typealias ReportUnpreparedness = (StudentReportingUnpreparedness, CurrentLesson) -> AsyncOutput<StudentMarkedUnprepared, UnpreparednessError>

@@ -38,7 +38,6 @@ class FinishLessonSteps : En {
         Then("Lesson is {finished}") { finishedLessonResult: MatchFinishLessonResult ->
             assertTrue { finishedLessonResult.matches(inProgressLesson, finishedLesson) }
         }
-
     }
 
     private fun inProgressLessonOfNumber(lessonNumber: Int) =

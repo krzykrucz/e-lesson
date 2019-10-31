@@ -3,6 +3,7 @@ package com.krzykrucz.elesson.currentlesson.shared
 import arrow.core.None
 import arrow.core.Option
 import arrow.core.Some
+import com.krzykrucz.elesson.currentlesson.topic.domain.LessonOrdinalNumber
 import java.time.LocalDate
 import java.time.LocalTime
 
@@ -23,6 +24,8 @@ data class ClassRegistry(val students: StudentList,
 data class LessonIdentifier(val date: LocalDate,
                             val lessonHourNumber: LessonHourNumber,
                             val className: ClassName)
+
+private const val LESSON_LENGTH_IN_MINUTES = 45L
 
 data class LessonHourNumber private constructor(val number: NaturalNumber) {
     companion object {
@@ -47,10 +50,14 @@ data class LessonHourNumber private constructor(val number: NaturalNumber) {
         fun of(num: Number): Option<LessonHourNumber> =
                 NaturalNumber.of(num.toInt())
                         .flatMap(Companion::of)
+
+        fun of(lessonOrdinalNumber: LessonOrdinalNumber): LessonHourNumber = LessonHourNumber(lessonOrdinalNumber.number)
     }
 
     // Exception won't be thrown because creation of LessonHourNumber is validated
     fun getLessonScheduledStartTime(): LocalTime = SCHEDULE[this.number]!!
+
+    fun lessonScheduledEndTime(): LocalTime = getLessonScheduledStartTime().plusMinutes(LESSON_LENGTH_IN_MINUTES)
 }
 
 

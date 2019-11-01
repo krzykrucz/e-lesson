@@ -1,5 +1,6 @@
 package com.krzykrucz.elesson.currentlesson.attendance
 
+
 import com.krzykrucz.elesson.currentlesson.attendance.adapters.rest.AttendanceDto
 import com.krzykrucz.elesson.currentlesson.attendance.adapters.rest.AttendanceResponseDto
 import com.krzykrucz.elesson.currentlesson.attendance.adapters.rest.LateAttendanceDto
@@ -21,10 +22,10 @@ class AttendanceAcceptanceSpec extends AttendanceBaseSpec {
                         lessonId
                 )),
                 AttendanceResponseDto
-        ).body
+        )
 
         then: 'Attendance is not checked yet'
-        !attendanceWithHarryPotter.checked
+        !attendanceWithHarryPotter.body.checked
 
         when: 'Note Tom Riddle absent and attendance is checked, class has only 2 students'
         def attendanceWithTomRiddle = rest.exchange(

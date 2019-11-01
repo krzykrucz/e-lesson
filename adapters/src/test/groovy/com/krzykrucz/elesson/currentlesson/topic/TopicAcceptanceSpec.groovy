@@ -5,7 +5,7 @@ import com.krzykrucz.elesson.currentlesson.AcceptanceSpec
 import com.krzykrucz.elesson.currentlesson.attendance.domain.AbsentStudent
 import com.krzykrucz.elesson.currentlesson.attendance.domain.CheckedAttendanceList
 import com.krzykrucz.elesson.currentlesson.attendance.domain.PresentStudent
-import com.krzykrucz.elesson.currentlesson.lessonprogress.InProgress
+import com.krzykrucz.elesson.currentlesson.lessonprogress.usecase.InProgress
 import com.krzykrucz.elesson.currentlesson.monolith.Database
 import com.krzykrucz.elesson.currentlesson.monolith.PersistentCurrentLesson
 import com.krzykrucz.elesson.currentlesson.shared.*

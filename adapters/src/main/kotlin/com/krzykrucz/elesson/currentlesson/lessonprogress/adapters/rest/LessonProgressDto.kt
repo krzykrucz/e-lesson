@@ -1,6 +1,6 @@
 package com.krzykrucz.elesson.currentlesson.lessonprogress.adapters.rest
 
-import com.krzykrucz.elesson.currentlesson.lessonprogress.LessonProgress
+import com.krzykrucz.elesson.currentlesson.lessonprogress.usecase.LessonProgress
 import com.krzykrucz.elesson.currentlesson.shared.LessonTopic
 
 data class LessonProgressDto(

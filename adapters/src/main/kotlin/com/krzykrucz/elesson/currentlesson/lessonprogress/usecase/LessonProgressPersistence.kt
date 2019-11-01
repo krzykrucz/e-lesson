@@ -1,4 +1,4 @@
-package com.krzykrucz.elesson.currentlesson.lessonprogress
+package com.krzykrucz.elesson.currentlesson.lessonprogress.usecase
 
 import arrow.core.Either
 import arrow.fx.IO
@@ -9,4 +9,3 @@ sealed class LessonProgressError {
 }
 
 typealias CreateLessonProgressView = (LessonIdentifier) -> IO<Either<LessonProgressError, LessonProgress>>
-typealias FetchLessonProgress = (LessonIdentifier) -> IO<Either<LessonProgressError, LessonProgress>>

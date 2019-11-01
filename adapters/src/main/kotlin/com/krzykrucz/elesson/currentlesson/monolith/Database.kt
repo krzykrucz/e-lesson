@@ -3,9 +3,8 @@ package com.krzykrucz.elesson.currentlesson.monolith
 import arrow.core.Option
 import com.krzykrucz.elesson.currentlesson.attendance.domain.Attendance
 import com.krzykrucz.elesson.currentlesson.attendance.domain.IncompleteAttendanceList
-import com.krzykrucz.elesson.currentlesson.lessonprogress.LessonProgress
-import com.krzykrucz.elesson.currentlesson.lessonprogress.LessonStatus
-import com.krzykrucz.elesson.currentlesson.lessonprogress.Scheduled
+import com.krzykrucz.elesson.currentlesson.lessonprogress.usecase.LessonStatus
+import com.krzykrucz.elesson.currentlesson.lessonprogress.usecase.Scheduled
 import com.krzykrucz.elesson.currentlesson.shared.*
 import java.time.LocalDate
 import java.util.concurrent.ConcurrentHashMap
@@ -44,10 +43,6 @@ class Database {
                 subject = LessonSubject(NonEmptyText("Defense from dark arts")),
                 status = Scheduled
             )
-        ))
-
-
-        val LESSON_PROGRESS_VIEW: ConcurrentHashMap<LessonIdentifier, LessonProgress> = ConcurrentHashMap(mutableMapOf(
         ))
 
         fun lessonIdOf(date: String, number: Int, className: String) =

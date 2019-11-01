@@ -6,7 +6,7 @@ import arrow.core.getOrElse
 import arrow.core.none
 import arrow.core.some
 import com.krzykrucz.elesson.currentlesson.infrastructure.run
-import com.krzykrucz.elesson.currentlesson.lessonprogress.adapters.persistence.fetchLessonProgress
+import com.krzykrucz.elesson.currentlesson.lessonprogress.adapters.persistence.createLessonProgressView
 import com.krzykrucz.elesson.currentlesson.shared.ClassName
 import com.krzykrucz.elesson.currentlesson.shared.LessonHourNumber
 import com.krzykrucz.elesson.currentlesson.shared.LessonIdentifier
@@ -38,7 +38,7 @@ fun handleLessonProgressViewRequest(serverRequest: ServerRequest): Mono<ServerRe
 
     return lessonIdOpt
         .map { lessonId ->
-            fetchLessonProgress()(lessonId)
+            createLessonProgressView()(lessonId)
                 .map { lessonProgressOrError ->
                     lessonProgressOrError.fold(
                         ifLeft = { ServerResponse.badRequest().body(BodyInserters.fromObject(it)) },
@@ -47,7 +47,7 @@ fun handleLessonProgressViewRequest(serverRequest: ServerRequest): Mono<ServerRe
                 }
                 .run()
         }
-        .getOrElse { ServerResponse.badRequest().body(BodyInserters.fromObject("Requested parameters not found")) }
+        .getOrElse { ServerResponse.badRequest().body(BodyInserters.fromObject("Mandatory parameters not found")) }
 }
 
 

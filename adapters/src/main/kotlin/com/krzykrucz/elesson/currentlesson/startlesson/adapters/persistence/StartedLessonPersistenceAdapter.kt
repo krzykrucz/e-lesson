@@ -2,7 +2,7 @@ package com.krzykrucz.elesson.currentlesson.startlesson.adapters.persistence
 
 import arrow.core.Option
 import arrow.effects.IO
-import com.krzykrucz.elesson.currentlesson.lessonprogress.InProgress
+import com.krzykrucz.elesson.currentlesson.lessonprogress.usecase.InProgress
 import com.krzykrucz.elesson.currentlesson.monolith.Database.Companion.LESSON_DATABASE
 import com.krzykrucz.elesson.currentlesson.monolith.PersistentCurrentLesson
 import com.krzykrucz.elesson.currentlesson.shared.LessonIdentifier

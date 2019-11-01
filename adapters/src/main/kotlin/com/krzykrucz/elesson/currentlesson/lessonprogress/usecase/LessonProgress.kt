@@ -1,4 +1,4 @@
-package com.krzykrucz.elesson.currentlesson.lessonprogress
+package com.krzykrucz.elesson.currentlesson.lessonprogress.usecase
 
 import arrow.core.Option
 import com.krzykrucz.elesson.currentlesson.shared.ClassName

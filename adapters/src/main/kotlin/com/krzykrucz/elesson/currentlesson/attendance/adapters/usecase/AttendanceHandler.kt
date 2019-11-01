@@ -1,130 +1,113 @@
 package com.krzykrucz.elesson.currentlesson.attendance.adapters.usecase
 
-import arrow.core.*
+import arrow.core.Either
+import arrow.core.Option
 import arrow.core.extensions.either.monad.flatten
 import arrow.core.extensions.either.traverse.sequence
 import arrow.core.extensions.fx
-import arrow.core.extensions.sequence
+import arrow.core.fix
 import arrow.fx.IO
 import arrow.fx.extensions.fx
 import arrow.fx.extensions.io.applicative.applicative
 import arrow.fx.fix
-import com.krzykrucz.elesson.currentlesson.attendance.adapters.persistence.fetchCheckedAttendance
-import com.krzykrucz.elesson.currentlesson.attendance.adapters.persistence.fetchIncompleteAttendance
-import com.krzykrucz.elesson.currentlesson.attendance.adapters.persistence.persistAttendance
-import com.krzykrucz.elesson.currentlesson.attendance.adapters.rest.AttendanceDto
-import com.krzykrucz.elesson.currentlesson.attendance.adapters.rest.AttendanceResponseDto
-import com.krzykrucz.elesson.currentlesson.attendance.adapters.rest.LateAttendanceDto
+import com.krzykrucz.elesson.currentlesson.attendance.adapters.AttendanceDto
+import com.krzykrucz.elesson.currentlesson.attendance.adapters.LateAttendanceDto
 import com.krzykrucz.elesson.currentlesson.attendance.domain.*
-import com.krzykrucz.elesson.currentlesson.monolith.Database
-import com.krzykrucz.elesson.currentlesson.monolith.Database.Companion.lessonIdOf
-import com.krzykrucz.elesson.currentlesson.monolith.PersistentCurrentLesson
-import org.springframework.web.reactive.function.BodyInserters
-import org.springframework.web.reactive.function.server.ServerRequest
-import org.springframework.web.reactive.function.server.ServerResponse
-import reactor.core.publisher.Mono
+import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Configuration
 import java.time.LocalDateTime
 
+typealias IsAttendanceChecked = Boolean
+typealias HandleNotePresent = (AttendanceDto) -> IO<Either<AttendanceError, IsAttendanceChecked>>
+typealias HandleNoteAbsent = (AttendanceDto) -> IO<Either<AttendanceError, IsAttendanceChecked>>
+typealias HandleNoteLate = (LateAttendanceDto) -> IO<Either<AttendanceError, IsAttendanceChecked>>
 
-fun handleNotePresentDto(attendanceDto: AttendanceDto): IO<Mono<ServerResponse>> =
-    IO.fx {
-        val (incompleteAttendanceDtoOpt) = fetchIncompleteAttendance()(attendanceDto.lessonId)
+@Configuration
+class AttendanceHandler(
+    val persistAttendance: PersistAttendance,
+    val fetchIncompleteAttendance: FetchIncompleteAttendance,
+    val fetchCheckedAttendance: FetchCheckedAttendance
+) {
 
-        val notePresenceResult = Option.fx {
-            val (incompleteAttendance) = incompleteAttendanceDtoOpt
-            notePresence(
-                isInRegistry(),
-                completeList(),
-                addPresentStudent()
-            )(
-                attendanceDto.uncheckedStudent,
-                incompleteAttendance.incompleteAttendanceList,
-                incompleteAttendance.classRegistry
-            )
-        }.toEither { AttendanceError.LessonNotFound() }.flatten().fix()
+    @Bean("notePresent")
+    fun handleNotePresentDto(): HandleNotePresent = { attendanceDto ->
+        IO.fx {
+            val (incompleteAttendanceDtoOpt) = fetchIncompleteAttendance(attendanceDto.lessonId)
 
-        val (persistResult) = notePresenceResult
-            .map { persistAttendance()(attendanceDto.lessonId, it) }
-            .sequence()
+            val notePresenceResult = Option.fx {
+                val (incompleteAttendance) = incompleteAttendanceDtoOpt
+                notePresence(
+                    isInRegistry(),
+                    completeList(),
+                    addPresentStudent()
+                )(
+                    attendanceDto.uncheckedStudent,
+                    incompleteAttendance.incompleteAttendanceList,
+                    incompleteAttendance.classRegistry
+                )
+            }.toEither { AttendanceError.LessonNotFound() }.flatten().fix()
 
-        persistResult.toServerResponse()
-    }
-
-fun handleNoteAbsentDto(attendanceDto: AttendanceDto): IO<Mono<ServerResponse>> =
-    IO.fx {
-        val (incompleteAttendanceDtoOpt) = fetchIncompleteAttendance()(attendanceDto.lessonId)
-
-        val noteAbsenceResult = Option.fx {
-            val (incompleteAttendance) = incompleteAttendanceDtoOpt
-            noteAbsence(
-                isInRegistry(),
-                completeList(),
-                addAbsentStudent()
-            )(
-                attendanceDto.uncheckedStudent,
-                incompleteAttendance.incompleteAttendanceList,
-                incompleteAttendance.classRegistry
-            )
-        }.toEither { AttendanceError.LessonNotFound() }.flatten().fix()
-
-        val (persistResult) =
-            noteAbsenceResult
-                .map { persistAttendance()(attendanceDto.lessonId, it) }
+            val (persistResult) = notePresenceResult
+                .map { persistAttendance(attendanceDto.lessonId, it) }
                 .sequence()
 
-
-        persistResult.toServerResponse()
+            persistResult
+        }
     }
 
-fun handleLateAttendanceDto(lateAttendanceDto: LateAttendanceDto): IO<Mono<ServerResponse>> =
-    IO.fx {
-        val (checkedAttendanceOpt) = fetchCheckedAttendance()(lateAttendanceDto.lessonId)
-        val (persistResultAfterNoteLate) = Option.fx {
-            val (checkedAttendance) = checkedAttendanceOpt
-            val updatedAttendance = noteLate(
-                isNotTooLate(getLessonStartTime())
-            )(
-                lateAttendanceDto.lessonId.lessonHourNumber,
-                lateAttendanceDto.absentStudent,
-                checkedAttendance,
-                LocalDateTime.parse(lateAttendanceDto.currentTime)
-            )
+    @Bean("noteAbsent")
+    fun handleNoteAbsentDto(): HandleNoteAbsent = { attendanceDto ->
+        IO.fx {
+            val (incompleteAttendanceDtoOpt) = fetchIncompleteAttendance(attendanceDto.lessonId)
 
-            persistAttendance()(lateAttendanceDto.lessonId, updatedAttendance)
-        }.sequence(IO.applicative()).fix()
+            val noteAbsenceResult = Option.fx {
+                val (incompleteAttendance) = incompleteAttendanceDtoOpt
+                noteAbsence(
+                    isInRegistry(),
+                    completeList(),
+                    addAbsentStudent()
+                )(
+                    attendanceDto.uncheckedStudent,
+                    incompleteAttendance.incompleteAttendanceList,
+                    incompleteAttendance.classRegistry
+                )
+            }.toEither { AttendanceError.LessonNotFound() }.flatten().fix()
 
-        persistResultAfterNoteLate
-            .map { AttendanceResponseDto(it) }
-            .map { ServerResponse.ok().body(BodyInserters.fromObject(it)) }
-            .getOrElse { ServerResponse.noContent().build() }
+            val (persistResult) =
+                noteAbsenceResult
+                    .map { persistAttendance(attendanceDto.lessonId, it) }
+                    .sequence()
+
+
+            persistResult
+        }
     }
 
-internal fun handleGetAttendanceRequest(): (ServerRequest) -> Mono<ServerResponse> = { request ->
-    val date = request.queryParam("date").orElse("")
-    val lessonHourNumber = request.queryParam("lessonHourNumber").map { it.toInt() }.orElse(0)
-    val className = request.queryParam("className").orElse("")
-    val lessonId = lessonIdOf(date, lessonHourNumber, className)
-    val uncheckedAttendance = Database.LESSON_DATABASE[lessonId].toOption()
-        .map(PersistentCurrentLesson::attendance)
-        .flatMap { Option.fromNullable(it) }
-    uncheckedAttendance
-        .fold(
-            ifEmpty = { ServerResponse.noContent().build() },
-            ifSome = { attendance -> ServerResponse.ok().body(BodyInserters.fromObject(attendance)) }
-        )
+    @Bean
+    fun handleLateAttendanceDto(): HandleNoteLate = { lateAttendanceDto ->
+        IO.fx {
+            val (checkedAttendanceOpt) = fetchCheckedAttendance(lateAttendanceDto.lessonId)
+            val noteLateResult = Option.fx {
+                val (checkedAttendance) = checkedAttendanceOpt
+                noteLate(
+                    isNotTooLate(getLessonStartTime())
+                )(
+                    lateAttendanceDto.lessonId.lessonHourNumber,
+                    lateAttendanceDto.absentStudent,
+                    checkedAttendance,
+                    LocalDateTime.parse(lateAttendanceDto.currentTime)
+                )
+            }.toEither { AttendanceError.LessonNotFound() }
+
+            val (persistResultAfterNoteLate) = noteLateResult
+                .map { persistAttendance(lateAttendanceDto.lessonId, it) }
+                .sequence()
+
+            persistResultAfterNoteLate
+        }
+    }
+
+    private fun Either<AttendanceError, IO<Boolean>>.sequence(): IO<Either<AttendanceError, Boolean>> =
+        this.sequence(IO.applicative()).fix()
+            .map { it.fix() }
 }
-
-private fun Either<AttendanceError, Boolean>.toServerResponse(): Mono<ServerResponse> =
-    when (this) {
-        is Either.Left -> ServerResponse
-            .badRequest()
-            .body(BodyInserters.fromObject(this.a))
-        is Either.Right ->
-            ServerResponse
-                .ok()
-                .body(BodyInserters.fromObject(AttendanceResponseDto(this.b)))
-    }
-
-private fun Either<AttendanceError, IO<Boolean>>.sequence(): IO<Either<AttendanceError, Boolean>> =
-    this.sequence(IO.applicative()).fix()
-        .map { it.fix() }

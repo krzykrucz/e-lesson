@@ -5,7 +5,7 @@ import com.krzykrucz.elesson.currentlesson.finishlesson.domain.LessonBell.NOT_RA
 import com.krzykrucz.elesson.currentlesson.finishlesson.domain.LessonBell.RANG
 
 
-fun bellRang(): BellRang = { lessonHourNumber, currentHour ->
+fun bellRang(): CheckIfBellRang = { lessonHourNumber, currentHour ->
     lessonHourNumber.run {
         if (currentHour.isAfter(lessonScheduledEndTime())) {
             RANG
@@ -15,8 +15,8 @@ fun bellRang(): BellRang = { lessonHourNumber, currentHour ->
     }
 }
 
-fun finishLesson(bellRang: BellRang): FinishLesson = { inProgressLesson, currentHour ->
-    bellRang(inProgressLesson.lessonHourNumber(), currentHour).let {
+fun finishLesson(checkIfBellRang: CheckIfBellRang): FinishLesson = { inProgressLesson, currentHour ->
+    checkIfBellRang(inProgressLesson.lessonHourNumber(), currentHour).let {
         if (it == RANG) {
             Either.right(FinishedLesson(inProgressLesson.lessonTopic))
         } else {

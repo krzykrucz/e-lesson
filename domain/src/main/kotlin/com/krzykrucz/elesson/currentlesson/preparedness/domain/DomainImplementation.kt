@@ -36,8 +36,8 @@ val hasStudentUsedAllUnpreparednesses: HasStudentUsedAllUnpreparednesses = {
 }
 
 val areStudentsEqual: AreStudentsEqual = { presentStudent, studentReportingUnpreparedness ->
-    (presentStudent.firstName == studentReportingUnpreparedness.firstName)
-            .and(presentStudent.secondName == studentReportingUnpreparedness.secondName)
+    (presentStudent.firstName.name.text == studentReportingUnpreparedness.firstName)
+            .and(presentStudent.secondName.name.text == studentReportingUnpreparedness.secondName)
 }
 
 fun checkStudentIsPresent(
@@ -49,7 +49,7 @@ fun checkStudentIsPresent(
 }
 
 //workflows
-fun markStudentUnprepared(
+fun checkStudentCanReportUnprepared(
         checkNumberOfTimesStudentWasUnpreparedInSemester: CheckNumberOfTimesStudentWasUnpreparedInSemester,
         hasStudentUsedAllUnpreparednesses: HasStudentUsedAllUnpreparednesses
 ): CheckStudentCanReportUnprepared = { presentStudent, className ->

@@ -6,6 +6,7 @@ import com.krzykrucz.elesson.currentlesson.attendance.domain.CheckedAttendanceLi
 import com.krzykrucz.elesson.currentlesson.attendance.domain.PresentStudent
 import com.krzykrucz.elesson.currentlesson.monolith.Database
 import com.krzykrucz.elesson.currentlesson.monolith.PersistentCurrentLesson
+import com.krzykrucz.elesson.currentlesson.preparedness.domain.StudentsUnpreparedForLesson
 import com.krzykrucz.elesson.currentlesson.shared.NaturalNumber
 import com.krzykrucz.elesson.currentlesson.shared.NonEmptyText
 import com.krzykrucz.elesson.currentlesson.topic.domain.LessonOrdinalNumber
@@ -23,7 +24,8 @@ class TopicAcceptanceSpec extends AcceptanceSpec {
         def classRegistry = classRegistry1A()
         def lessonWithAttendanceChecked = new PersistentCurrentLesson(
                 lessonId, classRegistry, null,
-                new CheckedAttendanceList(new ArrayList<PresentStudent>(), new ArrayList<AbsentStudent>())
+                new CheckedAttendanceList(new ArrayList<PresentStudent>(), new ArrayList<AbsentStudent>()),
+                new StudentsUnpreparedForLesson([])
         )
         Database.LESSON_DATABASE.put(lessonId, lessonWithAttendanceChecked)
         def title = new TopicTitle(new NonEmptyText("Three forbidden spells"))

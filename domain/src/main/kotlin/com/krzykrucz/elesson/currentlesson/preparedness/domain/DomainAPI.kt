@@ -1,8 +1,10 @@
 package com.krzykrucz.elesson.currentlesson.preparedness.domain
 
+import arrow.effects.IO
 import com.krzykrucz.elesson.currentlesson.attendance.domain.CheckedAttendanceList
 import com.krzykrucz.elesson.currentlesson.attendance.domain.PresentStudent
 import com.krzykrucz.elesson.currentlesson.preparedness.domain.UnpreparednessError.AlreadyRaised
+import com.krzykrucz.elesson.currentlesson.preparedness.domain.UnpreparednessError.LessonNotStarted
 import com.krzykrucz.elesson.currentlesson.preparedness.domain.UnpreparednessError.StudentNotPresent
 import com.krzykrucz.elesson.currentlesson.preparedness.readmodel.StudentInSemesterReadError
 import com.krzykrucz.elesson.currentlesson.preparedness.readmodel.StudentSubjectUnpreparednessInASemester
@@ -28,11 +30,12 @@ sealed class UnpreparednessError {
     object UnpreparedTooManyTimes : UnpreparednessError()
     object TooLateToRaiseUnpreparedness : UnpreparednessError()
     object StudentNotPresent : UnpreparednessError()
+    object LessonNotStarted: UnpreparednessError()
 }
 
 data class StudentReportingUnpreparedness(
-        val firstName: FirstName,
-        val secondName: SecondName
+        val firstName: String,
+        val secondName: String
 )
 
 //dependency
@@ -45,6 +48,13 @@ typealias HasStudentAlreadyRaisedUnprepared = (StudentsUnpreparedForLesson, Pres
 typealias CheckStudentIsPresent = (StudentReportingUnpreparedness, CheckedAttendanceList) -> Output<PresentStudent, StudentNotPresent>
 
 typealias AreStudentsEqual = (PresentStudent, StudentReportingUnpreparedness) -> Boolean
+
+//persistence
+typealias PersistUnpreparedStudentToLesson = (StudentMarkedUnprepared) -> IO<LessonIdentifier>
+
+typealias NotifyStudentMarkedUnprepared = (StudentMarkedUnprepared) -> IO<Unit>
+
+typealias FindCurrentLesson = (LessonIdentifier) -> AsyncOutput<CurrentLesson, LessonNotStarted>
 
 //workflows
 typealias CheckStudentCanReportUnprepared = (PresentStudent, ClassName) -> AsyncOutput<PresentStudent, UnpreparednessError>

@@ -3,7 +3,6 @@ package com.krzykrucz.elesson.currentlesson.shared
 import arrow.core.None
 import arrow.core.Option
 import arrow.core.Some
-import com.krzykrucz.elesson.currentlesson.topic.domain.LessonOrdinalNumber
 import java.time.LocalDate
 import java.time.LocalTime
 
@@ -51,7 +50,6 @@ data class LessonHourNumber private constructor(val number: NaturalNumber) {
                 NaturalNumber.of(num.toInt())
                         .flatMap(Companion::of)
 
-        fun of(lessonOrdinalNumber: LessonOrdinalNumber): LessonHourNumber = LessonHourNumber(lessonOrdinalNumber.number)
     }
 
     // Exception won't be thrown because creation of LessonHourNumber is validated

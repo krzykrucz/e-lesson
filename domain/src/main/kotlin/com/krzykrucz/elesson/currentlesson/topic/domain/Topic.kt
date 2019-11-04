@@ -1,6 +1,8 @@
 package com.krzykrucz.elesson.currentlesson.topic.domain
 
 import arrow.core.Either
+import arrow.core.Option
+import arrow.core.getOrElse
 import com.krzykrucz.elesson.currentlesson.shared.LessonHourNumber
 import com.krzykrucz.elesson.currentlesson.shared.NaturalNumber
 import com.krzykrucz.elesson.currentlesson.shared.NonEmptyText
@@ -14,7 +16,9 @@ typealias IsAttendanceChecked = Boolean
 data class TopicTitle(val title: NonEmptyText)
 data class LessonTopic(val lessonOrdinalNumber: LessonOrdinalNumber, val topicTitle: TopicTitle, val date: LocalDate)
 data class InProgressLesson(val lessonTopic: LessonTopic) {
-    fun lessonHourNumber(): LessonHourNumber = LessonHourNumber.of(lessonTopic.lessonOrdinalNumber)
+    fun lessonHourNumber(): Option<LessonHourNumber> = lessonTopic.run {
+        LessonHourNumber.of(lessonOrdinalNumber.number)
+    }
 }
 
 sealed class ChooseTopicError {

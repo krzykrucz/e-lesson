@@ -12,11 +12,17 @@ import org.springframework.http.HttpEntity
 import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
 
+import java.time.LocalDate
+
 class TopicAcceptanceSpec extends AcceptanceSpec {
 
     def "choose topic acceptance spec"() {
         given: 'choose topic dto and checked attendance in database'
-        def lessonId = lessonIdOfFirst1ALesson()
+        def lessonId = new LessonIdentifier(
+                LocalDate.parse("2019-09-09"),
+                new LessonHourNumber(NaturalNumber.TWO),
+                className1A()
+        )
         def classRegistry = classRegistry1A()
         def lessonWithAttendanceChecked = new PersistentCurrentLesson(
                 lessonId, classRegistry, new None(),

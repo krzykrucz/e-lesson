@@ -4,7 +4,7 @@ import arrow.core.Option
 import arrow.core.extensions.fx
 import arrow.core.getOrElse
 import com.krzykrucz.elesson.currentlesson.infrastructure.run
-import com.krzykrucz.elesson.currentlesson.lessonprogress.adapters.persistence.loadLessonProgress
+import com.krzykrucz.elesson.currentlesson.lessonprogress.usecase.LoadLessonProgress
 import com.krzykrucz.elesson.currentlesson.shared.ClassName
 import com.krzykrucz.elesson.currentlesson.shared.LessonHourNumber
 import com.krzykrucz.elesson.currentlesson.shared.LessonIdentifier
@@ -16,7 +16,7 @@ import reactor.core.publisher.Mono
 import java.time.LocalDate
 import java.util.*
 
-fun handleLessonProgressViewRequest(serverRequest: ServerRequest): Mono<ServerResponse> {
+fun handleLessonProgressViewRequest(loadLessonProgress: LoadLessonProgress): (ServerRequest) -> Mono<ServerResponse> = { serverRequest ->
     val readDateFromParams = serverRequest.queryParam("date").toOption()
         .map { LocalDate.parse(it) }
 
@@ -34,9 +34,9 @@ fun handleLessonProgressViewRequest(serverRequest: ServerRequest): Mono<ServerRe
         LessonIdentifier(lessonDate, lessonHourNumber, className)
     }
 
-    return lessonIdOpt
+    lessonIdOpt
         .map { lessonId ->
-            loadLessonProgress()(lessonId)
+            loadLessonProgress(lessonId)
                 .map { lessonProgressOrError ->
                     lessonProgressOrError.fold(
                         ifLeft = { ServerResponse.badRequest().body(BodyInserters.fromObject(it)) },

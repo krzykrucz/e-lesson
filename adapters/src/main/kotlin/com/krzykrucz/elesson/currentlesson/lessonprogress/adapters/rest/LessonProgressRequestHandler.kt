@@ -3,10 +3,8 @@ package com.krzykrucz.elesson.currentlesson.lessonprogress.adapters.rest
 import arrow.core.Option
 import arrow.core.extensions.fx
 import arrow.core.getOrElse
-import arrow.core.none
-import arrow.core.some
 import com.krzykrucz.elesson.currentlesson.infrastructure.run
-import com.krzykrucz.elesson.currentlesson.lessonprogress.adapters.persistence.createLessonProgressView
+import com.krzykrucz.elesson.currentlesson.lessonprogress.adapters.persistence.loadLessonProgress
 import com.krzykrucz.elesson.currentlesson.shared.ClassName
 import com.krzykrucz.elesson.currentlesson.shared.LessonHourNumber
 import com.krzykrucz.elesson.currentlesson.shared.LessonIdentifier
@@ -26,7 +24,7 @@ fun handleLessonProgressViewRequest(serverRequest: ServerRequest): Mono<ServerRe
         .flatMap { LessonHourNumber.of(it.toInt()) }
 
     val readClassNameFromParams = serverRequest.queryParam("className").toOption()
-        .map { ClassName(NonEmptyText.of(it)!!) }
+        .map { ClassName(NonEmptyText(it)) }
 
 
     val lessonIdOpt = Option.fx {
@@ -38,11 +36,11 @@ fun handleLessonProgressViewRequest(serverRequest: ServerRequest): Mono<ServerRe
 
     return lessonIdOpt
         .map { lessonId ->
-            createLessonProgressView()(lessonId)
+            loadLessonProgress()(lessonId)
                 .map { lessonProgressOrError ->
                     lessonProgressOrError.fold(
                         ifLeft = { ServerResponse.badRequest().body(BodyInserters.fromObject(it)) },
-                        ifRight = { ServerResponse.ok().body(BodyInserters.fromObject(it.toDto())) }
+                        ifRight = { ServerResponse.ok().body(BodyInserters.fromObject(LessonProgressDto.fromLessonProgress(it))) }
                     )
                 }
                 .run()
@@ -52,9 +50,5 @@ fun handleLessonProgressViewRequest(serverRequest: ServerRequest): Mono<ServerRe
 
 
 private fun <T> Optional<T>.toOption(): Option<T> =
-    try {
-        this.orElseThrow().some()
-    } catch (ex: Throwable) {
-        none()
-    }
+    Option.fromNullable(this.orElse(null))
 

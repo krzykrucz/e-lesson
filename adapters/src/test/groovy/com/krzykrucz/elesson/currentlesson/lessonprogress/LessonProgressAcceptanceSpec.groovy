@@ -6,9 +6,9 @@ import com.krzykrucz.elesson.currentlesson.attendance.domain.AbsentStudent
 import com.krzykrucz.elesson.currentlesson.attendance.domain.CheckedAttendanceList
 import com.krzykrucz.elesson.currentlesson.attendance.domain.PresentStudent
 import com.krzykrucz.elesson.currentlesson.lessonprogress.adapters.rest.LessonProgressDto
-import com.krzykrucz.elesson.currentlesson.lessonprogress.usecase.InProgress
 import com.krzykrucz.elesson.currentlesson.monolith.Database
 import com.krzykrucz.elesson.currentlesson.monolith.PersistentCurrentLesson
+import com.krzykrucz.elesson.currentlesson.shared.InProgress
 import com.krzykrucz.elesson.currentlesson.shared.LessonSubject
 import com.krzykrucz.elesson.currentlesson.shared.NonEmptyText
 import com.krzykrucz.elesson.currentlesson.shared.WinterSemester

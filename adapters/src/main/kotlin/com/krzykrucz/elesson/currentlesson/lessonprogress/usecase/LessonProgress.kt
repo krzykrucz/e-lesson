@@ -1,16 +1,8 @@
 package com.krzykrucz.elesson.currentlesson.lessonprogress.usecase
 
 import arrow.core.Option
-import com.krzykrucz.elesson.currentlesson.shared.ClassName
-import com.krzykrucz.elesson.currentlesson.shared.LessonSubject
-import com.krzykrucz.elesson.currentlesson.shared.LessonTopic
-import com.krzykrucz.elesson.currentlesson.shared.Semester
+import com.krzykrucz.elesson.currentlesson.shared.*
 import java.time.LocalDate
-
-sealed class LessonStatus(val status: String)
-object Scheduled : LessonStatus("Scheduled")
-object InProgress : LessonStatus("In Progress")
-object Finished : LessonStatus("Finished")
 
 
 typealias LessonDate = LocalDate

@@ -5,17 +5,12 @@ import com.krzykrucz.elesson.currentlesson.AcceptanceSpec
 import com.krzykrucz.elesson.currentlesson.attendance.domain.AbsentStudent
 import com.krzykrucz.elesson.currentlesson.attendance.domain.CheckedAttendanceList
 import com.krzykrucz.elesson.currentlesson.attendance.domain.PresentStudent
-import com.krzykrucz.elesson.currentlesson.lessonprogress.usecase.InProgress
 import com.krzykrucz.elesson.currentlesson.monolith.Database
 import com.krzykrucz.elesson.currentlesson.monolith.PersistentCurrentLesson
-import com.krzykrucz.elesson.currentlesson.shared.LessonHourNumber
-import com.krzykrucz.elesson.currentlesson.shared.LessonIdentifier
 import com.krzykrucz.elesson.currentlesson.shared.*
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
-
-import java.time.LocalDate
 
 class TopicAcceptanceSpec extends AcceptanceSpec {
 

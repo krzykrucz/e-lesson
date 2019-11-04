@@ -5,8 +5,8 @@ import arrow.core.some
 import arrow.core.toOption
 import arrow.fx.IO
 import com.krzykrucz.elesson.currentlesson.attendance.domain.CheckedAttendanceList
-import com.krzykrucz.elesson.currentlesson.lessonprogress.usecase.Finished
 import com.krzykrucz.elesson.currentlesson.monolith.Database
+import com.krzykrucz.elesson.currentlesson.shared.Finished
 import com.krzykrucz.elesson.currentlesson.topic.domain.CheckIfAttendanceIsChecked
 import com.krzykrucz.elesson.currentlesson.topic.domain.CountFinishedLessons
 import com.krzykrucz.elesson.currentlesson.topic.domain.FinishedLessonsCount

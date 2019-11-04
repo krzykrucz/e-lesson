@@ -76,3 +76,10 @@ object SummerSemester : Semester(NaturalNumber.TWO)
 
 
 data class LessonSubject(val subject: NonEmptyText)
+
+sealed class LessonStatus(val status: String)
+object Scheduled : LessonStatus("Scheduled")
+object InProgress : LessonStatus("In Progress")
+object Finished : LessonStatus("Finished")
+
+

@@ -8,4 +8,4 @@ sealed class LessonProgressError {
     data class LessonNotFound(val error: String = "Could not find lesson") : LessonProgressError()
 }
 
-typealias CreateLessonProgressView = (LessonIdentifier) -> IO<Either<LessonProgressError, LessonProgress>>
+typealias LoadLessonProgress = (LessonIdentifier) -> IO<Either<LessonProgressError, LessonProgress>>

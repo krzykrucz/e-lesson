@@ -10,14 +10,17 @@ data class LessonProgressDto(
     val date: String,
     val topic: LessonTopic?,
     val status: String
-)
+) {
+    companion object {
+        fun fromLessonProgress(lessonProgress: LessonProgress): LessonProgressDto =
+            LessonProgressDto(
+                semester = lessonProgress.semester.semesterOrdinalNumber.number,
+                className = lessonProgress.className.name.text,
+                subject = lessonProgress.subject.subject.text,
+                date = lessonProgress.date.toString(),
+                status = lessonProgress.status.status,
+                topic = lessonProgress.topic.orNull()
+            )
+    }
+}
 
-fun LessonProgress.toDto() =
-    LessonProgressDto(
-        semester = this.semester.semesterOrdinalNumber.number,
-        className = this.className.name.text,
-        subject = this.subject.subject.text,
-        date = this.date.toString(),
-        status = this.status.status,
-        topic = this.topic.orNull()
-    )

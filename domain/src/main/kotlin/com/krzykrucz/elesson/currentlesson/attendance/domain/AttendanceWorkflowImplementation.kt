@@ -80,7 +80,10 @@ fun completeList(): CompleteListIfAllStudentsChecked = { attendanceList, classRe
                         numberInRegister = student.numberInRegister
                 )
             }
-    (absentStudentsRecords + presentStudentsRecords).containsAll(classRegistry.students)
+    val checkedStudents = (absentStudentsRecords + presentStudentsRecords)
+    val students = classRegistry.students
+    val containsAll = checkedStudents.containsAll(students)
+    containsAll
             .maybe { CheckedAttendanceList(attendanceList.presentStudents, attendanceList.absentStudents) }
             .getOrElse { attendanceList }
 }

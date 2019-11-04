@@ -1,11 +1,7 @@
 package com.krzykrucz.elesson.currentlesson.attendance.domain
 
 import arrow.core.Either
-import com.krzykrucz.elesson.currentlesson.shared.ClassRegistry
-import com.krzykrucz.elesson.currentlesson.shared.FirstName
-import com.krzykrucz.elesson.currentlesson.shared.LessonHourNumber
-import com.krzykrucz.elesson.currentlesson.shared.NumberInRegister
-import com.krzykrucz.elesson.currentlesson.shared.SecondName
+import com.krzykrucz.elesson.currentlesson.shared.*
 import java.time.LocalDateTime
 import java.time.LocalTime
 
@@ -39,6 +35,7 @@ data class CheckedAttendanceList(
 
 sealed class AttendanceError {
     data class StudentNotInRegistry(val error: String = "Student is not in registry") : AttendanceError()
+    data class LessonNotFound(val error: String = "Lesson not found") : AttendanceError()
 }
 
 // TODO include events needed to be published in the workflows

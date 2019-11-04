@@ -6,6 +6,8 @@ import com.krzykrucz.elesson.currentlesson.attendance.domain.CheckedAttendanceLi
 import com.krzykrucz.elesson.currentlesson.attendance.domain.PresentStudent
 import com.krzykrucz.elesson.currentlesson.monolith.Database
 import com.krzykrucz.elesson.currentlesson.monolith.PersistentCurrentLesson
+import com.krzykrucz.elesson.currentlesson.shared.LessonHourNumber
+import com.krzykrucz.elesson.currentlesson.shared.LessonIdentifier
 import com.krzykrucz.elesson.currentlesson.shared.NaturalNumber
 import com.krzykrucz.elesson.currentlesson.shared.NonEmptyText
 import com.krzykrucz.elesson.currentlesson.topic.domain.LessonOrdinalNumber
@@ -15,11 +17,17 @@ import org.springframework.http.HttpEntity
 import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
 
+import java.time.LocalDate
+
 class TopicAcceptanceSpec extends AcceptanceSpec {
 
     def "choose topic acceptance spec"() {
         given: 'choose topic dto and checked attendance in database'
-        def lessonId = lessonIdOfFirst1ALesson()
+        def lessonId = new LessonIdentifier(
+                LocalDate.parse("2019-09-09"),
+                new LessonHourNumber(NaturalNumber.TWO),
+                className1A()
+        )
         def classRegistry = classRegistry1A()
         def lessonWithAttendanceChecked = new PersistentCurrentLesson(
                 lessonId, classRegistry, null,

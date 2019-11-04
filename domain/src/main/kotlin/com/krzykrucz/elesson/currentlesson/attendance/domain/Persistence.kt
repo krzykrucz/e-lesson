@@ -1,16 +1,16 @@
 package com.krzykrucz.elesson.currentlesson.attendance.domain
 
-import arrow.core.Tuple2
-import arrow.data.OptionT
-import arrow.effects.ForIO
-import arrow.effects.IO
+import arrow.core.Option
+import arrow.fx.IO
 import com.krzykrucz.elesson.currentlesson.shared.ClassRegistry
 import com.krzykrucz.elesson.currentlesson.shared.LessonIdentifier
 
 
 typealias PersistAttendance = (LessonIdentifier, Attendance) -> IO<Boolean>
+typealias FetchCheckedAttendance = (LessonIdentifier) -> IO<Option<CheckedAttendanceList>>
+typealias FetchIncompleteAttendance = (LessonIdentifier) -> IO<Option<IncompleteAttendanceDto>>
 
-typealias FetchCheckedAttendance = (LessonIdentifier) -> OptionT<ForIO, CheckedAttendanceList>
-
-typealias FetchNotCompletedAttendanceAndRegistry = (LessonIdentifier) -> OptionT<ForIO, Tuple2<IncompleteAttendanceList, ClassRegistry>>
-
+class IncompleteAttendanceDto(
+    val incompleteAttendanceList: IncompleteAttendanceList,
+    val classRegistry: ClassRegistry
+)

@@ -1,4 +1,4 @@
-package com.krzykrucz.elesson.currentlesson.attendance.adapters.rest
+package com.krzykrucz.elesson.currentlesson.attendance.adapters
 
 import com.krzykrucz.elesson.currentlesson.attendance.domain.AbsentStudent
 import com.krzykrucz.elesson.currentlesson.attendance.domain.UncheckedStudent

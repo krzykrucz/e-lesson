@@ -24,6 +24,8 @@ data class LessonIdentifier(val date: LocalDate,
                             val lessonHourNumber: LessonHourNumber,
                             val className: ClassName)
 
+private const val LESSON_LENGTH_IN_MINUTES = 45L
+
 data class LessonHourNumber private constructor(val number: NaturalNumber) {
     companion object {
         private val SCHEDULE: Map<NaturalNumber, LocalTime> = mapOf(
@@ -47,10 +49,13 @@ data class LessonHourNumber private constructor(val number: NaturalNumber) {
         fun of(num: Number): Option<LessonHourNumber> =
                 NaturalNumber.of(num.toInt())
                         .flatMap(Companion::of)
+
     }
 
     // Exception won't be thrown because creation of LessonHourNumber is validated
     fun getLessonScheduledStartTime(): LocalTime = SCHEDULE[this.number]!!
+
+    fun lessonScheduledEndTime(): LocalTime = getLessonScheduledStartTime().plusMinutes(LESSON_LENGTH_IN_MINUTES)
 }
 
 

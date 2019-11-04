@@ -14,14 +14,14 @@ import kotlin.test.assertTrue
 
 class FinishLessonSteps : En {
 
-    private lateinit var currentHour: CurrentHour
+    private lateinit var currentTime: CurrentTime
     private lateinit var inProgressLesson: InProgressLesson
     private lateinit var finishedLesson: Either<FinishLessonError, FinishedLesson>
 
     init {
 
-        Given("Current time of {currentHour}") { currentHourOf: CurrentHour ->
-            currentHour = currentHourOf
+        Given("Current time of {currentTime}") { currentTimeOf: CurrentTime ->
+            currentTime = currentTimeOf
         }
 
         And("In progress lesson number {int}") { lessonNumber: Int ->
@@ -31,7 +31,7 @@ class FinishLessonSteps : En {
         When("Finishing a lesson") {
             finishedLesson = finishLesson(bellRang())(
                 inProgressLesson,
-                currentHour
+                currentTime
             )
         }
 

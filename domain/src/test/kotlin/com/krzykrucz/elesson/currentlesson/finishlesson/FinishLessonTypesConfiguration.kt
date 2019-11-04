@@ -2,7 +2,7 @@ package com.krzykrucz.elesson.currentlesson.finishlesson
 
 import arrow.core.Either
 import arrow.core.getOrElse
-import com.krzykrucz.elesson.currentlesson.finishlesson.domain.CurrentHour
+import com.krzykrucz.elesson.currentlesson.finishlesson.domain.CurrentTime
 import com.krzykrucz.elesson.currentlesson.finishlesson.domain.FinishLessonError
 import com.krzykrucz.elesson.currentlesson.finishlesson.domain.FinishedLesson
 import com.krzykrucz.elesson.currentlesson.shared.isError
@@ -45,18 +45,18 @@ class FinishLessonTypesConfiguration : TypeRegistryConfigurer {
 
     override fun configureTypeRegistry(registry: TypeRegistry) =
         registry.run {
-            defineCurrentHour()
+            defineCurrentTime()
             defineFinishLessonResultMatch()
         }
 
-    private fun TypeRegistry.defineCurrentHour() =
+    private fun TypeRegistry.defineCurrentTime() =
         defineParameterType(
-            ParameterType<CurrentHour>(
-                "currentHour",
+            ParameterType<CurrentTime>(
+                "currentTime",
                 "\\d\\d:\\d\\d:\\d\\d",
-                CurrentHour::class.java
+                CurrentTime::class.java
             ) { param: String ->
-                CurrentHour.parse(param)
+                CurrentTime.parse(param)
             }
         )
 

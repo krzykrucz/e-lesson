@@ -5,8 +5,8 @@ import arrow.effects.IO
 import com.krzykrucz.elesson.currentlesson.monolith.Database.Companion.LESSON_DATABASE
 import com.krzykrucz.elesson.currentlesson.monolith.PersistentCurrentLesson
 import com.krzykrucz.elesson.currentlesson.shared.LessonIdentifier
+import com.krzykrucz.elesson.currentlesson.shared.StartedLesson
 import com.krzykrucz.elesson.currentlesson.startlesson.domain.PersistStartedLessonIfDoesNotExist
-import com.krzykrucz.elesson.currentlesson.startlesson.domain.StartedLesson
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 

@@ -7,11 +7,11 @@ import arrow.core.right
 import arrow.effects.typeclasses.Duration
 import com.krzykrucz.elesson.currentlesson.MonoDomainError
 import com.krzykrucz.elesson.currentlesson.handleErrors
-import com.krzykrucz.elesson.currentlesson.preparedness.domain.FindCurrentLesson
-import com.krzykrucz.elesson.currentlesson.preparedness.domain.NotifyStudentMarkedUnprepared
-import com.krzykrucz.elesson.currentlesson.preparedness.domain.PersistUnpreparedStudentToLesson
-import com.krzykrucz.elesson.currentlesson.preparedness.domain.ReportUnpreparedness
-import com.krzykrucz.elesson.currentlesson.preparedness.domain.StudentReportingUnpreparedness
+import com.krzykrucz.elesson.currentlesson.preparedness.domain.api.FindCurrentLesson
+import com.krzykrucz.elesson.currentlesson.preparedness.domain.api.NotifyStudentMarkedUnprepared
+import com.krzykrucz.elesson.currentlesson.preparedness.domain.api.PersistUnpreparedStudentToLesson
+import com.krzykrucz.elesson.currentlesson.preparedness.domain.api.ReportUnpreparedness
+import com.krzykrucz.elesson.currentlesson.preparedness.domain.api.StudentReportingUnpreparedness
 import com.krzykrucz.elesson.currentlesson.preparedness.readmodel.WriteUnpreparednessInTheRegister
 import com.krzykrucz.elesson.currentlesson.shared.LessonIdentifier
 import com.krzykrucz.elesson.currentlesson.shared.flatMapAsyncSuccess
@@ -41,6 +41,9 @@ class ReportUnpreparedRouteAdapter {
         notifyStudentMarkedUnprepared: NotifyStudentMarkedUnprepared
     ) =
         router {
+            // TODO rename endpoint
+            // TODO move application logic to domain layer
+            // TODO avoid such nesting
             POST("/reportunprepared") { request ->
                 request.bodyToMono(ReportUnpreparedRequest::class.java)
                     .flatMap { req ->

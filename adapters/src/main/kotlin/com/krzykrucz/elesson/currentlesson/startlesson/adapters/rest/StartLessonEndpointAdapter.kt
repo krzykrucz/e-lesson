@@ -7,11 +7,11 @@ import com.krzykrucz.elesson.currentlesson.shared.FirstName
 import com.krzykrucz.elesson.currentlesson.shared.LessonIdentifier
 import com.krzykrucz.elesson.currentlesson.shared.NonEmptyText
 import com.krzykrucz.elesson.currentlesson.shared.SecondName
+import com.krzykrucz.elesson.currentlesson.shared.StartedLesson
 import com.krzykrucz.elesson.currentlesson.shared.Teacher
 import com.krzykrucz.elesson.currentlesson.startlesson.domain.AttemptedLessonStartTime
 import com.krzykrucz.elesson.currentlesson.startlesson.domain.PersistStartedLessonIfDoesNotExist
 import com.krzykrucz.elesson.currentlesson.startlesson.domain.StartLesson
-import com.krzykrucz.elesson.currentlesson.startlesson.domain.StartedLesson
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.MediaType

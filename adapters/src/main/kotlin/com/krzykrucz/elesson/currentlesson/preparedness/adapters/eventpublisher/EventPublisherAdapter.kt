@@ -1,8 +1,8 @@
 package com.krzykrucz.elesson.currentlesson.preparedness.adapters.eventpublisher
 
 import arrow.effects.IO
-import com.krzykrucz.elesson.currentlesson.preparedness.domain.NotifyStudentMarkedUnprepared
-import com.krzykrucz.elesson.currentlesson.preparedness.domain.StudentMarkedUnprepared
+import com.krzykrucz.elesson.currentlesson.preparedness.domain.api.NotifyStudentMarkedUnprepared
+import com.krzykrucz.elesson.currentlesson.preparedness.domain.api.StudentMarkedUnprepared
 import org.springframework.context.ApplicationEventPublisher
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration

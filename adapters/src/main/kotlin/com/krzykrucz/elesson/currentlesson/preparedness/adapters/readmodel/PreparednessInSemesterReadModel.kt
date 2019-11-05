@@ -4,7 +4,7 @@ import arrow.core.Option
 import arrow.core.getOrElse
 import arrow.effects.IO
 import com.krzykrucz.elesson.currentlesson.preparedness.adapters.readmodel.StudentInSemesterReadModel.READ_MODEL
-import com.krzykrucz.elesson.currentlesson.preparedness.domain.StudentMarkedUnprepared
+import com.krzykrucz.elesson.currentlesson.preparedness.domain.api.StudentMarkedUnprepared
 import com.krzykrucz.elesson.currentlesson.preparedness.readmodel.GetStudentSubjectUnpreparednessInASemester
 import com.krzykrucz.elesson.currentlesson.preparedness.readmodel.StudentInSemester
 import com.krzykrucz.elesson.currentlesson.preparedness.readmodel.StudentSubjectUnpreparednessInASemester
@@ -15,7 +15,7 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.context.event.EventListener
 import java.util.concurrent.ConcurrentHashMap
 
-class ReadModelProjector : WriteUnpreparednessInTheRegister {
+private class UnpreparednessReadModel : WriteUnpreparednessInTheRegister {
 
     @EventListener
     override fun invoke(event: StudentMarkedUnprepared) =
@@ -28,6 +28,7 @@ class ReadModelProjector : WriteUnpreparednessInTheRegister {
                 Option.fromNullable(READ_MODEL[it])
                     .getOrElse { StudentSubjectUnpreparednessInASemester.createEmpty(it) }
             }
+            // TODO avoid such nesting
             .let {
                 READ_MODEL.compute(it.student) { student, unprep ->
                     Option.fromNullable(unprep)
@@ -38,7 +39,7 @@ class ReadModelProjector : WriteUnpreparednessInTheRegister {
 
 }
 
-val getStudentSubjectUnpreparednessInASemester: GetStudentSubjectUnpreparednessInASemester = { student ->
+private val getStudentSubjectUnpreparednessInASemester: GetStudentSubjectUnpreparednessInASemester = { student ->
     READ_MODEL[student]
         .let { Option.fromNullable(it) }
         .getOrElse { StudentSubjectUnpreparednessInASemester.createEmpty(student) }
@@ -57,5 +58,5 @@ class ReadModelBeans {
     fun getBean() = getStudentSubjectUnpreparednessInASemester
 
     @Bean
-    fun writeBean(): WriteUnpreparednessInTheRegister = ReadModelProjector()
+    fun writeBean(): WriteUnpreparednessInTheRegister = UnpreparednessReadModel()
 }

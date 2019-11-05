@@ -1,9 +1,7 @@
 package com.krzykrucz.elesson.currentlesson.startlesson.domain
 
 import com.krzykrucz.elesson.currentlesson.shared.ClassName
-import com.krzykrucz.elesson.currentlesson.shared.ClassRegistry
 import com.krzykrucz.elesson.currentlesson.shared.LessonHourNumber
-import com.krzykrucz.elesson.currentlesson.shared.LessonIdentifier
 import com.krzykrucz.elesson.currentlesson.shared.Teacher
 import java.time.LocalDateTime
 
@@ -13,9 +11,6 @@ data class ScheduledLesson(val scheduledTime: ScheduledLessonStartTime,
                            val lessonHourNumber: LessonHourNumber,
                            val teacher: Teacher,
                            val className: ClassName)
-
-data class StartedLesson(val id: LessonIdentifier,
-                         val clazz: ClassRegistry)
 
 sealed class StartLessonError {
     data class NotScheduledLesson(val error: String = "Cannot start a lesson outside of a lesson hour for which it's scheduled") : StartLessonError()

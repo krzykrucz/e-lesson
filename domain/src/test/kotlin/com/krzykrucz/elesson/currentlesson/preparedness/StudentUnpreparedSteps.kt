@@ -5,21 +5,21 @@ import arrow.core.orNull
 import com.krzykrucz.elesson.currentlesson.attendance.domain.CheckedAttendanceList
 import com.krzykrucz.elesson.currentlesson.attendance.domain.PresentStudent
 import com.krzykrucz.elesson.currentlesson.evaluate
-import com.krzykrucz.elesson.currentlesson.preparedness.domain.ReportUnpreparedness
-import com.krzykrucz.elesson.currentlesson.preparedness.domain.StudentMarkedUnprepared
-import com.krzykrucz.elesson.currentlesson.preparedness.domain.StudentReportingUnpreparedness
-import com.krzykrucz.elesson.currentlesson.preparedness.domain.StudentsUnpreparedForLesson
-import com.krzykrucz.elesson.currentlesson.preparedness.domain.UnpreparedStudent
-import com.krzykrucz.elesson.currentlesson.preparedness.domain.UnpreparednessError
-import com.krzykrucz.elesson.currentlesson.preparedness.domain.areStudentsEqual
-import com.krzykrucz.elesson.currentlesson.preparedness.domain.checkNumberOfTimesStudentWasUnpreparedInSemester
-import com.krzykrucz.elesson.currentlesson.preparedness.domain.checkStudentCanReportUnprepared
-import com.krzykrucz.elesson.currentlesson.preparedness.domain.checkStudentIsPresent
-import com.krzykrucz.elesson.currentlesson.preparedness.domain.createEvent
-import com.krzykrucz.elesson.currentlesson.preparedness.domain.hasStudentAlreadyRaisedUnprepared
-import com.krzykrucz.elesson.currentlesson.preparedness.domain.hasStudentUsedAllUnpreparednesses
-import com.krzykrucz.elesson.currentlesson.preparedness.domain.noteStudentUnprepared
-import com.krzykrucz.elesson.currentlesson.preparedness.domain.reportUnpreparedness
+import com.krzykrucz.elesson.currentlesson.preparedness.domain.api.ReportUnpreparedness
+import com.krzykrucz.elesson.currentlesson.preparedness.domain.api.StudentMarkedUnprepared
+import com.krzykrucz.elesson.currentlesson.preparedness.domain.api.StudentReportingUnpreparedness
+import com.krzykrucz.elesson.currentlesson.preparedness.domain.api.StudentsUnpreparedForLesson
+import com.krzykrucz.elesson.currentlesson.preparedness.domain.api.UnpreparedStudent
+import com.krzykrucz.elesson.currentlesson.preparedness.domain.api.UnpreparednessError
+import com.krzykrucz.elesson.currentlesson.preparedness.domain.implementation.areStudentsEqual
+import com.krzykrucz.elesson.currentlesson.preparedness.domain.implementation.checkNumberOfTimesStudentWasUnpreparedInSemester
+import com.krzykrucz.elesson.currentlesson.preparedness.domain.implementation.checkStudentCanReportUnprepared
+import com.krzykrucz.elesson.currentlesson.preparedness.domain.implementation.checkStudentIsPresent
+import com.krzykrucz.elesson.currentlesson.preparedness.domain.implementation.createEvent
+import com.krzykrucz.elesson.currentlesson.preparedness.domain.implementation.hasStudentAlreadyRaisedUnprepared
+import com.krzykrucz.elesson.currentlesson.preparedness.domain.implementation.hasStudentUsedAllUnpreparedness
+import com.krzykrucz.elesson.currentlesson.preparedness.domain.implementation.noteStudentUnprepared
+import com.krzykrucz.elesson.currentlesson.preparedness.domain.implementation.reportUnpreparedness
 import com.krzykrucz.elesson.currentlesson.preparedness.readmodel.StudentInSemester
 import com.krzykrucz.elesson.currentlesson.preparedness.readmodel.StudentSubjectUnpreparednessInASemester
 import com.krzykrucz.elesson.currentlesson.shared.AsyncFactory
@@ -55,7 +55,7 @@ class StudentUnpreparedSteps : En {
         checkStudentCanReportUnprepared(checkNumberOfTimesStudentWasUnpreparedInSemester {
             studentSubjectUnpreparednessInASemester
                 .let { AsyncFactory.justSuccess(it) }
-        }, hasStudentUsedAllUnpreparednesses),
+        }, hasStudentUsedAllUnpreparedness),
         noteStudentUnprepared(hasStudentAlreadyRaisedUnprepared),
         checkStudentIsPresent(areStudentsEqual),
         createEvent
@@ -88,7 +88,7 @@ class StudentUnpreparedSteps : En {
                 TopicTitle(NonEmptyText.of("Wingardium Leviosa charm")!!),
                 LocalDate.now()
             )
-            currentLesson = InProgressLesson(lessonIdentifier, attendance, studentsUnpreparedForLesson, anyTopic)
+            currentLesson = InProgressLesson(anyTopic)
         }
         Given("{word} {word} reported unprepared {int} times in a semester") { firstName: String, secondName: String, number: Int ->
             val student = StudentInSemester(

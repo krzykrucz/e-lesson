@@ -7,7 +7,6 @@ Feature: Student reports unprepared to lesson
     And Lesson after attendance checked but before topic assigned
     When Ron Weasley reports unprepared
     Then Ron Weasley should be noted unprepared for lesson
-#    And Ron Weasley should've been unprepared 3 times in the semester
 
   Scenario: Should not note not present student unprepared
     Given Present Ron Weasley from class 1A
@@ -16,7 +15,6 @@ Feature: Student reports unprepared to lesson
     And Lesson after attendance checked but before topic assigned
     When Harry Potter reports unprepared
     Then Harry Potter should not be noted unprepared for lesson
-#    And Ron Weasley should've been unprepared 2 times in the semester
 
   Scenario: Should not note not present student unprepared
     Given Present Ron Weasley from class 1A
@@ -25,7 +23,6 @@ Feature: Student reports unprepared to lesson
     And Lesson after topic assigned
     When Ron Weasley reports unprepared
     Then Ron Weasley should not be noted unprepared for lesson
-#    And Ron Weasley should've been unprepared 2 times in the semester
 
   Scenario: Should not note student unprepared twice
     Given Present Ron Weasley from class 1A
@@ -34,7 +31,6 @@ Feature: Student reports unprepared to lesson
     And Lesson after attendance checked but before topic assigned
     When Ron Weasley reports unprepared
     Then Ron Weasley should not be noted unprepared for lesson
-#    And Ron Weasley should've been unprepared 2 times in the semester
 
   Scenario: Should not note student unprepared too many times in the semester
     Given Present Ron Weasley from class 1A
@@ -43,5 +39,4 @@ Feature: Student reports unprepared to lesson
     And Lesson after attendance checked but before topic assigned
     When Ron Weasley reports unprepared
     Then Ron Weasley should not be noted unprepared for lesson
-#    And Ron Weasley should've been unprepared 3 times in the semester
 

@@ -3,9 +3,15 @@ package com.krzykrucz.elesson.currentlesson.topic
 
 import arrow.core.Either
 import com.krzykrucz.elesson.currentlesson.getSuccess
+import com.krzykrucz.elesson.currentlesson.shared.InProgressLesson
 import com.krzykrucz.elesson.currentlesson.shared.NaturalNumber
 import com.krzykrucz.elesson.currentlesson.shared.NonEmptyText
-import com.krzykrucz.elesson.currentlesson.topic.domain.*
+import com.krzykrucz.elesson.currentlesson.topic.domain.ChooseTopicError
+import com.krzykrucz.elesson.currentlesson.topic.domain.FinishedLessonsCount
+import com.krzykrucz.elesson.currentlesson.topic.domain.LessonOrdinalNumber
+import com.krzykrucz.elesson.currentlesson.topic.domain.LessonTopic
+import com.krzykrucz.elesson.currentlesson.topic.domain.TopicTitle
+import com.krzykrucz.elesson.currentlesson.topic.domain.chooseTopic
 import io.cucumber.java8.En
 import org.assertj.core.api.Assertions.assertThat
 import java.time.LocalDate

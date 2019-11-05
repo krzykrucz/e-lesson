@@ -8,7 +8,7 @@ import reactor.core.publisher.Mono
 
 data class MonoDomainError(val domainError: Any) : RuntimeException()
 
-fun Mono<ServerResponse>.handleErrors() = this.onErrorResume {
+fun Mono<ServerResponse>.handleErrors(): Mono<ServerResponse> = this.onErrorResume {
     when (it) {
         is MonoDomainError -> {
             val status: HttpStatus = when (it.domainError) {

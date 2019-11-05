@@ -1,9 +1,18 @@
-package com.krzykrucz.elesson.currentlesson.preparedness.domain
+package com.krzykrucz.elesson.currentlesson.preparedness.domain.implementation
 
-import arrow.core.extensions.list.foldable.find
 import arrow.core.maybe
 import com.krzykrucz.elesson.currentlesson.attendance.domain.PresentStudent
-import com.krzykrucz.elesson.currentlesson.preparedness.readmodel.GetStudentSubjectUnpreparednessInASemester
+import com.krzykrucz.elesson.currentlesson.preparedness.domain.api.CheckNumberOfTimesStudentWasUnpreparedInSemester
+import com.krzykrucz.elesson.currentlesson.preparedness.domain.api.CheckStudentCanReportUnprepared
+import com.krzykrucz.elesson.currentlesson.preparedness.domain.api.CheckStudentIsPresent
+import com.krzykrucz.elesson.currentlesson.preparedness.domain.api.CreateEvent
+import com.krzykrucz.elesson.currentlesson.preparedness.domain.api.HasStudentAlreadyRaisedUnprepared
+import com.krzykrucz.elesson.currentlesson.preparedness.domain.api.HasStudentUsedAllUnpreparedness
+import com.krzykrucz.elesson.currentlesson.preparedness.domain.api.NoteStudentUnpreparedForLesson
+import com.krzykrucz.elesson.currentlesson.preparedness.domain.api.ReportUnpreparedness
+import com.krzykrucz.elesson.currentlesson.preparedness.domain.api.StudentMarkedUnprepared
+import com.krzykrucz.elesson.currentlesson.preparedness.domain.api.UnpreparedStudent
+import com.krzykrucz.elesson.currentlesson.preparedness.domain.api.UnpreparednessError
 import com.krzykrucz.elesson.currentlesson.preparedness.readmodel.StudentInSemester
 import com.krzykrucz.elesson.currentlesson.preparedness.readmodel.StudentSubjectUnpreparednessInASemester
 import com.krzykrucz.elesson.currentlesson.shared.AsyncFactory
@@ -17,45 +26,14 @@ import com.krzykrucz.elesson.currentlesson.shared.handleError
 import com.krzykrucz.elesson.currentlesson.shared.mapError
 import com.krzykrucz.elesson.currentlesson.shared.mapSuccess
 
-//dependency
-
-fun checkNumberOfTimesStudentWasUnpreparedInSemester(
-        getStudentSubjectUnpreparednessInASemester: GetStudentSubjectUnpreparednessInASemester
-): CheckNumberOfTimesStudentWasUnpreparedInSemester = { student, className ->
-    StudentInSemester(className, student.firstName, student.secondName)
-            .let(getStudentSubjectUnpreparednessInASemester)
-}
-
-val hasStudentAlreadyRaisedUnprepared: HasStudentAlreadyRaisedUnprepared = { studentsUnpreparedForLesson, presentStudent ->
-    UnpreparedStudent(presentStudent.firstName, presentStudent.secondName)
-            .let { studentsUnpreparedForLesson.students.contains(it) }
-}
-
-val hasStudentUsedAllUnpreparednesses: HasStudentUsedAllUnpreparednesses = {
-    it.count >= 3
-}
-
-val areStudentsEqual: AreStudentsEqual = { presentStudent, studentReportingUnpreparedness ->
-    (presentStudent.firstName.name.text == studentReportingUnpreparedness.firstName)
-            .and(presentStudent.secondName.name.text == studentReportingUnpreparedness.secondName)
-}
-
-fun checkStudentIsPresent(
-        areStudentsEqual: AreStudentsEqual
-): CheckStudentIsPresent = { studentReportingUnpreparedness, checkedAttendanceList ->
-    checkedAttendanceList.presentStudents
-            .find { areStudentsEqual(it, studentReportingUnpreparedness) }
-            .toEither { UnpreparednessError.StudentNotPresent }
-}
-
 //workflows
 fun checkStudentCanReportUnprepared(
-        checkNumberOfTimesStudentWasUnpreparedInSemester: CheckNumberOfTimesStudentWasUnpreparedInSemester,
-        hasStudentUsedAllUnpreparednesses: HasStudentUsedAllUnpreparednesses
+    checkNumberOfTimesStudentWasUnpreparedInSemester: CheckNumberOfTimesStudentWasUnpreparedInSemester,
+    hasStudentUsedAllUnpreparedness: HasStudentUsedAllUnpreparedness
 ): CheckStudentCanReportUnprepared = { presentStudent, className ->
     checkNumberOfTimesStudentWasUnpreparedInSemester(presentStudent, className)
             .handleError { presentStudent.toStudentInSemester(className).let(StudentSubjectUnpreparednessInASemester.Companion::createEmpty) }
-            .failIf(hasStudentUsedAllUnpreparednesses, UnpreparednessError.UnpreparedTooManyTimes)
+            .failIf(hasStudentUsedAllUnpreparedness, UnpreparednessError.UnpreparedTooManyTimes)
             .mapSuccess { presentStudent }
             .mapError { it as UnpreparednessError }
 }
@@ -70,24 +48,23 @@ fun noteStudentUnprepared(
             .toEither { UnpreparednessError.AlreadyRaised }
 }
 
-
 fun PresentStudent.toStudentInSemester(className: ClassName) =
-        StudentInSemester(className, this.firstName, this.secondName)
+    StudentInSemester(className, this.firstName, this.secondName)
 
 val createEvent: CreateEvent = { lessonIdentifier, studentsUnpreparedForLesson ->
     StudentMarkedUnprepared(
-            lessonId = lessonIdentifier,
-            unpreparedStudent = studentsUnpreparedForLesson.students.last(),
-            studentsUnpreparedForLesson = studentsUnpreparedForLesson
+        lessonId = lessonIdentifier,
+        unpreparedStudent = studentsUnpreparedForLesson.students.last(),
+        studentsUnpreparedForLesson = studentsUnpreparedForLesson
     )
 }
 
 //pipeline
 fun reportUnpreparedness(
-        checkStudentCanReportUnprepared: CheckStudentCanReportUnprepared,
-        noteStudentUnpreparedForLesson: NoteStudentUnpreparedForLesson,
-        checkStudentIsPresent: CheckStudentIsPresent,
-        createEvent: CreateEvent
+    checkStudentCanReportUnprepared: CheckStudentCanReportUnprepared,
+    noteStudentUnpreparedForLesson: NoteStudentUnpreparedForLesson,
+    checkStudentIsPresent: CheckStudentIsPresent,
+    createEvent: CreateEvent
 ): ReportUnpreparedness = { studentReportingUnpreparedness, lesson ->
 
     when (lesson) {

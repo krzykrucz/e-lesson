@@ -2,7 +2,7 @@ package com.krzykrucz.elesson.currentlesson.preparedness.readmodel
 
 import arrow.core.Option
 import arrow.effects.IO
-import com.krzykrucz.elesson.currentlesson.preparedness.domain.StudentMarkedUnprepared
+import com.krzykrucz.elesson.currentlesson.preparedness.domain.api.StudentMarkedUnprepared
 import com.krzykrucz.elesson.currentlesson.shared.AsyncOutput
 import com.krzykrucz.elesson.currentlesson.shared.ClassName
 import com.krzykrucz.elesson.currentlesson.shared.FirstName

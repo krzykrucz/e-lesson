@@ -4,7 +4,7 @@ import arrow.core.None
 import arrow.core.Option
 import arrow.core.Some
 import com.krzykrucz.elesson.currentlesson.attendance.domain.CheckedAttendanceList
-import com.krzykrucz.elesson.currentlesson.preparedness.domain.StudentsUnpreparedForLesson
+import com.krzykrucz.elesson.currentlesson.preparedness.domain.api.StudentsUnpreparedForLesson
 import com.krzykrucz.elesson.currentlesson.topic.domain.LessonTopic
 import java.time.LocalDate
 import java.time.LocalTime
@@ -19,6 +19,7 @@ data class StudentRecord(val firstName: FirstName,
                          val numberInRegister: NumberInRegister)
 
 typealias StudentList = List<StudentRecord>
+
 data class ClassRegistry(val students: StudentList,
                          val className: ClassName)
 
@@ -60,15 +61,25 @@ data class LessonHourNumber private constructor(val number: NaturalNumber) {
 data class Teacher(val firstName: FirstName,
                    val secondName: SecondName)
 
-sealed class CurrentLesson // TODO add the rest of lessons
+sealed class CurrentLesson
+
 data class LessonAfterAttendance(
         val identifier: LessonIdentifier,
         val attendance: CheckedAttendanceList,
         val unpreparedStudents: StudentsUnpreparedForLesson
 ) : CurrentLesson()
-data class InProgressLesson(
-        val lessonIdentifier: LessonIdentifier,
-        val attendance: CheckedAttendanceList,
-        val unpreparedStudents: StudentsUnpreparedForLesson,
-        val lessonTopic: LessonTopic
-) : CurrentLesson()
+
+data class InProgressLesson(val lessonTopic: LessonTopic) : CurrentLesson()
+
+data class StartedLesson(
+        val id: LessonIdentifier,
+        val clazz: ClassRegistry
+): CurrentLesson()
+
+// TODO, should these models be enhanced as below or not
+//data class InProgressLesson(
+//        val lessonIdentifier: LessonIdentifier,
+//        val attendance: CheckedAttendanceList,
+//        val unpreparedStudents: StudentsUnpreparedForLesson,
+//        val lessonTopic: LessonTopic
+//) : CurrentLesson()

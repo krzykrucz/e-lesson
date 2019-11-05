@@ -5,8 +5,8 @@ import com.krzykrucz.elesson.currentlesson.attendance.domain.CheckedAttendanceLi
 import com.krzykrucz.elesson.currentlesson.monolith.PersistentCurrentLesson
 import com.krzykrucz.elesson.currentlesson.preparedness.adapters.readmodel.StudentInSemesterReadModel
 import com.krzykrucz.elesson.currentlesson.preparedness.adapters.rest.ReportUnpreparedRequest
-import com.krzykrucz.elesson.currentlesson.preparedness.domain.StudentReportingUnpreparedness
-import com.krzykrucz.elesson.currentlesson.preparedness.domain.StudentsUnpreparedForLesson
+import com.krzykrucz.elesson.currentlesson.preparedness.domain.api.StudentReportingUnpreparedness
+import com.krzykrucz.elesson.currentlesson.preparedness.domain.api.StudentsUnpreparedForLesson
 import com.krzykrucz.elesson.currentlesson.preparedness.readmodel.StudentInSemester
 import com.krzykrucz.elesson.currentlesson.preparedness.readmodel.StudentSubjectUnpreparednessInASemester
 import org.springframework.http.HttpEntity

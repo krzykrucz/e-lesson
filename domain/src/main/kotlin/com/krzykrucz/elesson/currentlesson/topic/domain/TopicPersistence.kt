@@ -1,6 +1,7 @@
 package com.krzykrucz.elesson.currentlesson.topic.domain
 
 import arrow.fx.IO
+import com.krzykrucz.elesson.currentlesson.shared.InProgressLesson
 import com.krzykrucz.elesson.currentlesson.shared.LessonIdentifier
 
 typealias CountFinishedLessons = () -> IO<FinishedLessonsCount>

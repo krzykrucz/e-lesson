@@ -3,6 +3,7 @@ package com.krzykrucz.elesson.currentlesson.topic.domain
 
 import arrow.core.getOrElse
 import arrow.core.maybe
+import com.krzykrucz.elesson.currentlesson.shared.InProgressLesson
 import com.krzykrucz.elesson.currentlesson.shared.NaturalNumber
 
 fun chooseTopic(): ChooseTopic = { isAttendanceChecked, topicTitle, finishedLessonsCount, date ->

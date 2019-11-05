@@ -6,7 +6,7 @@ import com.krzykrucz.elesson.currentlesson.attendance.domain.CheckedAttendanceLi
 import com.krzykrucz.elesson.currentlesson.attendance.domain.PresentStudent
 import com.krzykrucz.elesson.currentlesson.monolith.Database
 import com.krzykrucz.elesson.currentlesson.monolith.PersistentCurrentLesson
-import com.krzykrucz.elesson.currentlesson.preparedness.domain.StudentsUnpreparedForLesson
+import com.krzykrucz.elesson.currentlesson.preparedness.domain.api.StudentsUnpreparedForLesson
 import com.krzykrucz.elesson.currentlesson.shared.NaturalNumber
 import com.krzykrucz.elesson.currentlesson.shared.NonEmptyText
 import com.krzykrucz.elesson.currentlesson.topic.domain.LessonOrdinalNumber

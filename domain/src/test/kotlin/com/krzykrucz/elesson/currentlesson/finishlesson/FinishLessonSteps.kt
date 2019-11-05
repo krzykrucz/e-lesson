@@ -2,12 +2,8 @@ package com.krzykrucz.elesson.currentlesson.finishlesson
 
 import arrow.core.Either
 import com.krzykrucz.elesson.currentlesson.finishlesson.domain.*
-import com.krzykrucz.elesson.currentlesson.shared.NaturalNumber
-import com.krzykrucz.elesson.currentlesson.shared.NonEmptyText
+import com.krzykrucz.elesson.currentlesson.shared.*
 import com.krzykrucz.elesson.currentlesson.topic.domain.InProgressLesson
-import com.krzykrucz.elesson.currentlesson.topic.domain.LessonOrdinalNumber
-import com.krzykrucz.elesson.currentlesson.topic.domain.LessonTopic
-import com.krzykrucz.elesson.currentlesson.topic.domain.TopicTitle
 import io.cucumber.java8.En
 import java.time.LocalDate
 import kotlin.test.assertTrue

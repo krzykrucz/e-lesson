@@ -4,13 +4,10 @@ import arrow.core.Either
 import arrow.core.Option
 import com.krzykrucz.elesson.currentlesson.shared.LessonHourNumber
 import com.krzykrucz.elesson.currentlesson.shared.LessonTopic
-import com.krzykrucz.elesson.currentlesson.shared.NaturalNumber
 import com.krzykrucz.elesson.currentlesson.shared.TopicTitle
 import java.time.LocalDate
 
-
-data class LessonOrdinalNumber(val number: NaturalNumber)
-data class FinishedLessonsCount(val count: NaturalNumber)
+data class FinishedLessonsCount(val count: Int)
 typealias IsAttendanceChecked = Boolean
 
 data class InProgressLesson(val lessonTopic: LessonTopic) {

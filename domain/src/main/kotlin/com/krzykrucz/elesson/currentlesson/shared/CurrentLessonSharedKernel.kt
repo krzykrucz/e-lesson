@@ -17,7 +17,6 @@ data class StudentRecord(val firstName: FirstName,
                          val numberInRegister: NumberInRegister)
 
 typealias StudentList = List<StudentRecord>
-
 data class ClassRegistry(val students: StudentList,
                          val className: ClassName)
 
@@ -25,6 +24,8 @@ data class ClassRegistry(val students: StudentList,
 data class LessonIdentifier(val date: LocalDate,
                             val lessonHourNumber: LessonHourNumber,
                             val className: ClassName)
+
+private const val LESSON_LENGTH_IN_MINUTES = 45L
 
 data class LessonHourNumber private constructor(val number: NaturalNumber) {
     companion object {
@@ -53,6 +54,8 @@ data class LessonHourNumber private constructor(val number: NaturalNumber) {
 
     // Exception won't be thrown because creation of LessonHourNumber is validated
     fun getLessonScheduledStartTime(): LocalTime = SCHEDULE[this.number]!!
+
+    fun lessonScheduledEndTime(): LocalTime = getLessonScheduledStartTime().plusMinutes(LESSON_LENGTH_IN_MINUTES)
 }
 
 sealed class LessonHourNumberError(msg: String) : RuntimeException(msg) {

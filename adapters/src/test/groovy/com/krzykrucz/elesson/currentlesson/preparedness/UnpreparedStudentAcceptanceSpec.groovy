@@ -36,7 +36,7 @@ class UnpreparedStudentAcceptanceSpec extends AcceptanceSpec {
 
         when:
         def reponse = rest.exchange(
-                "/reportunprepared",
+                "/unprepared",
                 HttpMethod.POST,
                 new HttpEntity<>(request),
                 String.class

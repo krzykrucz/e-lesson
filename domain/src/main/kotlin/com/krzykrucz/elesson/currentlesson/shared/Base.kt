@@ -8,6 +8,7 @@ import arrow.core.Some
 import arrow.core.extensions.either.applicativeError.handleError
 import arrow.core.flatMap
 import arrow.core.getOrHandle
+import arrow.core.right
 import arrow.effects.IO
 
 data class NonEmptyText(val text: String) {
@@ -88,6 +89,7 @@ class NonEmptyList<T> private constructor(private val elements: List<T>) : List<
     }
 }
 
+typealias Async<T> = IO<T>
 typealias Output<Success, Error> = Either<Error, Success>
 typealias AsyncOutput<Success, Error> = IO<Output<Success, Error>>
 typealias AsyncOutputFactory = IO.Companion
@@ -97,7 +99,6 @@ fun <Success, Error> AsyncOutput<Success, Error>.failIf(predicate: Predicate<Suc
     return this.map { either -> either.flatMap { success: Success -> if (predicate(success)) Either.Left(error) else Either.Right(success) } }
 }
 
-// TODO test
 fun <Success, Error> AsyncOutput<Success, Error>.handleError(handler: (Error) -> Success): AsyncOutput<Success, Error> {
     return this.map { either -> either.handleError(handler) }
 }
@@ -118,7 +119,6 @@ fun <S1, Error, S2> AsyncOutput<S1, Error>.flatMapAsyncSuccess(transformer: (S1)
     }
 }
 
-// TODO test
 fun <S1, Error, S2> AsyncOutput<S1, Error>.flatMapSuccess(transformer: (S1) -> Output<S2, Error>): AsyncOutput<S2, Error> {
     return this.flatMap { either ->
         either.map { success -> this.map { transformer(success) } }

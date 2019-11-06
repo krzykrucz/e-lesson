@@ -24,19 +24,10 @@ private class UnpreparednessReadModel : WriteUnpreparednessInTheRegister {
             event.unpreparedStudent.firstName,
             event.unpreparedStudent.secondName
         )
-            .let {
-                Option.fromNullable(READ_MODEL[it])
-                    .getOrElse { StudentSubjectUnpreparednessInASemester.createEmpty(it) }
-            }
-            // TODO avoid such nesting
-            .let {
-                READ_MODEL.compute(it.student) { student, unprep ->
-                    Option.fromNullable(unprep)
-                        .getOrElse { StudentSubjectUnpreparednessInASemester.createEmpty(student) }
-                        .let { it.copy(count = it.count.inc()) }
-                } ?: it
-            }.let { IO.just(it) }
-
+            .let { READ_MODEL[it] ?: StudentSubjectUnpreparednessInASemester.createEmpty(it) }
+            .let { it.copy(count = it.count.inc()) }
+            .apply { READ_MODEL[this.student] = this }
+            .let { IO.just(it) }
 }
 
 private val getStudentSubjectUnpreparednessInASemester: GetStudentSubjectUnpreparednessInASemester = { student ->

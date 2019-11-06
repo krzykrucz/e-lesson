@@ -1,5 +1,9 @@
 package com.krzykrucz.elesson.currentlesson.preparedness
 
+import com.krzykrucz.elesson.currentlesson.preparedness.domain.ReportUnpreparedStudentApi
+import com.krzykrucz.elesson.currentlesson.preparedness.domain.api.FindCurrentLesson
+import com.krzykrucz.elesson.currentlesson.preparedness.domain.api.NotifyStudentMarkedUnprepared
+import com.krzykrucz.elesson.currentlesson.preparedness.domain.api.PersistUnpreparedStudentToLesson
 import com.krzykrucz.elesson.currentlesson.preparedness.domain.api.ReportUnpreparedness
 import com.krzykrucz.elesson.currentlesson.preparedness.domain.implementation.areStudentsEqual
 import com.krzykrucz.elesson.currentlesson.preparedness.domain.implementation.checkNumberOfTimesStudentWasUnpreparedInSemester
@@ -10,7 +14,9 @@ import com.krzykrucz.elesson.currentlesson.preparedness.domain.implementation.ha
 import com.krzykrucz.elesson.currentlesson.preparedness.domain.implementation.hasStudentUsedAllUnpreparedness
 import com.krzykrucz.elesson.currentlesson.preparedness.domain.implementation.noteStudentUnprepared
 import com.krzykrucz.elesson.currentlesson.preparedness.domain.implementation.reportUnpreparedness
+import com.krzykrucz.elesson.currentlesson.preparedness.domain.reportUnpreparedStudentApi
 import com.krzykrucz.elesson.currentlesson.preparedness.readmodel.GetStudentSubjectUnpreparednessInASemester
+import com.krzykrucz.elesson.currentlesson.preparedness.readmodel.WriteUnpreparednessInTheRegister
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
@@ -29,6 +35,21 @@ class StudentUnpreparedDomainConfig {
             noteStudentUnprepared(hasStudentAlreadyRaisedUnprepared),
             checkStudentIsPresent(areStudentsEqual),
             createEvent
+        )
+
+    @Bean
+    fun reportUnpreparednessApiBean(
+        reportUnpreparedness: ReportUnpreparedness,
+        writeUnpreparednessInTheRegister: WriteUnpreparednessInTheRegister,
+        findCurrentLesson: FindCurrentLesson,
+        persistUnpreparedStudentToLesson: PersistUnpreparedStudentToLesson,
+        notifyStudentMarkedUnprepared: NotifyStudentMarkedUnprepared
+    ): ReportUnpreparedStudentApi =
+        reportUnpreparedStudentApi(
+            findCurrentLesson,
+            reportUnpreparedness,
+            persistUnpreparedStudentToLesson,
+            notifyStudentMarkedUnprepared
         )
 
 }

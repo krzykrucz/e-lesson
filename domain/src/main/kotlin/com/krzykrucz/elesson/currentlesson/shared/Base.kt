@@ -1,6 +1,14 @@
 package com.krzykrucz.elesson.currentlesson.shared
 
-import arrow.core.*
+import arrow.core.Either
+import arrow.core.None
+import arrow.core.Option
+import arrow.core.Predicate
+import arrow.core.Some
+import arrow.core.extensions.either.applicativeError.handleError
+import arrow.core.flatMap
+import arrow.core.getOrHandle
+import arrow.core.right
 import arrow.effects.IO
 
 data class NonEmptyText(val text: String) {
@@ -13,6 +21,8 @@ data class NonEmptyText(val text: String) {
 
 data class WholeNumber private constructor(val number: Int) {
     operator fun minus(number: WholeNumber): WholeNumber? = of(this.number - number.number)
+    operator fun inc(): WholeNumber = this.copy(number = this.number + 1)
+    operator fun compareTo(number: Int): Int = this.number.compareTo(number)
 
     companion object {
         val ZERO = WholeNumber(0)
@@ -79,12 +89,18 @@ class NonEmptyList<T> private constructor(private val elements: List<T>) : List<
     }
 }
 
+typealias Async<T> = IO<T>
 typealias Output<Success, Error> = Either<Error, Success>
 typealias AsyncOutput<Success, Error> = IO<Output<Success, Error>>
+typealias AsyncOutputFactory = IO.Companion
 
 
 fun <Success, Error> AsyncOutput<Success, Error>.failIf(predicate: Predicate<Success>, error: Error): AsyncOutput<Success, Error> {
     return this.map { either -> either.flatMap { success: Success -> if (predicate(success)) Either.Left(error) else Either.Right(success) } }
+}
+
+fun <Success, Error> AsyncOutput<Success, Error>.handleError(handler: (Error) -> Success): AsyncOutput<Success, Error> {
+    return this.map { either -> either.handleError(handler) }
 }
 
 
@@ -96,9 +112,16 @@ fun <Success, E1, E2> AsyncOutput<Success, E1>.mapError(transformer: (E1) -> E2)
     return this.map { either -> either.mapLeft(transformer) }
 }
 
-fun <S1, Error, S2> AsyncOutput<S1, Error>.flatMapSuccess(transformer: (S1) -> AsyncOutput<S2, Error>): AsyncOutput<S2, Error> {
+fun <S1, Error, S2> AsyncOutput<S1, Error>.flatMapAsyncSuccess(transformer: (S1) -> AsyncOutput<S2, Error>): AsyncOutput<S2, Error> {
     return this.flatMap { either ->
         either.map { transformer(it) }
+                .getOrHandle { IO.just(Either.left(it)) }
+    }
+}
+
+fun <S1, Error, S2> AsyncOutput<S1, Error>.flatMapSuccess(transformer: (S1) -> Output<S2, Error>): AsyncOutput<S2, Error> {
+    return this.flatMap { either ->
+        either.map { success -> this.map { transformer(success) } }
                 .getOrHandle { IO.just(Either.left(it)) }
     }
 }

@@ -1,19 +1,19 @@
 package com.krzykrucz.elesson.currentlesson.startlesson.adapters.rest
 
 import arrow.core.getOrHandle
+import com.krzykrucz.elesson.currentlesson.MonoDomainError
+import com.krzykrucz.elesson.currentlesson.handleErrors
 import com.krzykrucz.elesson.currentlesson.shared.FirstName
 import com.krzykrucz.elesson.currentlesson.shared.LessonIdentifier
 import com.krzykrucz.elesson.currentlesson.shared.NonEmptyText
 import com.krzykrucz.elesson.currentlesson.shared.SecondName
+import com.krzykrucz.elesson.currentlesson.shared.StartedLesson
 import com.krzykrucz.elesson.currentlesson.shared.Teacher
 import com.krzykrucz.elesson.currentlesson.startlesson.domain.AttemptedLessonStartTime
 import com.krzykrucz.elesson.currentlesson.startlesson.domain.PersistStartedLessonIfDoesNotExist
 import com.krzykrucz.elesson.currentlesson.startlesson.domain.StartLesson
-import com.krzykrucz.elesson.currentlesson.startlesson.domain.StartLessonError
-import com.krzykrucz.elesson.currentlesson.startlesson.domain.StartedLesson
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.web.reactive.function.BodyInserters
 import org.springframework.web.reactive.function.server.ServerResponse
@@ -24,8 +24,8 @@ import javax.validation.constraints.NotEmpty
 data class StudentResponse(val name: String)
 
 data class ClassRegistryResponse(
-        val lessonId: LessonIdentifier,
-        val students: List<StudentResponse>
+    val lessonId: LessonIdentifier,
+    val students: List<StudentResponse>
 )
 
 data class StartLessonRequest(
@@ -50,13 +50,11 @@ private fun StartedLesson.toDto() =
         .map { StudentResponse("${it.firstName.name.text} ${it.secondName.name.text}") }
         .let { ClassRegistryResponse(this.id, it) }
 
-data class MonoError(val domainError: Any) : RuntimeException()
-
 fun startLessonToMono(startLessonRequest: StartLessonRequest, startLesson: StartLesson): Mono<StartedLesson> =
     startLesson(startLessonRequest.toTeacher(), AttemptedLessonStartTime.now())
         .unsafeRunSync()
         .map { Mono.just(it) }
-        .getOrHandle { Mono.error(MonoError(it)) }
+        .getOrHandle { Mono.error(MonoDomainError(it)) }
 
 fun persistLessonToMono(startedLesson: StartedLesson, persistLesson: PersistStartedLessonIfDoesNotExist): Mono<StartedLesson> =
     persistLesson(startedLesson)
@@ -64,10 +62,10 @@ fun persistLessonToMono(startedLesson: StartedLesson, persistLesson: PersistStar
         .let { Mono.just(startedLesson) }
 
 @Configuration
-class StartLessonRoute {
+class StartLessonRouteAdapter {
 
     @Bean
-    fun route(persistLesson: PersistStartedLessonIfDoesNotExist,
+    fun startLessonRoute(persistLesson: PersistStartedLessonIfDoesNotExist,
               startLesson: StartLesson) =
         router {
             POST("/startlesson") { request ->
@@ -80,20 +78,7 @@ class StartLessonRoute {
                             .contentType(MediaType.APPLICATION_JSON)
                             .body(BodyInserters.fromObject(it))
                     }
-                    .onErrorResume {
-                        when (it) {
-                            is MonoError -> {
-                                val status: HttpStatus = when (it.domainError) {
-                                    is StartLessonError.ClassRegistryUnavailable -> HttpStatus.INTERNAL_SERVER_ERROR
-                                    else -> HttpStatus.BAD_REQUEST
-                                }
-                                ServerResponse.status(status)
-                                    .body(BodyInserters.fromObject(it.domainError.javaClass.simpleName))
-                            }
-                            else -> ServerResponse.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                                .render(it.localizedMessage)
-                        }
-                    }
+                    .handleErrors()
             }
         }
 }

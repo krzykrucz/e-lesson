@@ -7,6 +7,7 @@ import com.krzykrucz.elesson.currentlesson.attendance.domain.CheckedAttendanceLi
 import com.krzykrucz.elesson.currentlesson.attendance.domain.PresentStudent
 import com.krzykrucz.elesson.currentlesson.monolith.Database
 import com.krzykrucz.elesson.currentlesson.monolith.PersistentCurrentLesson
+import com.krzykrucz.elesson.currentlesson.preparedness.domain.api.StudentsUnpreparedForLesson
 import com.krzykrucz.elesson.currentlesson.shared.*
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpMethod
@@ -29,7 +30,8 @@ class TopicAcceptanceSpec extends AcceptanceSpec {
                 new CheckedAttendanceList(new ArrayList<PresentStudent>(), new ArrayList<AbsentStudent>()),
                 new WinterSemester(),
                 new LessonSubject(new NonEmptyText("Elixirs")),
-                new InProgress()
+                new InProgress(),
+                new StudentsUnpreparedForLesson([])
         )
         Database.LESSON_DATABASE.put(lessonId, lessonWithAttendanceChecked)
         def title = new TopicTitle(new NonEmptyText("Three forbidden spells"))

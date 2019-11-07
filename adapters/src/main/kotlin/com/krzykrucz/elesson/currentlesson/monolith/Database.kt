@@ -2,10 +2,31 @@ package com.krzykrucz.elesson.currentlesson.monolith
 
 import arrow.core.Option
 import com.krzykrucz.elesson.currentlesson.attendance.domain.Attendance
+import com.krzykrucz.elesson.currentlesson.attendance.domain.CheckedAttendanceList
 import com.krzykrucz.elesson.currentlesson.attendance.domain.IncompleteAttendanceList
-import com.krzykrucz.elesson.currentlesson.shared.*
+import com.krzykrucz.elesson.currentlesson.preparedness.domain.api.StudentsUnpreparedForLesson
+import com.krzykrucz.elesson.currentlesson.shared.ClassName
+import com.krzykrucz.elesson.currentlesson.shared.ClassRegistry
+import com.krzykrucz.elesson.currentlesson.shared.FirstName
+import com.krzykrucz.elesson.currentlesson.shared.InProgressLesson
+import com.krzykrucz.elesson.currentlesson.shared.LessonAfterAttendance
+import com.krzykrucz.elesson.currentlesson.shared.LessonHourNumber
+import com.krzykrucz.elesson.currentlesson.shared.LessonIdentifier
+import com.krzykrucz.elesson.currentlesson.shared.LessonStatus
+import com.krzykrucz.elesson.currentlesson.shared.LessonSubject
+import com.krzykrucz.elesson.currentlesson.shared.LessonTopic
+import com.krzykrucz.elesson.currentlesson.shared.NaturalNumber
+import com.krzykrucz.elesson.currentlesson.shared.NonEmptyText
+import com.krzykrucz.elesson.currentlesson.shared.NumberInRegister
+import com.krzykrucz.elesson.currentlesson.shared.Scheduled
+import com.krzykrucz.elesson.currentlesson.shared.SecondName
+import com.krzykrucz.elesson.currentlesson.shared.Semester
+import com.krzykrucz.elesson.currentlesson.shared.StartedLesson
+import com.krzykrucz.elesson.currentlesson.shared.StudentRecord
+import com.krzykrucz.elesson.currentlesson.shared.WinterSemester
 import java.time.LocalDate
 import java.util.concurrent.ConcurrentHashMap
+import arrow.core.Option.Companion as Option1
 
 
 data class PersistentCurrentLesson(
@@ -15,8 +36,37 @@ data class PersistentCurrentLesson(
     val attendance: Attendance = IncompleteAttendanceList(),
     val semester: Semester = WinterSemester,
     val subject: LessonSubject,
-    val status: LessonStatus
-)
+    val status: LessonStatus,
+    val unpreparedStudents: StudentsUnpreparedForLesson = StudentsUnpreparedForLesson()
+) {
+
+    fun toLessonAfterAttendance(): Option<LessonAfterAttendance> {
+        if (this.lessonTopic.isEmpty() && this.attendance is CheckedAttendanceList) {
+            return LessonAfterAttendance(
+                this.lessonId,
+                this.attendance,
+                this.unpreparedStudents
+            ).let(Option1::just)
+        }
+        return Option1.empty()
+    }
+
+    fun toStartedLesson(): Option<StartedLesson> {
+        if (this.attendance is IncompleteAttendanceList) {
+            return StartedLesson(
+                this.lessonId,
+                this.classRegistry,
+                this.subject
+            ).let(Option1::just)
+        }
+        return Option1.empty()
+    }
+
+    fun toLessonInProgress(): Option<InProgressLesson> =
+        this.lessonTopic
+            .map(::InProgressLesson)
+
+}
 
 class Database {
 

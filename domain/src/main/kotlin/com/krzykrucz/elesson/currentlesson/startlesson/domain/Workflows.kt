@@ -3,6 +3,7 @@ package com.krzykrucz.elesson.currentlesson.startlesson.domain
 import com.krzykrucz.elesson.currentlesson.shared.AsyncOutput
 import com.krzykrucz.elesson.currentlesson.shared.ClassName
 import com.krzykrucz.elesson.currentlesson.shared.ClassRegistry
+import com.krzykrucz.elesson.currentlesson.shared.StartedLesson
 import com.krzykrucz.elesson.currentlesson.shared.Teacher
 import java.time.LocalDateTime
 

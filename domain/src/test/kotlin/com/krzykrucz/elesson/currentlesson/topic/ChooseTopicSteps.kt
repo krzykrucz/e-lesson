@@ -3,10 +3,14 @@ package com.krzykrucz.elesson.currentlesson.topic
 
 import arrow.core.Either
 import com.krzykrucz.elesson.currentlesson.getSuccess
-import com.krzykrucz.elesson.currentlesson.shared.*
+import com.krzykrucz.elesson.currentlesson.shared.InProgressLesson
+import com.krzykrucz.elesson.currentlesson.shared.LessonOrdinalNumber
+import com.krzykrucz.elesson.currentlesson.shared.LessonTopic
+import com.krzykrucz.elesson.currentlesson.shared.NaturalNumber
+import com.krzykrucz.elesson.currentlesson.shared.NonEmptyText
+import com.krzykrucz.elesson.currentlesson.shared.TopicTitle
 import com.krzykrucz.elesson.currentlesson.topic.domain.ChooseTopicError
 import com.krzykrucz.elesson.currentlesson.topic.domain.FinishedLessonsCount
-import com.krzykrucz.elesson.currentlesson.topic.domain.InProgressLesson
 import com.krzykrucz.elesson.currentlesson.topic.domain.chooseTopic
 import io.cucumber.java8.En
 import org.assertj.core.api.Assertions.assertThat

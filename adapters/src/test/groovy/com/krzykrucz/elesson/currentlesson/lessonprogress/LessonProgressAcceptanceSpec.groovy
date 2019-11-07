@@ -8,6 +8,7 @@ import com.krzykrucz.elesson.currentlesson.attendance.domain.PresentStudent
 import com.krzykrucz.elesson.currentlesson.lessonprogress.adapters.rest.LessonProgressDto
 import com.krzykrucz.elesson.currentlesson.monolith.Database
 import com.krzykrucz.elesson.currentlesson.monolith.PersistentCurrentLesson
+import com.krzykrucz.elesson.currentlesson.preparedness.domain.api.StudentsUnpreparedForLesson
 import com.krzykrucz.elesson.currentlesson.shared.InProgress
 import com.krzykrucz.elesson.currentlesson.shared.LessonSubject
 import com.krzykrucz.elesson.currentlesson.shared.NonEmptyText
@@ -25,8 +26,9 @@ class LessonProgressAcceptanceSpec extends AcceptanceSpec {
                 new None(),
                 new CheckedAttendanceList(new ArrayList<PresentStudent>(), new ArrayList<AbsentStudent>()),
                 new WinterSemester(),
-                new LessonSubject(new NonEmptyText("Elixirs")),
-                new InProgress()
+                new LessonSubject(new NonEmptyText("Potions")),
+                new InProgress(),
+                new StudentsUnpreparedForLesson([])
         )
         Database.LESSON_DATABASE.put(lessonId, currentLesson)
 

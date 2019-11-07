@@ -4,6 +4,8 @@ import arrow.core.Either
 import arrow.core.None
 import arrow.core.Option
 import arrow.core.Some
+import com.krzykrucz.elesson.currentlesson.attendance.domain.CheckedAttendanceList
+import com.krzykrucz.elesson.currentlesson.preparedness.domain.api.StudentsUnpreparedForLesson
 import java.time.LocalDate
 import java.time.LocalTime
 
@@ -17,6 +19,7 @@ data class StudentRecord(val firstName: FirstName,
                          val numberInRegister: NumberInRegister)
 
 typealias StudentList = List<StudentRecord>
+
 data class ClassRegistry(val students: StudentList,
                          val className: ClassName)
 
@@ -86,3 +89,32 @@ object InProgress : LessonStatus("In Progress")
 object Finished : LessonStatus("Finished")
 
 
+sealed class CurrentLesson
+
+data class LessonAfterAttendance(
+    val identifier: LessonIdentifier,
+    val attendance: CheckedAttendanceList,
+    val unpreparedStudents: StudentsUnpreparedForLesson
+) : CurrentLesson()
+
+data class InProgressLesson(
+    val lessonTopic: LessonTopic
+) : CurrentLesson() {
+    fun lessonHourNumber(): Option<LessonHourNumber> = lessonTopic.run {
+        LessonHourNumber.of(lessonOrdinalNumber.number)
+    }
+}
+
+data class StartedLesson(
+    val id: LessonIdentifier,
+    val clazz: ClassRegistry,
+    val subject: LessonSubject
+) : CurrentLesson()
+
+// TODO, should these models be enhanced as below or not
+//data class InProgressLesson(
+//        val lessonIdentifier: LessonIdentifier,
+//        val attendance: CheckedAttendanceList,
+//        val unpreparedStudents: StudentsUnpreparedForLesson,
+//        val lessonTopic: LessonTopic
+//) : CurrentLesson()

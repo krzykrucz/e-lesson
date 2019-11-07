@@ -5,12 +5,12 @@ import arrow.core.getOrElse
 import com.krzykrucz.elesson.currentlesson.finishlesson.domain.CurrentTime
 import com.krzykrucz.elesson.currentlesson.finishlesson.domain.FinishLessonError
 import com.krzykrucz.elesson.currentlesson.finishlesson.domain.FinishedLesson
+import com.krzykrucz.elesson.currentlesson.shared.InProgressLesson
 import com.krzykrucz.elesson.currentlesson.shared.isError
-import com.krzykrucz.elesson.currentlesson.topic.domain.InProgressLesson
 import io.cucumber.core.api.TypeRegistry
 import io.cucumber.core.api.TypeRegistryConfigurer
 import io.cucumber.cucumberexpressions.ParameterType
-import java.util.*
+import java.util.Locale
 import java.util.Locale.ENGLISH
 
 

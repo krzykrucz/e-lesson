@@ -1,7 +1,7 @@
 package com.krzykrucz.elesson.currentlesson.finishlesson.domain
 
-import com.krzykrucz.elesson.currentlesson.topic.domain.LessonOrdinalNumber
-import com.krzykrucz.elesson.currentlesson.topic.domain.LessonTopic
+import com.krzykrucz.elesson.currentlesson.shared.LessonOrdinalNumber
+import com.krzykrucz.elesson.currentlesson.shared.LessonTopic
 import java.time.LocalTime
 
 enum class LessonBell {

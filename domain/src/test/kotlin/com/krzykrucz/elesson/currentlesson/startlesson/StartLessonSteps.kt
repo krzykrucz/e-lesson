@@ -1,26 +1,9 @@
 package com.krzykrucz.elesson.currentlesson.startlesson
 
 import arrow.effects.IO
-import com.krzykrucz.elesson.currentlesson.shared.AsyncFactory
-import com.krzykrucz.elesson.currentlesson.shared.ClassName
-import com.krzykrucz.elesson.currentlesson.shared.ClassRegistry
-import com.krzykrucz.elesson.currentlesson.shared.Output
-import com.krzykrucz.elesson.currentlesson.shared.Teacher
-import com.krzykrucz.elesson.currentlesson.evaluate
-import com.krzykrucz.elesson.currentlesson.getError
-import com.krzykrucz.elesson.currentlesson.getSuccess
-import com.krzykrucz.elesson.currentlesson.shared.isError
-import com.krzykrucz.elesson.currentlesson.shared.isSuccess
-import com.krzykrucz.elesson.currentlesson.lessonHourNumberOf
-import com.krzykrucz.elesson.currentlesson.newClassName
-import com.krzykrucz.elesson.currentlesson.newStudent
-import com.krzykrucz.elesson.currentlesson.newTeacher
-import com.krzykrucz.elesson.currentlesson.startlesson.domain.CheckScheduledLesson
-import com.krzykrucz.elesson.currentlesson.startlesson.domain.FetchClassRegistry
-import com.krzykrucz.elesson.currentlesson.startlesson.domain.ScheduledLesson
-import com.krzykrucz.elesson.currentlesson.startlesson.domain.StartLessonError
-import com.krzykrucz.elesson.currentlesson.startlesson.domain.StartedLesson
-import com.krzykrucz.elesson.currentlesson.startlesson.domain.startLesson
+import com.krzykrucz.elesson.currentlesson.*
+import com.krzykrucz.elesson.currentlesson.shared.*
+import com.krzykrucz.elesson.currentlesson.startlesson.domain.*
 import io.cucumber.java8.En
 import org.hamcrest.CoreMatchers.instanceOf
 import org.hamcrest.MatcherAssert.assertThat
@@ -52,7 +35,8 @@ class StartLessonSteps : En {
                                 LocalDateTime.parse(time),
                                 givenLessonHourNumber,
                                 teacher,
-                                newClassName(className)))
+                                newClassName(className),
+                                LessonSubject(NonEmptyText("Elixirs"))))
             }
         }
         Given("Class registry for class {word}") { className: String ->

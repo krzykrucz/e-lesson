@@ -3,9 +3,11 @@ package com.krzykrucz.elesson.currentlesson.topic
 
 import arrow.core.Either
 import com.krzykrucz.elesson.currentlesson.getSuccess
-import com.krzykrucz.elesson.currentlesson.shared.NaturalNumber
-import com.krzykrucz.elesson.currentlesson.shared.NonEmptyText
-import com.krzykrucz.elesson.currentlesson.topic.domain.*
+import com.krzykrucz.elesson.currentlesson.shared.*
+import com.krzykrucz.elesson.currentlesson.topic.domain.ChooseTopicError
+import com.krzykrucz.elesson.currentlesson.topic.domain.FinishedLessonsCount
+import com.krzykrucz.elesson.currentlesson.topic.domain.InProgressLesson
+import com.krzykrucz.elesson.currentlesson.topic.domain.chooseTopic
 import io.cucumber.java8.En
 import org.assertj.core.api.Assertions.assertThat
 import java.time.LocalDate
@@ -25,7 +27,7 @@ class ChooseTopicSteps : En {
             isAttendanceChecked = true
         }
         And("Finished Lessons Count") {
-            finishedLessonsCount = FinishedLessonsCount(NaturalNumber.FOUR)
+            finishedLessonsCount = FinishedLessonsCount(4)
         }
         And("Attendance is not checked") {
             isAttendanceChecked = false

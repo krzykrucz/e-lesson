@@ -15,7 +15,7 @@ private fun ScheduledLesson.lessonIdentifier() =
         LessonIdentifier(this.scheduledTime.toLocalDate(), this.lessonHourNumber, this.className)
 
 private fun ScheduledLesson.toCurrentLessonWithClass(classRegistry: ClassRegistry) =
-        StartedLesson(this.lessonIdentifier(), classRegistry)
+        StartedLesson(this.lessonIdentifier(), classRegistry, this.subject)
 
 
 fun startLesson(checkScheduledLesson: CheckScheduledLesson,

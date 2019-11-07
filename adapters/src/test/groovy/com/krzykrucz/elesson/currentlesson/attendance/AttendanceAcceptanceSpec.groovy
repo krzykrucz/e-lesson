@@ -1,9 +1,9 @@
 package com.krzykrucz.elesson.currentlesson.attendance
 
-import com.krzykrucz.elesson.currentlesson.attendance.adapters.rest.AttendanceDto
-import com.krzykrucz.elesson.currentlesson.attendance.adapters.rest.AttendanceResponseDto
-import com.krzykrucz.elesson.currentlesson.attendance.adapters.rest.LateAttendanceDto
-import com.krzykrucz.elesson.currentlesson.attendance.domain.CheckedAttendanceList
+import com.krzykrucz.elesson.currentlesson.attendance.adapters.AttendanceDto
+import com.krzykrucz.elesson.currentlesson.attendance.adapters.AttendanceResponseDto
+import com.krzykrucz.elesson.currentlesson.attendance.adapters.LateAttendanceDto
+import com.krzykrucz.elesson.currentlesson.monolith.Database
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpMethod
 
@@ -21,10 +21,10 @@ class AttendanceAcceptanceSpec extends AttendanceBaseSpec {
                         lessonId
                 )),
                 AttendanceResponseDto
-        ).body
+        )
 
         then: 'Attendance is not checked yet'
-        !attendanceWithHarryPotter.checked
+        !attendanceWithHarryPotter.body.checked
 
         when: 'Note Tom Riddle absent and attendance is checked, class has only 2 students'
         def attendanceWithTomRiddle = rest.exchange(
@@ -55,16 +55,8 @@ class AttendanceAcceptanceSpec extends AttendanceBaseSpec {
         then: 'Attendance is still checked'
         attendanceWithLateTomRiddle.checked
 
-        when: 'Get attendance of first lesson of 1A'
-        def date = "2019-09-09"
-        def lessonHourNumber = 1
-        def className = "1A"
-        def checkedAttendanceOf1A = rest.<CheckedAttendanceList> getForObject(
-                "/attendance?date=${date}&lessonHourNumber=${lessonHourNumber}&className=${className}",
-                CheckedAttendanceList
-        )
-
-        then: 'It is checked with Tom and Harry present and no absent students'
+        and: 'It is checked with Tom and Harry present and no absent students'
+        def checkedAttendanceOf1A = Database.LESSON_DATABASE.get(lessonId).attendance
         checkedAttendanceOf1A.presentStudents == [
                 presentStudentOf("Harry", "Potter", 1),
                 presentStudentOf("Tom", "Riddle", 2),

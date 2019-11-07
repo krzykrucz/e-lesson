@@ -12,13 +12,18 @@ import com.krzykrucz.elesson.currentlesson.shared.InProgressLesson
 import com.krzykrucz.elesson.currentlesson.shared.LessonAfterAttendance
 import com.krzykrucz.elesson.currentlesson.shared.LessonHourNumber
 import com.krzykrucz.elesson.currentlesson.shared.LessonIdentifier
+import com.krzykrucz.elesson.currentlesson.shared.LessonStatus
+import com.krzykrucz.elesson.currentlesson.shared.LessonSubject
+import com.krzykrucz.elesson.currentlesson.shared.LessonTopic
 import com.krzykrucz.elesson.currentlesson.shared.NaturalNumber
 import com.krzykrucz.elesson.currentlesson.shared.NonEmptyText
 import com.krzykrucz.elesson.currentlesson.shared.NumberInRegister
+import com.krzykrucz.elesson.currentlesson.shared.Scheduled
 import com.krzykrucz.elesson.currentlesson.shared.SecondName
+import com.krzykrucz.elesson.currentlesson.shared.Semester
 import com.krzykrucz.elesson.currentlesson.shared.StartedLesson
 import com.krzykrucz.elesson.currentlesson.shared.StudentRecord
-import com.krzykrucz.elesson.currentlesson.topic.domain.LessonTopic
+import com.krzykrucz.elesson.currentlesson.shared.WinterSemester
 import java.time.LocalDate
 import java.util.concurrent.ConcurrentHashMap
 import arrow.core.Option.Companion as Option1
@@ -27,13 +32,16 @@ import arrow.core.Option.Companion as Option1
 data class PersistentCurrentLesson(
     val lessonId: LessonIdentifier,
     val classRegistry: ClassRegistry,
-    val lessonTopic: LessonTopic? = null,
+    val lessonTopic: Option<LessonTopic> = Option.empty(),
     val attendance: Attendance = IncompleteAttendanceList(),
+    val semester: Semester = WinterSemester,
+    val subject: LessonSubject,
+    val status: LessonStatus,
     val unpreparedStudents: StudentsUnpreparedForLesson = StudentsUnpreparedForLesson()
 ) {
 
     fun toLessonAfterAttendance(): Option<LessonAfterAttendance> {
-        if (this.lessonTopic == null && this.attendance is CheckedAttendanceList) {
+        if (this.lessonTopic.isEmpty() && this.attendance is CheckedAttendanceList) {
             return LessonAfterAttendance(
                 this.lessonId,
                 this.attendance,
@@ -47,20 +55,16 @@ data class PersistentCurrentLesson(
         if (this.attendance is IncompleteAttendanceList) {
             return StartedLesson(
                 this.lessonId,
-                this.classRegistry
+                this.classRegistry,
+                this.subject
             ).let(Option1::just)
         }
         return Option1.empty()
     }
 
-    fun toLessonInProgress(): Option<InProgressLesson> {
-        if (this.lessonTopic != null) {
-            return InProgressLesson(this.lessonTopic)
-                .let(Option1::just)
-        }
-        return Option1.empty()
-    }
-
+    fun toLessonInProgress(): Option<InProgressLesson> =
+        this.lessonTopic
+            .map(::InProgressLesson)
 
 }
 
@@ -82,7 +86,10 @@ class Database {
         val LESSON_DATABASE: ConcurrentHashMap<LessonIdentifier, PersistentCurrentLesson> = ConcurrentHashMap(mutableMapOf(
             lessonId1 to PersistentCurrentLesson(
                 lessonId1,
-                classRegistryOf1A
+                classRegistryOf1A,
+                semester = WinterSemester,
+                subject = LessonSubject(NonEmptyText("Defense from dark arts")),
+                status = Scheduled
             )
         ))
 

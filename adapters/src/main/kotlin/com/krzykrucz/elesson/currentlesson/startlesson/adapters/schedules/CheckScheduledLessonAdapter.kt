@@ -3,12 +3,7 @@ package com.krzykrucz.elesson.currentlesson.startlesson.adapters.schedules
 import arrow.core.Either
 import arrow.core.getOrElse
 import arrow.effects.IO
-import com.krzykrucz.elesson.currentlesson.shared.AsyncOutput
-import com.krzykrucz.elesson.currentlesson.shared.ClassName
-import com.krzykrucz.elesson.currentlesson.shared.LessonHourNumber
-import com.krzykrucz.elesson.currentlesson.shared.NaturalNumber
-import com.krzykrucz.elesson.currentlesson.shared.NonEmptyText
-import com.krzykrucz.elesson.currentlesson.shared.Teacher
+import com.krzykrucz.elesson.currentlesson.shared.*
 import com.krzykrucz.elesson.currentlesson.startlesson.domain.CheckScheduledLesson
 import com.krzykrucz.elesson.currentlesson.startlesson.domain.ScheduledLesson
 import java.time.LocalDateTime
@@ -23,7 +18,8 @@ class LessonSchedulesClient : CheckScheduledLesson {
                         time,
                         it,
                         teacher,
-                        ClassName(NonEmptyText.of("Gryffindor")!!)
+                        ClassName(NonEmptyText.of("Gryffindor")!!),
+                        LessonSubject(NonEmptyText("Elixirs"))
                 )
             }
             .map { IO { Either.right(it) } }

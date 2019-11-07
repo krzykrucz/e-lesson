@@ -11,6 +11,8 @@ import com.krzykrucz.elesson.currentlesson.newTeacher
 import com.krzykrucz.elesson.currentlesson.shared.AsyncFactory
 import com.krzykrucz.elesson.currentlesson.shared.ClassName
 import com.krzykrucz.elesson.currentlesson.shared.ClassRegistry
+import com.krzykrucz.elesson.currentlesson.shared.LessonSubject
+import com.krzykrucz.elesson.currentlesson.shared.NonEmptyText
 import com.krzykrucz.elesson.currentlesson.shared.Output
 import com.krzykrucz.elesson.currentlesson.shared.StartedLesson
 import com.krzykrucz.elesson.currentlesson.shared.Teacher
@@ -52,7 +54,8 @@ class StartLessonSteps : En {
                                 LocalDateTime.parse(time),
                                 givenLessonHourNumber,
                                 teacher,
-                                newClassName(className)))
+                                newClassName(className),
+                                LessonSubject(NonEmptyText("Elixirs"))))
             }
         }
         Given("Class registry for class {word}") { className: String ->

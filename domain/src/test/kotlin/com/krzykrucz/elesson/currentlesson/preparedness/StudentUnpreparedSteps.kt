@@ -30,14 +30,14 @@ import com.krzykrucz.elesson.currentlesson.shared.InProgressLesson
 import com.krzykrucz.elesson.currentlesson.shared.LessonAfterAttendance
 import com.krzykrucz.elesson.currentlesson.shared.LessonHourNumber
 import com.krzykrucz.elesson.currentlesson.shared.LessonIdentifier
+import com.krzykrucz.elesson.currentlesson.shared.LessonOrdinalNumber
+import com.krzykrucz.elesson.currentlesson.shared.LessonTopic
 import com.krzykrucz.elesson.currentlesson.shared.NaturalNumber
 import com.krzykrucz.elesson.currentlesson.shared.NonEmptyText
 import com.krzykrucz.elesson.currentlesson.shared.NumberInRegister
 import com.krzykrucz.elesson.currentlesson.shared.Output
 import com.krzykrucz.elesson.currentlesson.shared.SecondName
-import com.krzykrucz.elesson.currentlesson.topic.domain.LessonOrdinalNumber
-import com.krzykrucz.elesson.currentlesson.topic.domain.LessonTopic
-import com.krzykrucz.elesson.currentlesson.topic.domain.TopicTitle
+import com.krzykrucz.elesson.currentlesson.shared.TopicTitle
 import io.cucumber.java8.En
 import java.time.LocalDate
 import kotlin.test.assertEquals

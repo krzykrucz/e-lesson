@@ -21,7 +21,6 @@ import java.time.LocalDate
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class AcceptanceSpec extends Specification {
-
     @Autowired
     protected TestRestTemplate rest
 

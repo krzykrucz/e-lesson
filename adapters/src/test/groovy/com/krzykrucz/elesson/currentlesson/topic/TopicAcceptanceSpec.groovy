@@ -1,5 +1,6 @@
 package com.krzykrucz.elesson.currentlesson.topic
 
+import arrow.core.None
 import com.krzykrucz.elesson.currentlesson.AcceptanceSpec
 import com.krzykrucz.elesson.currentlesson.attendance.domain.AbsentStudent
 import com.krzykrucz.elesson.currentlesson.attendance.domain.CheckedAttendanceList
@@ -7,24 +8,29 @@ import com.krzykrucz.elesson.currentlesson.attendance.domain.PresentStudent
 import com.krzykrucz.elesson.currentlesson.monolith.Database
 import com.krzykrucz.elesson.currentlesson.monolith.PersistentCurrentLesson
 import com.krzykrucz.elesson.currentlesson.preparedness.domain.api.StudentsUnpreparedForLesson
-import com.krzykrucz.elesson.currentlesson.shared.NaturalNumber
-import com.krzykrucz.elesson.currentlesson.shared.NonEmptyText
-import com.krzykrucz.elesson.currentlesson.topic.domain.LessonOrdinalNumber
-import com.krzykrucz.elesson.currentlesson.topic.domain.LessonTopic
-import com.krzykrucz.elesson.currentlesson.topic.domain.TopicTitle
+import com.krzykrucz.elesson.currentlesson.shared.*
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
+
+import java.time.LocalDate
 
 class TopicAcceptanceSpec extends AcceptanceSpec {
 
     def "choose topic acceptance spec"() {
         given: 'choose topic dto and checked attendance in database'
-        def lessonId = lessonIdOfFirst1ALesson()
+        def lessonId = new LessonIdentifier(
+                LocalDate.parse("2019-09-09"),
+                new LessonHourNumber(NaturalNumber.TWO),
+                className1A()
+        )
         def classRegistry = classRegistry1A()
         def lessonWithAttendanceChecked = new PersistentCurrentLesson(
-                lessonId, classRegistry, null,
+                lessonId, classRegistry, new None(),
                 new CheckedAttendanceList(new ArrayList<PresentStudent>(), new ArrayList<AbsentStudent>()),
+                new WinterSemester(),
+                new LessonSubject(new NonEmptyText("Elixirs")),
+                new InProgress(),
                 new StudentsUnpreparedForLesson([])
         )
         Database.LESSON_DATABASE.put(lessonId, lessonWithAttendanceChecked)
@@ -41,8 +47,8 @@ class TopicAcceptanceSpec extends AcceptanceSpec {
 
         then: 'In progress lesson is persisted to database'
         inProgressLesson.statusCode == HttpStatus.OK
-        Database.LESSON_DATABASE.get(lessonId).lessonTopic ==
-                new LessonTopic(new LessonOrdinalNumber(new NaturalNumber(5)), title, lessonId.date)
+        Database.LESSON_DATABASE.get(lessonId).lessonTopic.orNull() ==
+                new LessonTopic(new LessonOrdinalNumber(new NaturalNumber(1)), title, lessonId.date)
 
     }
 }

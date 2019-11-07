@@ -1,5 +1,6 @@
 package com.krzykrucz.elesson.currentlesson.preparedness
 
+import arrow.core.None
 import com.krzykrucz.elesson.currentlesson.AcceptanceSpec
 import com.krzykrucz.elesson.currentlesson.attendance.domain.CheckedAttendanceList
 import com.krzykrucz.elesson.currentlesson.monolith.PersistentCurrentLesson
@@ -9,6 +10,10 @@ import com.krzykrucz.elesson.currentlesson.preparedness.domain.api.StudentReport
 import com.krzykrucz.elesson.currentlesson.preparedness.domain.api.StudentsUnpreparedForLesson
 import com.krzykrucz.elesson.currentlesson.preparedness.readmodel.StudentInSemester
 import com.krzykrucz.elesson.currentlesson.preparedness.readmodel.StudentSubjectUnpreparednessInASemester
+import com.krzykrucz.elesson.currentlesson.shared.InProgress
+import com.krzykrucz.elesson.currentlesson.shared.LessonSubject
+import com.krzykrucz.elesson.currentlesson.shared.NonEmptyText
+import com.krzykrucz.elesson.currentlesson.shared.WinterSemester
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
@@ -24,8 +29,11 @@ class UnpreparedStudentAcceptanceSpec extends AcceptanceSpec {
         final lessonWithAttendanceChecked = new PersistentCurrentLesson(
                 lessonId,
                 classRegistry,
-                null,
+                new None(),
                 new CheckedAttendanceList([presentStudent('Draco', 'Malfoy', 1)], []),
+                new WinterSemester(),
+                new LessonSubject(new NonEmptyText('Dark Arts')),
+                new InProgress(),
                 new StudentsUnpreparedForLesson([])
         )
         LESSON_DATABASE.put(lessonId, lessonWithAttendanceChecked)

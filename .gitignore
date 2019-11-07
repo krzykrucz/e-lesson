@@ -29,3 +29,5 @@ HELP.md
 
 ### VS Code ###
 .vscode/
+/adapters/target/
+/domain/target/

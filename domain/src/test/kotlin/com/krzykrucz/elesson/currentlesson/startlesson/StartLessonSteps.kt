@@ -36,7 +36,7 @@ class StartLessonSteps : En {
     var scheduledLessonProvider: CheckScheduledLesson = { teacher, localDateTime -> IO.never }
     var classRegistryProvider: FetchClassRegistry = { className -> IO.never }
     //    var checkLessonStarted: CheckLessonStarted = { false }
-    lateinit var currentLessonOrError: Output<StartedLesson, StartLessonError>
+    lateinit var currentLessonOrError: Output<StartLessonError, StartedLesson>
     lateinit var givenClassName: ClassName
     lateinit var givenDate: LocalDate
     lateinit var attemptedStartTime: LocalDateTime

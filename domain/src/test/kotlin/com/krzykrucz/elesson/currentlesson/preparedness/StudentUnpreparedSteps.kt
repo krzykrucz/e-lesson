@@ -61,7 +61,7 @@ class StudentUnpreparedSteps : En {
         createEvent
     )
 
-    lateinit var result: Output<StudentMarkedUnprepared, UnpreparednessError>
+    lateinit var result: Output<UnpreparednessError, StudentMarkedUnprepared>
 
     init {
         Given("Present {word} {word} from class {word}") { firstName: String, secondName: String, className: String ->

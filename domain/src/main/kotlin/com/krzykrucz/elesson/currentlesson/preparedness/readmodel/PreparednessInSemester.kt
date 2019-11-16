@@ -12,7 +12,7 @@ import com.krzykrucz.elesson.currentlesson.shared.WholeNumber
 
 typealias WriteUnpreparednessInTheRegister = (StudentMarkedUnprepared) -> IO<StudentSubjectUnpreparednessInASemester>
 
-typealias GetStudentSubjectUnpreparednessInASemester = (StudentInSemester) -> AsyncOutput<StudentSubjectUnpreparednessInASemester, StudentInSemesterReadError>
+typealias GetStudentSubjectUnpreparednessInASemester = (StudentInSemester) -> AsyncOutput<StudentInSemesterReadError, StudentSubjectUnpreparednessInASemester>
 
 data class StudentInSemester(val className: ClassName, val firstName: FirstName, val secondName: SecondName) // todo add subject
 

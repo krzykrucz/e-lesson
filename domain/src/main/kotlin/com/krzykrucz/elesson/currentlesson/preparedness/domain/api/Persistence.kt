@@ -9,4 +9,4 @@ import com.krzykrucz.elesson.currentlesson.shared.LessonIdentifier
 typealias PersistUnpreparedStudentToLesson = (StudentMarkedUnprepared) -> IO<LessonIdentifier>
 
 typealias NotifyStudentMarkedUnprepared = (StudentMarkedUnprepared) -> IO<Unit>
-typealias FindCurrentLesson = (LessonIdentifier) -> AsyncOutput<CurrentLesson, UnpreparednessError.LessonNotStarted>
+typealias FindCurrentLesson = (LessonIdentifier) -> AsyncOutput<UnpreparednessError.LessonNotStarted, CurrentLesson>

@@ -11,7 +11,7 @@ import java.time.LocalDateTime
 class NoSuchLessonError : RuntimeException("NoSuchLessonError")
 
 class LessonSchedulesClient : CheckScheduledLesson {
-    override fun invoke(teacher: Teacher, time: LocalDateTime): AsyncOutput<ScheduledLesson, Throwable> =
+    override fun invoke(teacher: Teacher, time: LocalDateTime): AsyncOutput<Throwable, ScheduledLesson> =
         LessonHourNumber.of(NaturalNumber.THREE)
             .map {
                 ScheduledLesson(

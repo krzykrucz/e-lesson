@@ -28,7 +28,7 @@ fun Mono<ServerResponse>.handleErrors(): Mono<ServerResponse> = this.onErrorResu
     }
 }
 
-fun <S, E> Mono<AsyncOutput<S, E>>.flattenAsyncOutput() = this.flatMap { asyncOutput ->
+fun <S, E> Mono<AsyncOutput<E, S>>.flattenAsyncOutput() = this.flatMap { asyncOutput ->
     asyncOutput.map { output -> output.map { Mono.just(it) } }
         .map { output -> output.getOrHandle { error -> Mono.error(MonoDomainError(error as Any)) } }
         .unsafeRunTimed(Duration(3, TimeUnit.SECONDS))

@@ -14,7 +14,7 @@ import com.krzykrucz.elesson.currentlesson.startlesson.domain.FetchClassRegistry
 
 
 class ERegisterClient : FetchClassRegistry {
-    override fun invoke(p1: ClassName): AsyncOutput<ClassRegistry, Throwable> =
+    override fun invoke(p1: ClassName): AsyncOutput<Throwable, ClassRegistry> =
         listOf(
                 StudentRecord(
                         FirstName(NonEmptyText.of("Harry")!!),

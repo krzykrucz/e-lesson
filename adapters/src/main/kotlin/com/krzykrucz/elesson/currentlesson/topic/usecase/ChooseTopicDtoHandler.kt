@@ -24,7 +24,7 @@ fun handleChooseTopicDto(): (ChooseTopicDto) -> IO<Either<ChooseTopicError, Unit
             isAttendanceChecked,
             chooseTopicDto.topicTitle,
             finishedLessonsCount,
-            LocalDate.parse(chooseTopicDto.date)
+            chooseTopicDto.lessonIdentifier
         )
             .map { inProgressLesson -> persistInProgressLesson()(chooseTopicDto.lessonIdentifier, inProgressLesson) }
             .sequence()

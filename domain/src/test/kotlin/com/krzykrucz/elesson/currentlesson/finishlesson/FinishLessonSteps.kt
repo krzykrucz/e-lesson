@@ -6,8 +6,11 @@ import com.krzykrucz.elesson.currentlesson.finishlesson.domain.FinishLessonError
 import com.krzykrucz.elesson.currentlesson.finishlesson.domain.FinishedLesson
 import com.krzykrucz.elesson.currentlesson.finishlesson.domain.bellRang
 import com.krzykrucz.elesson.currentlesson.finishlesson.domain.finishLesson
+import com.krzykrucz.elesson.currentlesson.lessonHourNumberOf
+import com.krzykrucz.elesson.currentlesson.newClassName
 import com.krzykrucz.elesson.currentlesson.shared.InProgressLesson
-import com.krzykrucz.elesson.currentlesson.shared.LessonOrdinalNumber
+import com.krzykrucz.elesson.currentlesson.shared.LessonIdentifier
+import com.krzykrucz.elesson.currentlesson.shared.LessonOrdinalInSemester
 import com.krzykrucz.elesson.currentlesson.shared.LessonTopic
 import com.krzykrucz.elesson.currentlesson.shared.NaturalNumber
 import com.krzykrucz.elesson.currentlesson.shared.NonEmptyText
@@ -21,6 +24,11 @@ class FinishLessonSteps : En {
     private lateinit var currentTime: CurrentTime
     private lateinit var inProgressLesson: InProgressLesson
     private lateinit var finishedLesson: Either<FinishLessonError, FinishedLesson>
+    private val anyLessonIdentifier: LessonIdentifier = LessonIdentifier(
+        LocalDate.now(),
+        lessonHourNumberOf(1),
+        newClassName("Ravenclaw")
+    )
 
     init {
 
@@ -46,8 +54,9 @@ class FinishLessonSteps : En {
 
     private fun inProgressLessonOfNumber(lessonNumber: Int) =
         InProgressLesson(
+            anyLessonIdentifier,
             LessonTopic(
-                LessonOrdinalNumber(
+                LessonOrdinalInSemester(
                     NaturalNumber.of(lessonNumber).orNull()!!
                 ),
                 TopicTitle(NonEmptyText("Quantum math")),

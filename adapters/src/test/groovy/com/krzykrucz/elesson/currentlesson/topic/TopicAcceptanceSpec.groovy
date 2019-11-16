@@ -34,8 +34,8 @@ class TopicAcceptanceSpec extends AcceptanceSpec {
                 new StudentsUnpreparedForLesson([])
         )
         Database.LESSON_DATABASE.put(lessonId, lessonWithAttendanceChecked)
-        def title = new TopicTitle(new NonEmptyText("Three forbidden spells"))
-        def chooseTopicDto = new ChooseTopicDto(lessonId, title, "2019-09-09")
+        def title = new TopicTitle(new NonEmptyText("Three unforgivable curses"))
+        def chooseTopicDto = new ChooseTopicDto(lessonId, title)
 
         when: 'choosing topic for current lesson'
         def inProgressLesson = rest.exchange(
@@ -48,7 +48,7 @@ class TopicAcceptanceSpec extends AcceptanceSpec {
         then: 'In progress lesson is persisted to database'
         inProgressLesson.statusCode == HttpStatus.OK
         Database.LESSON_DATABASE.get(lessonId).lessonTopic.orNull() ==
-                new LessonTopic(new LessonOrdinalNumber(new NaturalNumber(1)), title, lessonId.date)
+                new LessonTopic(new LessonOrdinalInSemester(new NaturalNumber(1)), title, lessonId.date)
 
     }
 }

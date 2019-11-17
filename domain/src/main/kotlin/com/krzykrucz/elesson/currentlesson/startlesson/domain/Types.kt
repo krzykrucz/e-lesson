@@ -2,8 +2,8 @@ package com.krzykrucz.elesson.currentlesson.startlesson.domain
 
 import com.krzykrucz.elesson.currentlesson.shared.ClassName
 import com.krzykrucz.elesson.currentlesson.shared.LessonHourNumber
+import com.krzykrucz.elesson.currentlesson.shared.LessonSubject
 import com.krzykrucz.elesson.currentlesson.shared.Teacher
-import com.krzykrucz.elesson.currentlesson.shared.*
 import java.time.LocalDateTime
 
 typealias ScheduledLessonStartTime = LocalDateTime
@@ -14,6 +14,7 @@ data class ScheduledLesson(val scheduledTime: ScheduledLessonStartTime,
                            val className: ClassName,
                            val subject: LessonSubject)
 
+typealias ValidatedScheduledLesson = ScheduledLesson
 
 
 sealed class StartLessonError {

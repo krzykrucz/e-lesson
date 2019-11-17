@@ -14,6 +14,7 @@ data class FinishedLesson private constructor(val lessonTopic: LessonTopic, val 
 
 sealed class FinishLessonError {
     data class BellNotRang(val error: String = "Bell did not ring") : FinishLessonError()
+    data class LessonNotFound(val error: String = "Could not find a lesson"): FinishLessonError()
 }
 
 typealias FinishLessonTime = LocalTime

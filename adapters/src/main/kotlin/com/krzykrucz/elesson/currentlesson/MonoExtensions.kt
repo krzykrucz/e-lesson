@@ -1,5 +1,6 @@
 package com.krzykrucz.elesson.currentlesson
 
+import arrow.core.Either
 import arrow.core.getOrElse
 import arrow.core.getOrHandle
 import arrow.effects.typeclasses.Duration
@@ -34,3 +35,9 @@ fun <S, E> Mono<AsyncOutput<S, E>>.flattenAsyncOutput() = this.flatMap { asyncOu
         .unsafeRunTimed(Duration(3, TimeUnit.SECONDS))
         .getOrElse { Mono.error(RuntimeException()) }
 }
+
+fun <A, B> Either<A, B>.toServerResponse(): Mono<ServerResponse> =
+    this.fold(
+        ifLeft = { ServerResponse.badRequest().body(BodyInserters.fromObject(it)) },
+        ifRight = { ServerResponse.ok().body(BodyInserters.fromObject(it)) }
+    )

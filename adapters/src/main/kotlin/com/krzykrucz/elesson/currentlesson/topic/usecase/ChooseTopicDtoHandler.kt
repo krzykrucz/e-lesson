@@ -7,6 +7,7 @@ import arrow.fx.IO
 import arrow.fx.extensions.fx
 import arrow.fx.extensions.io.applicative.applicative
 import arrow.fx.fix
+import com.krzykrucz.elesson.currentlesson.sequence
 import com.krzykrucz.elesson.currentlesson.topic.ChooseTopicDto
 import com.krzykrucz.elesson.currentlesson.topic.domain.ChooseTopicError
 import com.krzykrucz.elesson.currentlesson.topic.domain.chooseTopic
@@ -31,7 +32,3 @@ fun handleChooseTopicDto(): (ChooseTopicDto) -> IO<Either<ChooseTopicError, Unit
         persistedLessonOrError
     }
 }
-
-private fun <A, B> Either<A, IO<B>>.sequence(): IO<Either<A, B>> =
-    this.sequence(IO.applicative()).fix()
-        .map { it.fix() }

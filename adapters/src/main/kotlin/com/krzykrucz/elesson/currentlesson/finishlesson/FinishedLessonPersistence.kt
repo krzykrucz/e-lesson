@@ -1,8 +1,13 @@
 package com.krzykrucz.elesson.currentlesson.finishlesson
 
 import arrow.fx.IO
-import com.krzykrucz.elesson.currentlesson.finishlesson.domain.FinishedLesson
-import io.cucumber.java.lv.Un
+import com.krzykrucz.elesson.currentlesson.monolith.Database
+import com.krzykrucz.elesson.currentlesson.shared.Finished
+import com.krzykrucz.elesson.currentlesson.shared.LessonIdentifier
 
-
-fun storeFinishedLesson(finishedLesson: FinishedLesson) : IO<Unit>
+fun storeLessonAsFinished(lessonId: LessonIdentifier): IO<Unit> =
+    Database.LESSON_DATABASE.compute(lessonId) { _, lesson ->
+        lesson?.copy(
+            status = Finished
+        )
+    }.let { IO.lazy }

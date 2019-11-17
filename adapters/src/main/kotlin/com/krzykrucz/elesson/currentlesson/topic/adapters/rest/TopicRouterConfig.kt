@@ -1,17 +1,15 @@
 package com.krzykrucz.elesson.currentlesson.topic.adapters.rest
 
 
-import arrow.core.Either
 import arrow.core.getOrElse
 import arrow.fx.IO
 import arrow.fx.typeclasses.Duration
+import com.krzykrucz.elesson.currentlesson.toServerResponse
 import com.krzykrucz.elesson.currentlesson.topic.ChooseTopicDto
-
 import com.krzykrucz.elesson.currentlesson.topic.usecase.handleChooseTopicDto
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.MediaType
-import org.springframework.web.reactive.function.BodyInserters
 import org.springframework.web.reactive.function.server.ServerRequest
 import org.springframework.web.reactive.function.server.ServerResponse
 import org.springframework.web.reactive.function.server.router
@@ -41,12 +39,6 @@ class TopicRouterConfig {
     private fun IO<Mono<ServerResponse>>.run(): Mono<ServerResponse> =
         this.unsafeRunTimed(Duration(3, TimeUnit.SECONDS))
             .getOrElse { ServerResponse.badRequest().build() }
-
-    private fun <A, B> Either<A, B>.toServerResponse(): Mono<ServerResponse> =
-        this.fold(
-            ifLeft = { ServerResponse.badRequest().body(BodyInserters.fromObject(it)) },
-            ifRight = { ServerResponse.ok().body(BodyInserters.fromObject(it)) }
-        )
 }
 
 

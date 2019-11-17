@@ -24,7 +24,7 @@ class FinishLessonAcceptanceSpec extends AcceptanceSpec {
                 classRegistry1A(),
                 new Some<LessonTopic>(
                         new LessonTopic(
-                                new LessonOrdinalNumber(new NaturalNumber(1)),
+                                new LessonOrdinalInSemester(new NaturalNumber(1)),
                                 new TopicTitle(new NonEmptyText("Three forbidden spells")),
                                 lessonId.date)
                 ),

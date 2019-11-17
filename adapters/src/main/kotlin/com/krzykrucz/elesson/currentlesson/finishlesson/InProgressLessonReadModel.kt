@@ -14,6 +14,6 @@ fun readInProgressLesson(id: LessonIdentifier): IO<Either<FinishLessonError, InP
     Database.LESSON_DATABASE[id].toOption()
         .filter { lesson -> lesson.status.status == InProgress.status }
         .flatMap { lesson -> lesson.lessonTopic }
-        .map { topic -> InProgressLesson(lessonTopic = topic) }
+        .map { topic -> InProgressLesson(lessonIdentifier = id, lessonTopic = topic) }
         .toEither(ifEmpty = { LessonNotFound() })
         .let { IO.just(it) }

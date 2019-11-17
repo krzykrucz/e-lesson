@@ -16,4 +16,4 @@ sealed class FinishLessonError {
     data class BellNotRang(val error: String = "Bell did not ring") : FinishLessonError()
 }
 
-typealias CurrentTime = LocalTime
+typealias FinishLessonTime = LocalTime

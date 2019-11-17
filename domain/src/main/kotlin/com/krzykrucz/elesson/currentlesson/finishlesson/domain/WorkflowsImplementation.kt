@@ -5,9 +5,9 @@ import com.krzykrucz.elesson.currentlesson.finishlesson.domain.LessonBell.NOT_RA
 import com.krzykrucz.elesson.currentlesson.finishlesson.domain.LessonBell.RANG
 
 
-fun bellRang(): CheckIfBellRang = { lessonHourNumber, currentHour ->
+fun bellRang(): CheckIfBellRang = { lessonHourNumber, finishLessonTime ->
     lessonHourNumber.run {
-        if (currentHour.isAfter(lessonScheduledEndTime())) {
+        if (finishLessonTime.isAfter(lessonScheduledEndTime())) {
             RANG
         } else {
             NOT_RANG

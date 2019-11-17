@@ -2,7 +2,7 @@ package com.krzykrucz.elesson.currentlesson.finishlesson
 
 import arrow.core.Either
 import arrow.core.getOrElse
-import com.krzykrucz.elesson.currentlesson.finishlesson.domain.CurrentTime
+import com.krzykrucz.elesson.currentlesson.finishlesson.domain.FinishLessonTime
 import com.krzykrucz.elesson.currentlesson.finishlesson.domain.FinishLessonError
 import com.krzykrucz.elesson.currentlesson.finishlesson.domain.FinishedLesson
 import com.krzykrucz.elesson.currentlesson.shared.InProgressLesson
@@ -51,12 +51,12 @@ class FinishLessonTypesConfiguration : TypeRegistryConfigurer {
 
     private fun TypeRegistry.defineCurrentTime() =
         defineParameterType(
-            ParameterType<CurrentTime>(
+            ParameterType<FinishLessonTime>(
                 "currentTime",
                 "\\d\\d:\\d\\d:\\d\\d",
-                CurrentTime::class.java
+                FinishLessonTime::class.java
             ) { param: String ->
-                CurrentTime.parse(param)
+                FinishLessonTime.parse(param)
             }
         )
 

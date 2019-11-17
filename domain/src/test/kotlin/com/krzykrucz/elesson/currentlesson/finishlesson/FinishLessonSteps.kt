@@ -1,7 +1,7 @@
 package com.krzykrucz.elesson.currentlesson.finishlesson
 
 import arrow.core.Either
-import com.krzykrucz.elesson.currentlesson.finishlesson.domain.CurrentTime
+import com.krzykrucz.elesson.currentlesson.finishlesson.domain.FinishLessonTime
 import com.krzykrucz.elesson.currentlesson.finishlesson.domain.FinishLessonError
 import com.krzykrucz.elesson.currentlesson.finishlesson.domain.FinishedLesson
 import com.krzykrucz.elesson.currentlesson.finishlesson.domain.bellRang
@@ -21,7 +21,7 @@ import kotlin.test.assertTrue
 
 class FinishLessonSteps : En {
 
-    private lateinit var currentTime: CurrentTime
+    private lateinit var finishLessonTime: FinishLessonTime
     private lateinit var inProgressLesson: InProgressLesson
     private lateinit var finishedLesson: Either<FinishLessonError, FinishedLesson>
     private val anyLessonIdentifier: LessonIdentifier = LessonIdentifier(
@@ -32,8 +32,8 @@ class FinishLessonSteps : En {
 
     init {
 
-        Given("Current time of {currentTime}") { currentTimeOf: CurrentTime ->
-            currentTime = currentTimeOf
+        Given("Current time of {currentTime}") { finishLessonTimeOf: FinishLessonTime ->
+            finishLessonTime = finishLessonTimeOf
         }
 
         And("In progress lesson number {int}") { lessonNumber: Int ->
@@ -43,7 +43,7 @@ class FinishLessonSteps : En {
         When("Finishing a lesson") {
             finishedLesson = finishLesson(bellRang())(
                 inProgressLesson,
-                currentTime
+                finishLessonTime
             )
         }
 

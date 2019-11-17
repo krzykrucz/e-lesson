@@ -4,6 +4,6 @@ import arrow.core.Either
 import com.krzykrucz.elesson.currentlesson.shared.InProgressLesson
 import com.krzykrucz.elesson.currentlesson.shared.LessonHourNumber
 
-typealias CheckIfBellRang = (LessonHourNumber, CurrentTime) -> LessonBell
+typealias CheckIfBellRang = (LessonHourNumber, FinishLessonTime) -> LessonBell
 
-typealias FinishLesson = (InProgressLesson, CurrentTime) -> Either<FinishLessonError, FinishedLesson>
+typealias FinishLesson = (InProgressLesson, FinishLessonTime) -> Either<FinishLessonError, FinishedLesson>

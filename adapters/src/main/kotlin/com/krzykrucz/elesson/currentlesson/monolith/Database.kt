@@ -64,7 +64,7 @@ data class PersistentCurrentLesson(
 
     fun toLessonInProgress(): Option<InProgressLesson> =
         this.lessonTopic
-            .map(::InProgressLesson)
+            .map { lessonTopic -> InProgressLesson(lessonId, lessonTopic) }
 
 }
 

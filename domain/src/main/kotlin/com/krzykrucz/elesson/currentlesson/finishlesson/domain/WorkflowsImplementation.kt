@@ -1,5 +1,6 @@
 package com.krzykrucz.elesson.currentlesson.finishlesson.domain
 
+import arrow.core.toOption
 import com.krzykrucz.elesson.currentlesson.finishlesson.domain.LessonBell.NOT_RANG
 import com.krzykrucz.elesson.currentlesson.finishlesson.domain.LessonBell.RANG
 
@@ -16,8 +17,10 @@ fun bellRang(): CheckIfBellRang = { lessonHourNumber, finishLessonTime ->
 
 fun finishLesson(checkIfBellRang: CheckIfBellRang): FinishLesson = { inProgressLesson, currentTime ->
     inProgressLesson
-        .lessonHourNumber()
-        .map { checkIfBellRang(it, currentTime) }
+        .lessonIdentifier
+        .lessonHourNumber
+        .let { checkIfBellRang(it, currentTime) }
+        .toOption()
         .filter { it == RANG }
         .map { FinishedLesson(inProgressLesson.lessonTopic) }
         .toEither { FinishLessonError.BellNotRang() }

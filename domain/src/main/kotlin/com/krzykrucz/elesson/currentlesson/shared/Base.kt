@@ -90,44 +90,44 @@ class NonEmptyList<T> private constructor(private val elements: List<T>) : List<
 }
 
 typealias Async<T> = IO<T>
-typealias Output<Success, Error> = Either<Error, Success>
-typealias AsyncOutput<Success, Error> = IO<Output<Success, Error>>
+typealias Output<Error, Success> = Either<Error, Success>
+typealias AsyncOutput<Error, Success> = IO<Output<Error, Success>>
 typealias AsyncOutputFactory = IO.Companion
 
 
-fun <Success, Error> AsyncOutput<Success, Error>.failIf(predicate: Predicate<Success>, error: Error): AsyncOutput<Success, Error> {
+fun <Success, Error> AsyncOutput<Error, Success>.failIf(predicate: Predicate<Success>, error: Error): AsyncOutput<Error, Success> {
     return this.map { either -> either.flatMap { success: Success -> if (predicate(success)) Either.Left(error) else Either.Right(success) } }
 }
 
-fun <Success, Error> AsyncOutput<Success, Error>.handleError(handler: (Error) -> Success): AsyncOutput<Success, Error> {
+fun <Success, Error> AsyncOutput<Error, Success>.handleError(handler: (Error) -> Success): AsyncOutput<Error, Success> {
     return this.map { either -> either.handleError(handler) }
 }
 
 
-fun <S1, Error, S2> AsyncOutput<S1, Error>.mapSuccess(transformer: (S1) -> S2): AsyncOutput<S2, Error> {
+fun <S1, Error, S2> AsyncOutput<Error, S1>.mapSuccess(transformer: (S1) -> S2): AsyncOutput<Error, S2> {
     return this.map { either -> either.map(transformer) }
 }
 
-fun <Success, E1, E2> AsyncOutput<Success, E1>.mapError(transformer: (E1) -> E2): AsyncOutput<Success, E2> {
+fun <Success, E1, E2> AsyncOutput<E1, Success>.mapError(transformer: (E1) -> E2): AsyncOutput<E2, Success> {
     return this.map { either -> either.mapLeft(transformer) }
 }
 
-fun <S1, Error, S2> AsyncOutput<S1, Error>.flatMapAsyncSuccess(transformer: (S1) -> AsyncOutput<S2, Error>): AsyncOutput<S2, Error> {
+fun <S1, Error, S2> AsyncOutput<Error, S1>.flatMapAsyncSuccess(transformer: (S1) -> AsyncOutput<Error, S2>): AsyncOutput<Error, S2> {
     return this.flatMap { either ->
         either.map { transformer(it) }
                 .getOrHandle { IO.just(Either.left(it)) }
     }
 }
 
-fun <S1, Error, S2> AsyncOutput<S1, Error>.flatMapSuccess(transformer: (S1) -> Output<S2, Error>): AsyncOutput<S2, Error> {
+fun <S1, Error, S2> AsyncOutput<Error, S1>.flatMapSuccess(transformer: (S1) -> Output<Error, S2>): AsyncOutput<Error, S2> {
     return this.flatMap { either ->
         either.map { success -> this.map { transformer(success) } }
                 .getOrHandle { IO.just(Either.left(it)) }
     }
 }
 
-fun <T, E> Output<T, E>.isSuccess() = this.isRight()
-fun <T, E> Output<T, E>.isError() = this.isLeft()
+fun <T, E> Output<E, T>.isSuccess() = this.isRight()
+fun <T, E> Output<E, T>.isError() = this.isLeft()
 
 class AsyncFactory {
     companion object {

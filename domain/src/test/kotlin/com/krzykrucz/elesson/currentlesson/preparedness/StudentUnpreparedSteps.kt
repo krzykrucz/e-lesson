@@ -30,7 +30,7 @@ import com.krzykrucz.elesson.currentlesson.shared.InProgressLesson
 import com.krzykrucz.elesson.currentlesson.shared.LessonAfterAttendance
 import com.krzykrucz.elesson.currentlesson.shared.LessonHourNumber
 import com.krzykrucz.elesson.currentlesson.shared.LessonIdentifier
-import com.krzykrucz.elesson.currentlesson.shared.LessonOrdinalNumber
+import com.krzykrucz.elesson.currentlesson.shared.LessonOrdinalInSemester
 import com.krzykrucz.elesson.currentlesson.shared.LessonTopic
 import com.krzykrucz.elesson.currentlesson.shared.NaturalNumber
 import com.krzykrucz.elesson.currentlesson.shared.NonEmptyText
@@ -61,7 +61,7 @@ class StudentUnpreparedSteps : En {
         createEvent
     )
 
-    lateinit var result: Output<StudentMarkedUnprepared, UnpreparednessError>
+    lateinit var result: Output<UnpreparednessError, StudentMarkedUnprepared>
 
     init {
         Given("Present {word} {word} from class {word}") { firstName: String, secondName: String, className: String ->
@@ -84,11 +84,14 @@ class StudentUnpreparedSteps : En {
         }
         Given("Lesson after topic assigned") {
             val anyTopic = LessonTopic(
-                LessonOrdinalNumber(NaturalNumber.ONE),
+                LessonOrdinalInSemester(NaturalNumber.ONE),
                 TopicTitle(NonEmptyText.of("Wingardium Leviosa charm")!!),
                 LocalDate.now()
             )
-            currentLesson = InProgressLesson(anyTopic)
+            currentLesson = InProgressLesson(
+                lessonIdentifier,
+                anyTopic
+            )
         }
         Given("{word} {word} reported unprepared {int} times in a semester") { firstName: String, secondName: String, number: Int ->
             val student = StudentInSemester(

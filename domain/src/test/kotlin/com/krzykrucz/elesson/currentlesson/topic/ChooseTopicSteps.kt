@@ -3,8 +3,11 @@ package com.krzykrucz.elesson.currentlesson.topic
 
 import arrow.core.Either
 import com.krzykrucz.elesson.currentlesson.getSuccess
+import com.krzykrucz.elesson.currentlesson.lessonHourNumberOf
+import com.krzykrucz.elesson.currentlesson.newClassName
 import com.krzykrucz.elesson.currentlesson.shared.InProgressLesson
-import com.krzykrucz.elesson.currentlesson.shared.LessonOrdinalNumber
+import com.krzykrucz.elesson.currentlesson.shared.LessonIdentifier
+import com.krzykrucz.elesson.currentlesson.shared.LessonOrdinalInSemester
 import com.krzykrucz.elesson.currentlesson.shared.LessonTopic
 import com.krzykrucz.elesson.currentlesson.shared.NaturalNumber
 import com.krzykrucz.elesson.currentlesson.shared.NonEmptyText
@@ -21,11 +24,16 @@ class ChooseTopicSteps : En {
     lateinit var inProgressLesson: Either<ChooseTopicError, InProgressLesson>
     lateinit var finishedLessonsCount: FinishedLessonsCount
     var isAttendanceChecked: Boolean = true
-    private val now = LocalDate.now()
+    private val today = LocalDate.now()
+    private val lessonIdentifier = LessonIdentifier(
+        today,
+        lessonHourNumberOf(1),
+        newClassName("Hufflepuff")
+    )
 
     init {
         Given("Topic title") {
-            topicTitle = TopicTitle(NonEmptyText("Forbidden spells"))
+            topicTitle = TopicTitle(NonEmptyText("Unforgivable curses"))
         }
         Given("Checked Attendance") {
             isAttendanceChecked = true
@@ -37,12 +45,13 @@ class ChooseTopicSteps : En {
             isAttendanceChecked = false
         }
         When("Choosing a topic") {
-            inProgressLesson = chooseTopic()(isAttendanceChecked, topicTitle, finishedLessonsCount, now)
+            inProgressLesson = chooseTopic()(isAttendanceChecked, topicTitle, finishedLessonsCount, lessonIdentifier)
         }
         Then("Lesson is in progress") {
             assertThat(inProgressLesson.getSuccess()).isEqualToComparingFieldByField(
                 InProgressLesson(
-                    LessonTopic(LessonOrdinalNumber(NaturalNumber.FIVE), topicTitle, now)
+                    lessonIdentifier,
+                    LessonTopic(LessonOrdinalInSemester(NaturalNumber.FIVE), topicTitle, today)
                 )
             )
         }

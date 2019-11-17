@@ -15,7 +15,7 @@ import com.krzykrucz.elesson.currentlesson.shared.mapSuccess
 
 
 typealias ReportUnpreparedStudentApi =
-    (LessonIdentifier, StudentReportingUnpreparedness) -> AsyncOutput<Unit, UnpreparednessError>
+    (LessonIdentifier, StudentReportingUnpreparedness) -> AsyncOutput<UnpreparednessError, Unit>
 
 fun reportUnpreparedStudentApi(
     findCurrentLesson: FindCurrentLesson,

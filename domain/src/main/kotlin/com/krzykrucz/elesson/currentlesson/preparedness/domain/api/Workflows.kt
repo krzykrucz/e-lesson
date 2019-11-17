@@ -7,11 +7,11 @@ import com.krzykrucz.elesson.currentlesson.shared.CurrentLesson
 import com.krzykrucz.elesson.currentlesson.shared.LessonIdentifier
 import com.krzykrucz.elesson.currentlesson.shared.Output
 
-typealias CheckStudentCanReportUnprepared = (PresentStudent, ClassName) -> AsyncOutput<PresentStudent, UnpreparednessError>
+typealias CheckStudentCanReportUnprepared = (PresentStudent, ClassName) -> AsyncOutput<UnpreparednessError, PresentStudent>
 
-typealias NoteStudentUnpreparedForLesson = (PresentStudent, StudentsUnpreparedForLesson) -> Output<StudentsUnpreparedForLesson, UnpreparednessError.AlreadyRaised>
+typealias NoteStudentUnpreparedForLesson = (PresentStudent, StudentsUnpreparedForLesson) -> Output<UnpreparednessError.AlreadyRaised, StudentsUnpreparedForLesson>
 
 typealias CreateEvent = (LessonIdentifier, StudentsUnpreparedForLesson) -> StudentMarkedUnprepared
 
 
-typealias ReportUnpreparedness = (StudentReportingUnpreparedness, CurrentLesson) -> AsyncOutput<StudentMarkedUnprepared, UnpreparednessError>
+typealias ReportUnpreparedness = (StudentReportingUnpreparedness, CurrentLesson) -> AsyncOutput<UnpreparednessError, StudentMarkedUnprepared>

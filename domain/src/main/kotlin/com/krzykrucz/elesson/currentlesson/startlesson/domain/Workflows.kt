@@ -8,8 +8,8 @@ import com.krzykrucz.elesson.currentlesson.shared.Teacher
 import java.time.LocalDateTime
 
 
-typealias CheckScheduledLesson = (Teacher, LocalDateTime) -> AsyncOutput<ScheduledLesson, Throwable>
-typealias FetchClassRegistry = (ClassName) -> AsyncOutput<ClassRegistry, Throwable>// TODO can be removed if class is an aggregate root
+typealias CheckScheduledLesson = (Teacher, LocalDateTime) -> AsyncOutput<Throwable, ScheduledLesson>
+typealias FetchClassRegistry = (ClassName) -> AsyncOutput<Throwable, ClassRegistry>// TODO can be removed if class is an aggregate root
 
 typealias AttemptedLessonStartTime = LocalDateTime
-typealias StartLesson = (Teacher, AttemptedLessonStartTime) -> AsyncOutput<StartedLesson, StartLessonError>
+typealias StartLesson = (Teacher, AttemptedLessonStartTime) -> AsyncOutput<StartLessonError, StartedLesson>

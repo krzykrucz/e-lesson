@@ -72,9 +72,9 @@ fun Option<LessonHourNumber>.toEither(): Either<Throwable, LessonHourNumber> =
 data class Teacher(val firstName: FirstName,
                    val secondName: SecondName)
 
-data class LessonOrdinalNumber(val number: NaturalNumber)
+data class LessonOrdinalInSemester(val number: NaturalNumber)
 data class TopicTitle(val title: NonEmptyText)
-data class LessonTopic(val lessonOrdinalNumber: LessonOrdinalNumber, val topicTitle: TopicTitle, val date: LocalDate)
+data class LessonTopic(val lessonOrdinalInSemester: LessonOrdinalInSemester, val topicTitle: TopicTitle, val date: LocalDate)
 
 sealed class Semester(val semesterOrdinalNumber: NaturalNumber)
 object WinterSemester : Semester(NaturalNumber.ONE)
@@ -98,12 +98,9 @@ data class LessonAfterAttendance(
 ) : CurrentLesson()
 
 data class InProgressLesson(
+    val lessonIdentifier: LessonIdentifier,
     val lessonTopic: LessonTopic
-) : CurrentLesson() {
-    fun lessonHourNumber(): Option<LessonHourNumber> = lessonTopic.run {
-        LessonHourNumber.of(lessonOrdinalNumber.number)
-    }
-}
+) : CurrentLesson()
 
 data class StartedLesson(
     val id: LessonIdentifier,

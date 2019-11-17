@@ -4,6 +4,7 @@ import com.krzykrucz.elesson.currentlesson.startlesson.adapters.registry.ERegist
 import com.krzykrucz.elesson.currentlesson.startlesson.adapters.schedules.LessonSchedulesClient
 import com.krzykrucz.elesson.currentlesson.startlesson.domain.StartLesson
 import com.krzykrucz.elesson.currentlesson.startlesson.domain.startLesson
+import com.krzykrucz.elesson.currentlesson.startlesson.domain.validateStartTime
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
@@ -12,6 +13,6 @@ class StartLessonDomainConfig {
 
     @Bean
     fun createStartLesson(): StartLesson =
-            startLesson(LessonSchedulesClient(), ERegisterClient())
+        startLesson(LessonSchedulesClient(), validateStartTime(), ERegisterClient())
 
 }

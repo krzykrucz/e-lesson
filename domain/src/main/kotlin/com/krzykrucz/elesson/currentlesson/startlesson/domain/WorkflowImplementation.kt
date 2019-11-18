@@ -30,6 +30,8 @@ fun startLesson(
         val (scheduledLessonOrError) =
             fetchScheduledLesson(teacher, attemptedStartTime)
 
+// TODO introduce another internal error type (lesson started too early or so)
+
         val validatedScheduledLesson = scheduledLessonOrError
             .flatMap { validateLessonStartTime(it, attemptedStartTime) }
 
@@ -38,7 +40,6 @@ fun startLesson(
                 fetchClassRegistry(scheduledLesson.className)
                     .map(scheduledLesson::toCurrentLessonWithClass)
             }.sequence()
-
         startedLessonOrError.flatten()
 
     }

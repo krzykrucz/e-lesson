@@ -11,6 +11,7 @@ import java.time.LocalDateTime
 
 typealias FetchScheduledLesson = (Teacher, LocalDateTime) -> IO<Either<StartLessonError, ScheduledLesson>>
 typealias FetchClassRegistry = (ClassName) -> IO<Either<StartLessonError, ClassRegistry>>// TODO can be removed if class is an aggregate root
-typealias AttemptedLessonStartTime = LocalDateTime
+
+typealias LessonStartTime = LocalDateTime
 typealias ValidateLessonStartTime = (ScheduledLesson, LocalDateTime) -> Either<StartLessonError, ValidatedScheduledLesson>
-typealias StartLesson = (Teacher, AttemptedLessonStartTime) -> IO<Either<StartLessonError, StartedLesson>>
+typealias StartLesson = (Teacher, LessonStartTime) -> IO<Either<StartLessonError, StartedLesson>>

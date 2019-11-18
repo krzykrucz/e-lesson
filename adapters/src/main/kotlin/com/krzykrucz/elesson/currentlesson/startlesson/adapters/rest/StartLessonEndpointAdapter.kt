@@ -9,7 +9,7 @@ import com.krzykrucz.elesson.currentlesson.shared.NonEmptyText
 import com.krzykrucz.elesson.currentlesson.shared.SecondName
 import com.krzykrucz.elesson.currentlesson.shared.StartedLesson
 import com.krzykrucz.elesson.currentlesson.shared.Teacher
-import com.krzykrucz.elesson.currentlesson.startlesson.domain.AttemptedLessonStartTime
+import com.krzykrucz.elesson.currentlesson.startlesson.domain.LessonStartTime
 import com.krzykrucz.elesson.currentlesson.startlesson.domain.PersistStartedLessonIfDoesNotExist
 import com.krzykrucz.elesson.currentlesson.startlesson.domain.StartLesson
 import org.springframework.context.annotation.Bean
@@ -51,7 +51,7 @@ private fun StartedLesson.toDto() =
         .let { ClassRegistryResponse(this.id, it) }
 
 fun startLessonToMono(startLessonRequest: StartLessonRequest, startLesson: StartLesson): Mono<StartedLesson> =
-    startLesson(startLessonRequest.toTeacher(), AttemptedLessonStartTime.now())
+    startLesson(startLessonRequest.toTeacher(), LessonStartTime.now())
         .unsafeRunSync()
         .map { Mono.just(it) }
         .getOrHandle { Mono.error(MonoDomainError(it)) }

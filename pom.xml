@@ -10,7 +10,6 @@
 
     <modules>
         <module>domain</module>
-        <module>adapters</module>
     </modules>
 
 </project>

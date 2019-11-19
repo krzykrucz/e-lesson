@@ -37,7 +37,7 @@ import com.krzykrucz.elesson.currentlesson.domain.shared.NumberInRegister
 import com.krzykrucz.elesson.currentlesson.domain.shared.Output
 import com.krzykrucz.elesson.currentlesson.domain.shared.SecondName
 import com.krzykrucz.elesson.currentlesson.domain.shared.TopicTitle
-import com.krzykrucz.elesson.currentlesson.evaluate
+import com.krzykrucz.elesson.currentlesson.domain.evaluate
 import io.cucumber.java8.En
 import java.time.LocalDate
 import kotlin.test.assertEquals

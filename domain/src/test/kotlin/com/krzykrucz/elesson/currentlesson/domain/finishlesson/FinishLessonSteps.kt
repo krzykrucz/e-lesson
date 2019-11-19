@@ -8,8 +8,8 @@ import com.krzykrucz.elesson.currentlesson.domain.shared.LessonTopic
 import com.krzykrucz.elesson.currentlesson.domain.shared.NaturalNumber
 import com.krzykrucz.elesson.currentlesson.domain.shared.NonEmptyText
 import com.krzykrucz.elesson.currentlesson.domain.shared.TopicTitle
-import com.krzykrucz.elesson.currentlesson.lessonHourNumberOf
-import com.krzykrucz.elesson.currentlesson.newClassName
+import com.krzykrucz.elesson.currentlesson.domain.lessonHourNumberOf
+import com.krzykrucz.elesson.currentlesson.domain.newClassName
 import io.cucumber.java8.En
 import java.time.LocalDate
 import kotlin.test.assertTrue

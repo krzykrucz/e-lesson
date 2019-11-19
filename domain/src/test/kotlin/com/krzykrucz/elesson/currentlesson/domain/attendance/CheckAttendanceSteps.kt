@@ -10,10 +10,10 @@ import com.krzykrucz.elesson.currentlesson.domain.shared.NumberInRegister
 import com.krzykrucz.elesson.currentlesson.domain.shared.SecondName
 import com.krzykrucz.elesson.currentlesson.domain.shared.isError
 import com.krzykrucz.elesson.currentlesson.domain.shared.isSuccess
-import com.krzykrucz.elesson.currentlesson.getError
-import com.krzykrucz.elesson.currentlesson.getSuccess
-import com.krzykrucz.elesson.currentlesson.newClassName
-import com.krzykrucz.elesson.currentlesson.newStudent
+import com.krzykrucz.elesson.currentlesson.domain.getError
+import com.krzykrucz.elesson.currentlesson.domain.getSuccess
+import com.krzykrucz.elesson.currentlesson.domain.newClassName
+import com.krzykrucz.elesson.currentlesson.domain.newStudent
 import io.cucumber.java8.En
 import org.assertj.core.api.Assertions.assertThat
 import java.time.LocalDateTime

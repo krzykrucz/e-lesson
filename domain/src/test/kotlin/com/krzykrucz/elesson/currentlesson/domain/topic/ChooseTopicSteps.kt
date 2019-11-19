@@ -9,9 +9,9 @@ import com.krzykrucz.elesson.currentlesson.domain.shared.LessonTopic
 import com.krzykrucz.elesson.currentlesson.domain.shared.NaturalNumber
 import com.krzykrucz.elesson.currentlesson.domain.shared.NonEmptyText
 import com.krzykrucz.elesson.currentlesson.domain.shared.TopicTitle
-import com.krzykrucz.elesson.currentlesson.getSuccess
-import com.krzykrucz.elesson.currentlesson.lessonHourNumberOf
-import com.krzykrucz.elesson.currentlesson.newClassName
+import com.krzykrucz.elesson.currentlesson.domain.getSuccess
+import com.krzykrucz.elesson.currentlesson.domain.lessonHourNumberOf
+import com.krzykrucz.elesson.currentlesson.domain.newClassName
 import io.cucumber.java8.En
 import org.assertj.core.api.Assertions.assertThat
 import java.time.LocalDate

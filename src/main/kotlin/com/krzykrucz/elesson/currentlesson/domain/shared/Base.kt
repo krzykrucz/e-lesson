@@ -8,6 +8,9 @@ import arrow.core.Some
 import arrow.core.extensions.either.applicativeError.handleError
 import arrow.core.flatMap
 import arrow.core.getOrHandle
+import arrow.core.right
+import arrow.core.maybe
+import arrow.core.right
 import arrow.effects.IO
 
 data class NonEmptyText(val text: String) {
@@ -52,6 +55,29 @@ data class NaturalNumber private constructor(val number: Int) {
     operator fun plus(that: NaturalNumber): NaturalNumber =
         NaturalNumber(this.number + that.number)
 }
+
+data class Digit internal constructor(val digit: Int) {
+
+    operator fun compareTo(other: Digit) = digit.compareTo(other = other.digit)
+
+    companion object {
+        val ZERO = Digit(0)
+        val ONE = Digit(1)
+        val TWO = Digit(2)
+        val THREE = Digit(3)
+        val FOUR = Digit(4)
+        val FIVE = Digit(5)
+        val SIX = Digit(6)
+        val SEVEN = Digit(7)
+        val EIGHT = Digit(8)
+        val NINE = Digit(9)
+
+        fun of(int: Int): Option<Digit> = (int >= 0).maybe { Digit(int) }
+    }
+
+    override fun toString() = "$digit"
+}
+
 
 data class NonNegativeRealNumber private constructor(val number: Double) {
     operator fun minus(number: NonNegativeRealNumber): NonNegativeRealNumber? {

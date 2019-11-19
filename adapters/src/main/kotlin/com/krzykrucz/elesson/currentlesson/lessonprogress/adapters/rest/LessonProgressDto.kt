@@ -1,7 +1,7 @@
 package com.krzykrucz.elesson.currentlesson.lessonprogress.adapters.rest
 
 import com.krzykrucz.elesson.currentlesson.lessonprogress.usecase.LessonProgress
-import com.krzykrucz.elesson.currentlesson.shared.LessonTopic
+import com.krzykrucz.elesson.currentlesson.domain.shared.LessonTopic
 
 data class LessonProgressDto(
     val semester: Int,

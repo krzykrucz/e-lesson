@@ -1,29 +1,29 @@
 package com.krzykrucz.elesson.currentlesson.monolith
 
 import arrow.core.Option
-import com.krzykrucz.elesson.currentlesson.attendance.domain.Attendance
-import com.krzykrucz.elesson.currentlesson.attendance.domain.CheckedAttendanceList
-import com.krzykrucz.elesson.currentlesson.attendance.domain.IncompleteAttendanceList
-import com.krzykrucz.elesson.currentlesson.preparedness.domain.api.StudentsUnpreparedForLesson
-import com.krzykrucz.elesson.currentlesson.shared.ClassName
-import com.krzykrucz.elesson.currentlesson.shared.ClassRegistry
-import com.krzykrucz.elesson.currentlesson.shared.FirstName
-import com.krzykrucz.elesson.currentlesson.shared.InProgressLesson
-import com.krzykrucz.elesson.currentlesson.shared.LessonAfterAttendance
-import com.krzykrucz.elesson.currentlesson.shared.LessonHourNumber
-import com.krzykrucz.elesson.currentlesson.shared.LessonIdentifier
-import com.krzykrucz.elesson.currentlesson.shared.LessonStatus
-import com.krzykrucz.elesson.currentlesson.shared.LessonSubject
-import com.krzykrucz.elesson.currentlesson.shared.LessonTopic
-import com.krzykrucz.elesson.currentlesson.shared.NaturalNumber
-import com.krzykrucz.elesson.currentlesson.shared.NonEmptyText
-import com.krzykrucz.elesson.currentlesson.shared.NumberInRegister
-import com.krzykrucz.elesson.currentlesson.shared.Scheduled
-import com.krzykrucz.elesson.currentlesson.shared.SecondName
-import com.krzykrucz.elesson.currentlesson.shared.Semester
-import com.krzykrucz.elesson.currentlesson.shared.StartedLesson
-import com.krzykrucz.elesson.currentlesson.shared.StudentRecord
-import com.krzykrucz.elesson.currentlesson.shared.WinterSemester
+import com.krzykrucz.elesson.currentlesson.domain.attendance.Attendance
+import com.krzykrucz.elesson.currentlesson.domain.attendance.CheckedAttendanceList
+import com.krzykrucz.elesson.currentlesson.domain.attendance.IncompleteAttendanceList
+import com.krzykrucz.elesson.currentlesson.domain.preparedness.domain.api.StudentsUnpreparedForLesson
+import com.krzykrucz.elesson.currentlesson.domain.shared.ClassName
+import com.krzykrucz.elesson.currentlesson.domain.shared.ClassRegistry
+import com.krzykrucz.elesson.currentlesson.domain.shared.FirstName
+import com.krzykrucz.elesson.currentlesson.domain.shared.InProgressLesson
+import com.krzykrucz.elesson.currentlesson.domain.shared.LessonAfterAttendance
+import com.krzykrucz.elesson.currentlesson.domain.shared.LessonHourNumber
+import com.krzykrucz.elesson.currentlesson.domain.shared.LessonIdentifier
+import com.krzykrucz.elesson.currentlesson.domain.shared.LessonStatus
+import com.krzykrucz.elesson.currentlesson.domain.shared.LessonSubject
+import com.krzykrucz.elesson.currentlesson.domain.shared.LessonTopic
+import com.krzykrucz.elesson.currentlesson.domain.shared.NaturalNumber
+import com.krzykrucz.elesson.currentlesson.domain.shared.NonEmptyText
+import com.krzykrucz.elesson.currentlesson.domain.shared.NumberInRegister
+import com.krzykrucz.elesson.currentlesson.domain.shared.Scheduled
+import com.krzykrucz.elesson.currentlesson.domain.shared.SecondName
+import com.krzykrucz.elesson.currentlesson.domain.shared.Semester
+import com.krzykrucz.elesson.currentlesson.domain.shared.StartedLesson
+import com.krzykrucz.elesson.currentlesson.domain.shared.StudentRecord
+import com.krzykrucz.elesson.currentlesson.domain.shared.WinterSemester
 import java.time.LocalDate
 import java.util.concurrent.ConcurrentHashMap
 import arrow.core.Option.Companion as Option1
@@ -64,7 +64,12 @@ data class PersistentCurrentLesson(
 
     fun toLessonInProgress(): Option<InProgressLesson> =
         this.lessonTopic
-            .map { lessonTopic -> InProgressLesson(lessonId, lessonTopic) }
+            .map { lessonTopic ->
+                InProgressLesson(
+                    lessonId,
+                    lessonTopic
+                )
+            }
 
 }
 
@@ -88,24 +93,44 @@ class Database {
                 lessonId1,
                 classRegistryOf1A,
                 semester = WinterSemester,
-                subject = LessonSubject(NonEmptyText("Defense from dark arts")),
+                subject = LessonSubject(
+                    NonEmptyText(
+                        "Defense from dark arts"
+                    )
+                ),
                 status = Scheduled
             )
         ))
 
         fun lessonIdOf(date: String, number: Int, className: String) =
-            LessonIdentifier(LocalDate.parse(date), lessonHourNumberOf(number), classNameOf(className))
+            LessonIdentifier(
+                LocalDate.parse(date),
+                lessonHourNumberOf(number),
+                classNameOf(className)
+            )
 
         private fun lessonHourNumberOf(number: Int) =
             LessonHourNumber.of(number).orNull()!!
 
         private fun classNameOf(name: String) =
-            ClassName(NonEmptyText.of(name)!!)
+            ClassName(
+                NonEmptyText.of(
+                    name
+                )!!
+            )
 
         private fun createStudentRecord(name: String, surname: String, numberInRegister: Int): StudentRecord =
             StudentRecord(
-                firstName = FirstName(NonEmptyText.of(name)!!),
-                secondName = SecondName(NonEmptyText.of(surname)!!),
+                firstName = FirstName(
+                    NonEmptyText.of(
+                        name
+                    )!!
+                ),
+                secondName = SecondName(
+                    NonEmptyText.of(
+                        surname
+                    )!!
+                ),
                 numberInRegister = NaturalNumber.of(numberInRegister)
                     .map(::NumberInRegister)
                     .orNull()!!

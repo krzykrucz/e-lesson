@@ -1,14 +1,14 @@
 package com.krzykrucz.elesson.currentlesson
 
 import arrow.core.Either
-import com.krzykrucz.elesson.currentlesson.shared.AsyncFactory
-import com.krzykrucz.elesson.currentlesson.shared.AsyncOutput
-import com.krzykrucz.elesson.currentlesson.shared.Output
-import com.krzykrucz.elesson.currentlesson.shared.failIf
-import com.krzykrucz.elesson.currentlesson.shared.flatMapAsyncSuccess
-import com.krzykrucz.elesson.currentlesson.shared.flatMapSuccess
-import com.krzykrucz.elesson.currentlesson.shared.handleError
-import com.krzykrucz.elesson.currentlesson.shared.mapSuccess
+import com.krzykrucz.elesson.currentlesson.domain.shared.AsyncFactory
+import com.krzykrucz.elesson.currentlesson.domain.shared.AsyncOutput
+import com.krzykrucz.elesson.currentlesson.domain.shared.Output
+import com.krzykrucz.elesson.currentlesson.domain.shared.failIf
+import com.krzykrucz.elesson.currentlesson.domain.shared.flatMapAsyncSuccess
+import com.krzykrucz.elesson.currentlesson.domain.shared.flatMapSuccess
+import com.krzykrucz.elesson.currentlesson.domain.shared.handleError
+import com.krzykrucz.elesson.currentlesson.domain.shared.mapSuccess
 import org.junit.Test
 import kotlin.test.assertEquals
 

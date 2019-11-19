@@ -5,10 +5,10 @@ import arrow.core.extensions.fx
 import arrow.core.getOrElse
 import com.krzykrucz.elesson.currentlesson.infrastructure.run
 import com.krzykrucz.elesson.currentlesson.lessonprogress.usecase.LoadLessonProgress
-import com.krzykrucz.elesson.currentlesson.shared.ClassName
-import com.krzykrucz.elesson.currentlesson.shared.LessonHourNumber
-import com.krzykrucz.elesson.currentlesson.shared.LessonIdentifier
-import com.krzykrucz.elesson.currentlesson.shared.NonEmptyText
+import com.krzykrucz.elesson.currentlesson.domain.shared.ClassName
+import com.krzykrucz.elesson.currentlesson.domain.shared.LessonHourNumber
+import com.krzykrucz.elesson.currentlesson.domain.shared.LessonIdentifier
+import com.krzykrucz.elesson.currentlesson.domain.shared.NonEmptyText
 import org.springframework.web.reactive.function.BodyInserters
 import org.springframework.web.reactive.function.server.ServerRequest
 import org.springframework.web.reactive.function.server.ServerResponse
@@ -24,7 +24,13 @@ fun handleLessonProgressViewRequest(loadLessonProgress: LoadLessonProgress): (Se
         .flatMap { LessonHourNumber.of(it.toInt()) }
 
     val readClassNameFromParams = serverRequest.queryParam("className").toOption()
-        .map { ClassName(NonEmptyText(it)) }
+        .map {
+            ClassName(
+                NonEmptyText(
+                    it
+                )
+            )
+        }
 
 
     val lessonIdOpt = Option.fx {

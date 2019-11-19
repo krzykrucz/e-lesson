@@ -1,6 +1,11 @@
 package com.krzykrucz.elesson.currentlesson.lessonprogress.usecase
 
 import arrow.core.Option
+import com.krzykrucz.elesson.currentlesson.domain.shared.ClassName
+import com.krzykrucz.elesson.currentlesson.domain.shared.LessonStatus
+import com.krzykrucz.elesson.currentlesson.domain.shared.LessonSubject
+import com.krzykrucz.elesson.currentlesson.domain.shared.LessonTopic
+import com.krzykrucz.elesson.currentlesson.domain.shared.Semester
 import com.krzykrucz.elesson.currentlesson.shared.*
 import java.time.LocalDate
 

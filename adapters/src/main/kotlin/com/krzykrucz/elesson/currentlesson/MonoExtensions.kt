@@ -4,8 +4,8 @@ import arrow.core.Either
 import arrow.core.getOrElse
 import arrow.core.getOrHandle
 import arrow.effects.typeclasses.Duration
-import com.krzykrucz.elesson.currentlesson.shared.AsyncOutput
-import com.krzykrucz.elesson.currentlesson.startlesson.domain.StartLessonError
+import com.krzykrucz.elesson.currentlesson.domain.shared.AsyncOutput
+import com.krzykrucz.elesson.currentlesson.domain.startlesson.StartLessonError
 import org.springframework.http.HttpStatus
 import org.springframework.web.reactive.function.BodyInserters
 import org.springframework.web.reactive.function.server.ServerResponse

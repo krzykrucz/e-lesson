@@ -2,7 +2,7 @@ package com.krzykrucz.elesson.currentlesson.adapters.attendance.persistence
 
 import arrow.core.toOption
 import arrow.fx.IO
-import com.krzykrucz.elesson.currentlesson.adapters.monolith.Database
+import com.krzykrucz.elesson.currentlesson.infrastructure.Database
 import com.krzykrucz.elesson.currentlesson.domain.attendance.CheckedAttendanceList
 import com.krzykrucz.elesson.currentlesson.domain.attendance.FetchCheckedAttendance
 import com.krzykrucz.elesson.currentlesson.domain.attendance.FetchIncompleteAttendance

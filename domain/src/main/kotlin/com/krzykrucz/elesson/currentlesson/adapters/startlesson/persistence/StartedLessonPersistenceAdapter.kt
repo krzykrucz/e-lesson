@@ -2,8 +2,8 @@ package com.krzykrucz.elesson.currentlesson.adapters.startlesson.persistence
 
 import arrow.core.Option
 import arrow.effects.IO
-import com.krzykrucz.elesson.currentlesson.adapters.monolith.Database.Companion.LESSON_DATABASE
-import com.krzykrucz.elesson.currentlesson.adapters.monolith.PersistentCurrentLesson
+import com.krzykrucz.elesson.currentlesson.infrastructure.Database.Companion.LESSON_DATABASE
+import com.krzykrucz.elesson.currentlesson.infrastructure.PersistentCurrentLesson
 import com.krzykrucz.elesson.currentlesson.domain.shared.InProgress
 import com.krzykrucz.elesson.currentlesson.domain.shared.LessonIdentifier
 import com.krzykrucz.elesson.currentlesson.domain.shared.StartedLesson

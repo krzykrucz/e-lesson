@@ -5,7 +5,7 @@ import arrow.fx.IO
 import com.krzykrucz.elesson.currentlesson.adapters.lessonprogress.usecase.LessonProgress
 import com.krzykrucz.elesson.currentlesson.adapters.lessonprogress.usecase.LessonProgressError
 import com.krzykrucz.elesson.currentlesson.adapters.lessonprogress.usecase.LoadLessonProgress
-import com.krzykrucz.elesson.currentlesson.adapters.monolith.Database
+import com.krzykrucz.elesson.currentlesson.infrastructure.Database
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 

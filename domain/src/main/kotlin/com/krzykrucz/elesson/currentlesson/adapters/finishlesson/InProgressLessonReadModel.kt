@@ -3,7 +3,7 @@ package com.krzykrucz.elesson.currentlesson.adapters.finishlesson
 import arrow.core.Either
 import arrow.core.toOption
 import arrow.fx.IO
-import com.krzykrucz.elesson.currentlesson.adapters.monolith.Database
+import com.krzykrucz.elesson.currentlesson.infrastructure.Database
 import com.krzykrucz.elesson.currentlesson.domain.finishlesson.FinishLessonError
 import com.krzykrucz.elesson.currentlesson.domain.finishlesson.FinishLessonError.LessonNotFound
 import com.krzykrucz.elesson.currentlesson.domain.shared.InProgress

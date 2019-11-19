@@ -27,4 +27,12 @@ class ArchitectureTest {
                     .should()
                     .accessClassesThat().resideInAPackage("..adapters..")
 
+
+    @ArchTest
+    val `domain should not access infrastructure` =
+        noClasses()
+            .that().resideInAPackage("..domain..")
+            .should()
+            .accessClassesThat().resideInAPackage("..infrastructure..")
+
 }

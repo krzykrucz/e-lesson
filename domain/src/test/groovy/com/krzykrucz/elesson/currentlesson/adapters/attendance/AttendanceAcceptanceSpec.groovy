@@ -1,7 +1,7 @@
 package com.krzykrucz.elesson.currentlesson.adapters.attendance
 
 
-import com.krzykrucz.elesson.currentlesson.adapters.monolith.Database
+import com.krzykrucz.elesson.currentlesson.infrastructure.Database
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpMethod
 

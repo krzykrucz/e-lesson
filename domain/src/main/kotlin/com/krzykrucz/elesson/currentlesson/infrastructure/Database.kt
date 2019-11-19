@@ -1,4 +1,4 @@
-package com.krzykrucz.elesson.currentlesson.adapters.monolith
+package com.krzykrucz.elesson.currentlesson.infrastructure
 
 import arrow.core.Option
 import com.krzykrucz.elesson.currentlesson.domain.attendance.Attendance
@@ -77,12 +77,21 @@ class Database {
 
     companion object {
 
-        private val lessonId1 = lessonIdOf("2019-09-09", 1, "1A")
+        private val lessonId1 =
+            lessonIdOf("2019-09-09", 1, "1A")
 
         private val classRegistryOf1A = ClassRegistry(
             students = listOf(
-                createStudentRecord("Harry", "Potter", 1),
-                createStudentRecord("Tom", "Riddle", 2)
+                createStudentRecord(
+                    "Harry",
+                    "Potter",
+                    1
+                ),
+                createStudentRecord(
+                    "Tom",
+                    "Riddle",
+                    2
+                )
 
             ),
             className = classNameOf("1A")

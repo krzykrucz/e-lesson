@@ -1,7 +1,7 @@
 package com.krzykrucz.elesson.currentlesson.adapters.finishlesson
 
 import arrow.fx.IO
-import com.krzykrucz.elesson.currentlesson.adapters.monolith.Database
+import com.krzykrucz.elesson.currentlesson.infrastructure.Database
 import com.krzykrucz.elesson.currentlesson.domain.shared.Finished
 import com.krzykrucz.elesson.currentlesson.domain.shared.LessonIdentifier
 

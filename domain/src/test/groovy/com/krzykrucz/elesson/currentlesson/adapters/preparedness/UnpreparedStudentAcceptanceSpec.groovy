@@ -2,8 +2,8 @@ package com.krzykrucz.elesson.currentlesson.adapters.preparedness
 
 import arrow.core.None
 import com.krzykrucz.elesson.currentlesson.adapters.AcceptanceSpec
-import com.krzykrucz.elesson.currentlesson.adapters.monolith.Database
-import com.krzykrucz.elesson.currentlesson.adapters.monolith.PersistentCurrentLesson
+import com.krzykrucz.elesson.currentlesson.infrastructure.Database
+import com.krzykrucz.elesson.currentlesson.infrastructure.PersistentCurrentLesson
 import com.krzykrucz.elesson.currentlesson.adapters.preparedness.readmodel.StudentInSemesterReadModel
 import com.krzykrucz.elesson.currentlesson.adapters.preparedness.rest.ReportUnpreparedRequest
 import com.krzykrucz.elesson.currentlesson.domain.attendance.CheckedAttendanceList

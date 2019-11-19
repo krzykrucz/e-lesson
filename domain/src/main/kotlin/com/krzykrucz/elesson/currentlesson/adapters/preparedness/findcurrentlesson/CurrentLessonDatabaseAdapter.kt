@@ -3,8 +3,8 @@ package com.krzykrucz.elesson.currentlesson.adapters.preparedness.findcurrentles
 import arrow.core.orElse
 import arrow.core.toOption
 import arrow.effects.IO
-import com.krzykrucz.elesson.currentlesson.adapters.monolith.Database
-import com.krzykrucz.elesson.currentlesson.adapters.monolith.PersistentCurrentLesson
+import com.krzykrucz.elesson.currentlesson.infrastructure.Database
+import com.krzykrucz.elesson.currentlesson.infrastructure.PersistentCurrentLesson
 import com.krzykrucz.elesson.currentlesson.domain.preparedness.domain.api.FindCurrentLesson
 import com.krzykrucz.elesson.currentlesson.domain.preparedness.domain.api.UnpreparednessError
 import org.springframework.context.annotation.Bean

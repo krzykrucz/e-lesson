@@ -1,4 +1,4 @@
-package com.krzykrucz.elesson.currentlesson.adapters
+package com.krzykrucz.elesson.currentlesson
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication

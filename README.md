@@ -5,6 +5,6 @@
 1. Finish implementing...
 - the `StartLesson` workflow
 - input & output types 
-- cucumber tests
+- cucumber Given and When steps
     
 ...so that the tests pass.

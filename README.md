@@ -4,7 +4,7 @@
 
 1. Finish implementing...
 - the `StartLesson` workflow
-- input & output types 
+- input & output types (use also `base-types-kt/refined-types` lib)
 - cucumber Given and When steps
     
 ...so that the tests pass.

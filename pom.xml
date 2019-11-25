@@ -102,6 +102,11 @@
             <groupId>org.springframework.retry</groupId>
             <artifactId>spring-retry</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.github.krzykrucz.base-types-kt</groupId>
+            <artifactId>refined-types</artifactId>
+            <version>master-SNAPSHOT</version>
+        </dependency>
 
         <!-- TEST-->
         <dependency>
@@ -166,6 +171,10 @@
         <repository>
             <id>spek-dev</id>
             <url>https://dl.bintray.com/spekframework/spek-dev</url>
+        </repository>
+        <repository>
+            <id>jitpack</id>
+            <url>https://jitpack.io</url>
         </repository>
     </repositories>
 

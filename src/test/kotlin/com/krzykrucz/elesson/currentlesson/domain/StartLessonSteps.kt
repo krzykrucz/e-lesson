@@ -3,9 +3,7 @@ package com.krzykrucz.elesson.currentlesson.domain
 
 import io.cucumber.java8.En
 import java.time.LocalDateTime
-import kotlin.jvm.internal.Lambda
 import kotlin.test.assertEquals
-import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 
@@ -13,7 +11,10 @@ class StartLessonSteps : En {
 
     lateinit var teacher: Teacher
     lateinit var time: LessonStartTime
+    var lessonHourNumber: Int = 0
     lateinit var outputLesson: StartedLesson
+    lateinit var checkSchedule: CheckSchedule
+    lateinit var fetchClassRegistry: FetchClassRegistry
 
     init {
         Given("Teacher {string}") { teacherName: String ->
@@ -22,25 +23,29 @@ class StartLessonSteps : En {
         Given("Current time {word}") { time: String ->
             this.time = LessonStartTime(LocalDateTime.parse(time))
         }
-        Given("Scheduled lesson for class {word} and {word}") { className: String, time: String ->
-            // leave empty for now
+        Given("Scheduled lesson for class {word} and lesson number {word}") { className: String, hourNumber: String ->
+            lessonHourNumber = hourNumber.toInt()
+            checkSchedule = { teacher, lessonStartTime ->
+                ScheduledLesson(ClassName(className), lessonStartTime.dateTime, LessonHourNumber.of(lessonHourNumber))
+            }
         }
         Given("Class registry for class {word}") { className: String ->
-            // leave empty for now
+            fetchClassRegistry = {
+                ClassRegistry(it)
+            }
         }
         When("Lesson is started") {
-            outputLesson = startLesson(teacher, time)
+            outputLesson = startLesson(checkSchedule, fetchClassRegistry, teacher, time)
         }
         Then("Lesson before attendance should be started") {
             // don't modify this section
             assertEquals(outputLesson.startTime, time)
             assertEquals(outputLesson.teacher, teacher)
 
-            assertFalse { time.javaClass == String::class.java }
-            assertFalse { teacher.javaClass == String::class.java }
-            assertFalse { outputLesson.javaClass == String::class.java }
-            assertTrue { startLesson is Lambda<*> }
-            assertEquals((startLesson as Lambda<*>).arity, 2)
+            assertTrue(outputLesson.hourNumber.number is Int)
+            assertEquals(outputLesson.hourNumber.number, lessonHourNumber)
+            assertTrue(outputLesson.className.name is String)
+            assertEquals(outputLesson.className.name, "Gryffindor")
         }
     }
 

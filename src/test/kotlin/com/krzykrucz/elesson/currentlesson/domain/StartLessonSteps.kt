@@ -24,10 +24,7 @@ class StartLessonSteps : En {
             this.time = LessonStartTime(LocalDateTime.parse(time))
         }
         Given("Scheduled lesson for class {word} and lesson number {word}") { className: String, hourNumber: String ->
-            lessonHourNumber = LessonHourNumber.of(hourNumber.toInt())
-            checkSchedule = { _, lessonStartTime ->
-                ScheduledLesson(ClassName(className), lessonStartTime.dateTime, lessonHourNumber)
-            }
+            TODO()
         }
         Given("Class registry for class {word}") { className: String ->
             fetchClassRegistry = {

@@ -17,20 +17,8 @@ data class StartedLesson(
 
 typealias Time = LocalTime
 
-sealed class LessonHourNumber {
-
-    object One : LessonHourNumber()
-    object Two : LessonHourNumber()
-    object Three : LessonHourNumber()
-
-    companion object {
-        fun of(number: Int): LessonHourNumber = when (number) {
-            1 -> One
-            2 -> Two
-            3 -> Three
-            else -> throw NumberFormatException()
-        }
-    }
+class LessonHourNumber {
+    //TODO
 }
 
 data class ClassName(val name: String)
@@ -41,10 +29,8 @@ data class ClassRegistry(
 
 typealias ScheduledTime = LocalDateTime
 
-data class ScheduledLesson(
-    val className: ClassName,
-    val scheduledTime: ScheduledTime,
-    val hourNumber: LessonHourNumber
+data class ScheduledLesson( //TODO
+    val className: ClassName
 )
 
 typealias StartLesson = (CheckSchedule, FetchClassRegistry, Teacher, LessonStartTime) -> StartedLesson
@@ -52,7 +38,8 @@ typealias StartLesson = (CheckSchedule, FetchClassRegistry, Teacher, LessonStart
 val startLesson: StartLesson = { checkSchedule, fetchClassRegistry, teacher, lessonStartTime ->
     val scheduledLesson = checkSchedule(teacher, lessonStartTime)
     val registry = fetchClassRegistry(scheduledLesson.className)
-    StartedLesson(teacher, lessonStartTime, scheduledLesson.hourNumber, registry.className)
+    val hourNumber = TODO()
+    StartedLesson(teacher, lessonStartTime, hourNumber, registry.className)
 }
 
 

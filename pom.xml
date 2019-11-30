@@ -103,14 +103,14 @@
             <artifactId>spring-retry</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.github.krzykrucz.base-types-kt</groupId>
+            <groupId>com.github.VirtusLab.base-types-kt</groupId>
             <artifactId>refined-types</artifactId>
             <version>master-SNAPSHOT</version>
         </dependency>
 
         <!-- TEST-->
         <dependency>
-            <groupId>io.cucumber</groupId>
+            <groupId>io.cucumber</groupId>x
             <artifactId>cucumber-java8</artifactId>
             <version>${cucumber.version}</version>
         </dependency>

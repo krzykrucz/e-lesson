@@ -17,11 +17,11 @@ data class StartedLesson(
 
 typealias Time = LocalTime
 
-sealed class LessonHourNumber(val number: Int, val time: LocalTime) {
+sealed class LessonHourNumber {
 
-    object One : LessonHourNumber(1, Time.parse("08:00"))
-    object Two : LessonHourNumber(2, Time.parse("08:50"))
-    object Three : LessonHourNumber(3, Time.parse("09:40"))
+    object One : LessonHourNumber()
+    object Two : LessonHourNumber()
+    object Three : LessonHourNumber()
 
     companion object {
         fun of(number: Int): LessonHourNumber = when (number) {

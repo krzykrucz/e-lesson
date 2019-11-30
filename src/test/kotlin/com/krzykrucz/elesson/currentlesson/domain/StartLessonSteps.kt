@@ -11,7 +11,7 @@ class StartLessonSteps : En {
 
     lateinit var teacher: Teacher
     lateinit var time: LessonStartTime
-    var lessonHourNumber: Int = 0
+    lateinit var lessonHourNumber: LessonHourNumber
     lateinit var outputLesson: StartedLesson
     lateinit var checkSchedule: CheckSchedule
     lateinit var fetchClassRegistry: FetchClassRegistry
@@ -24,9 +24,9 @@ class StartLessonSteps : En {
             this.time = LessonStartTime(LocalDateTime.parse(time))
         }
         Given("Scheduled lesson for class {word} and lesson number {word}") { className: String, hourNumber: String ->
-            lessonHourNumber = hourNumber.toInt()
-            checkSchedule = { teacher, lessonStartTime ->
-                ScheduledLesson(ClassName(className), lessonStartTime.dateTime, LessonHourNumber.of(lessonHourNumber))
+            lessonHourNumber = LessonHourNumber.of(hourNumber.toInt())
+            checkSchedule = { _, lessonStartTime ->
+                ScheduledLesson(ClassName(className), lessonStartTime.dateTime, lessonHourNumber)
             }
         }
         Given("Class registry for class {word}") { className: String ->
@@ -42,9 +42,9 @@ class StartLessonSteps : En {
             assertEquals(outputLesson.startTime, time)
             assertEquals(outputLesson.teacher, teacher)
 
-            assertTrue(outputLesson.hourNumber.number is Int)
-            assertEquals(outputLesson.hourNumber.number, lessonHourNumber)
-            assertTrue(outputLesson.className.name is String)
+            assertTrue(outputLesson.hourNumber is LessonHourNumber)
+            assertEquals(outputLesson.hourNumber, lessonHourNumber)
+            assertTrue(outputLesson.className is ClassName)
             assertEquals(outputLesson.className.name, "Gryffindor")
         }
     }

@@ -2,7 +2,6 @@ package com.krzykrucz.elesson.currentlesson.domain
 
 
 import io.cucumber.java8.En
-import java.time.LocalDateTime
 import kotlin.jvm.internal.Lambda
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -11,16 +10,16 @@ import kotlin.test.assertTrue
 
 class StartLessonSteps : En {
 
-    lateinit var teacher: Teacher
-    lateinit var time: LessonStartTime
-    lateinit var outputLesson: StartedLesson
+    lateinit var teacher
+    lateinit var time
+    lateinit var outputLesson
 
     init {
         Given("Teacher {string}") { teacherName: String ->
-            this.teacher = Teacher(teacherName)
+            TODO()
         }
         Given("Current time {word}") { time: String ->
-            this.time = LessonStartTime(LocalDateTime.parse(time))
+            TODO()
         }
         Given("Scheduled lesson for class {word} and {word}") { className: String, time: String ->
             // leave empty for now
@@ -29,7 +28,7 @@ class StartLessonSteps : En {
             // leave empty for now
         }
         When("Lesson is started") {
-            outputLesson = startLesson(teacher, time)
+            outputLesson = TODO()
         }
         Then("Lesson before attendance should be started") {
             // don't modify this section

@@ -15,7 +15,7 @@ class StartLessonSteps : En {
     lateinit var outputLesson
 
     init {
-        Given("Teacher {word}") { teacherName: String ->
+        Given("Teacher {string}") { teacherName: String ->
             TODO()
         }
         Given("Current time {word}") { time: String ->

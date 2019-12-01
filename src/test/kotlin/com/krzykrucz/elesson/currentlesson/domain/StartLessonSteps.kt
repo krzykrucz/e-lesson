@@ -15,16 +15,16 @@ class StartLessonSteps : En {
     lateinit var outputLesson
 
     init {
-        Given("Teacher {string}") { teacherName: String ->
+        Given("Teacher {word}") { teacherName: String ->
             TODO()
         }
         Given("Current time {word}") { time: String ->
             TODO()
         }
-        Given("Scheduled lesson for class {word} and {word}") { className: String, time: String ->
+        Given("Scheduled lesson for class {word} and lesson number {word}") { _: String, _: String ->
             // leave empty for now
         }
-        Given("Class registry for class {word}") { className: String ->
+        Given("Class registry for class {word}") { _: String ->
             // leave empty for now
         }
         When("Lesson is started") {

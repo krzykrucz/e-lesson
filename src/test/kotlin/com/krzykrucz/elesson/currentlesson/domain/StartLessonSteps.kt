@@ -25,10 +25,11 @@ class StartLessonSteps : En {
             this.time = LessonStartTime(LocalDateTime.parse(time))
         }
         Given("Scheduled lesson for class {word} and lesson number {word}") { className: String, hourNumber: String ->
-            TODO()
+            this.className = className
+            this.checkSchedule = TODO()
         }
         Given("Class registry for class {word}") { className: String ->
-            TODO()
+            this.fetchClassRegistry = TODO()
         }
         When("Lesson is started") {
             outputLesson = startLesson(/*TODO*/teacher, time)

@@ -28,9 +28,9 @@ val startLesson: StartLesson = { /*TODO*/ teacher, lessonStartTime ->
 
 
 //dependencies
-// FIXME make todo here
-typealias CheckSchedule = (Any, Any) -> Any
+// TODO
+typealias CheckSchedule = (Any, Any) -> ScheduledLesson
 
-// FIXME make todo here
-typealias FetchClassRegistry = (Any) -> Any
+// TODO
+typealias FetchClassRegistry = (Any) -> ClassRegistry
 

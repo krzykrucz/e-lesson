@@ -1,42 +1,59 @@
 package com.krzykrucz.elesson.currentlesson.domain
 
+import arrow.core.NonEmptyList
+import arrow.core.Option
+import arrow.core.toOption
+import com.virtuslab.basetypes.refined.NonEmptyText
+import com.virtuslab.basetypes.refined.RawText
 import java.time.LocalDateTime
 import java.time.LocalTime
 
 
-data class Teacher(val name: String)
+data class Teacher(val name: NonEmptyText)
 
-data class LessonStartTime(val dateTime: LocalDateTime)
+data class AttemptedLessonStartTime(val dateTime: RawText)
+data class LessonStartTime(val dateTime: LocalDateTime) {
+    companion object {
+        fun of(stringTime: RawText) =
+            LessonStartTime(
+                LocalDateTime.parse(stringTime.text)
+            )
+    }
+}
 
 data class StartedLesson(
     val teacher: Teacher,
     val startTime: LessonStartTime,
     val hourNumber: LessonHourNumber,
-    val className: ClassName
+    val classRegistry: ClassRegistry
 )
 
 typealias Time = LocalTime
 
-sealed class LessonHourNumber {
+sealed class LessonHourNumber(val time: Time) {
 
-    object One : LessonHourNumber()
-    object Two : LessonHourNumber()
-    object Three : LessonHourNumber()
+    object One : LessonHourNumber(Time.parse("08:00"))
+    object Two : LessonHourNumber(Time.parse("08:55"))
+    object Three : LessonHourNumber(Time.parse("09:50"))
 
     companion object {
-        fun of(number: Int): LessonHourNumber = when (number) {
-            1 -> One
-            2 -> Two
-            3 -> Three
-            else -> throw NumberFormatException()
+        fun of(number: Int): Option<LessonHourNumber> = when (number) {
+            1 -> One.toOption()
+            2 -> Two.toOption()
+            3 -> Three.toOption()
+            else -> Option.empty()
         }
     }
 }
 
-data class ClassName(val name: String)
+data class ClassName(val name: NonEmptyText)
+
+data class StudentRecord(val firstName: NonEmptyText, val secondName: NonEmptyText)
+typealias StudentList = NonEmptyList<StudentRecord>
 
 data class ClassRegistry(
-    val className: ClassName
+    val className: ClassName,
+    val studentList: StudentList
 )
 
 typealias ScheduledTime = LocalDateTime
@@ -47,12 +64,13 @@ data class ScheduledLesson(
     val hourNumber: LessonHourNumber
 )
 
-typealias StartLesson = (CheckSchedule, FetchClassRegistry, Teacher, LessonStartTime) -> StartedLesson
+typealias StartLesson = (ValidateStartLessonTime, CheckSchedule, FetchClassRegistry, Teacher, AttemptedLessonStartTime) -> StartedLesson
 
-val startLesson: StartLesson = { checkSchedule, fetchClassRegistry, teacher, lessonStartTime ->
-    val scheduledLesson = checkSchedule(teacher, lessonStartTime)
+val startLesson: StartLesson = { validateStartLessonTime, checkSchedule, fetchClassRegistry, teacher, lessonStartTime ->
+    val validLessonStartTime = validateStartLessonTime(lessonStartTime)
+    val scheduledLesson = checkSchedule(teacher, validLessonStartTime)
     val registry = fetchClassRegistry(scheduledLesson.className)
-    StartedLesson(teacher, lessonStartTime, scheduledLesson.hourNumber, registry.className)
+    StartedLesson(teacher, validLessonStartTime, scheduledLesson.hourNumber, registry)
 }
 
 
@@ -60,4 +78,6 @@ val startLesson: StartLesson = { checkSchedule, fetchClassRegistry, teacher, les
 
 typealias CheckSchedule = (Teacher, LessonStartTime) -> ScheduledLesson
 typealias FetchClassRegistry = (ClassName) -> ClassRegistry
+
+typealias ValidateStartLessonTime = (AttemptedLessonStartTime) -> LessonStartTime
 

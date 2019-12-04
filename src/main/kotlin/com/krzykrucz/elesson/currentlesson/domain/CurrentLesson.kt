@@ -5,21 +5,14 @@ import arrow.core.Option
 import arrow.core.toOption
 import com.virtuslab.basetypes.refined.NonEmptyText
 import com.virtuslab.basetypes.refined.RawText
+import java.time.Duration
 import java.time.LocalDateTime
 import java.time.LocalTime
 
 
 data class Teacher(val name: NonEmptyText)
 
-data class AttemptedLessonStartTime(val dateTime: RawText)
-data class LessonStartTime(val dateTime: LocalDateTime) {
-    companion object {
-        fun of(stringTime: RawText) =
-            LessonStartTime(
-                LocalDateTime.parse(stringTime.text)
-            )
-    }
-}
+data class LessonStartTime(val dateTime: LocalDateTime)
 
 data class StartedLesson(
     val teacher: Teacher,
@@ -64,13 +57,18 @@ data class ScheduledLesson(
     val hourNumber: LessonHourNumber
 )
 
-typealias StartLesson = (ValidateStartLessonTime, CheckSchedule, FetchClassRegistry, Teacher, AttemptedLessonStartTime) -> StartedLesson
+typealias StartLesson = (CheckSchedule, FetchClassRegistry, Teacher, LessonStartTime) -> StartedLesson
 
-val startLesson: StartLesson = { validateStartLessonTime, checkSchedule, fetchClassRegistry, teacher, lessonStartTime ->
-    val validLessonStartTime = validateStartLessonTime(lessonStartTime)
-    val scheduledLesson = checkSchedule(teacher, validLessonStartTime)
+val startLesson: StartLesson = { checkSchedule, fetchClassRegistry, teacher, lessonStartTime ->
+    val scheduledLesson = checkSchedule(teacher, lessonStartTime)
+    val scheduledTime = scheduledLesson.scheduledTime
+    val startTime = lessonStartTime.dateTime
+    if (startTime.isBefore(scheduledTime)
+            .or(startTime.isAfter(scheduledTime + Duration.ofMinutes(45)))) {
+        throw StartLessonError.StartingTooEarlyOrTooLate
+    }
     val registry = fetchClassRegistry(scheduledLesson.className)
-    StartedLesson(teacher, validLessonStartTime, scheduledLesson.hourNumber, registry)
+    StartedLesson(teacher, lessonStartTime, scheduledLesson.hourNumber, registry)
 }
 
 
@@ -79,5 +77,9 @@ val startLesson: StartLesson = { validateStartLessonTime, checkSchedule, fetchCl
 typealias CheckSchedule = (Teacher, LessonStartTime) -> ScheduledLesson
 typealias FetchClassRegistry = (ClassName) -> ClassRegistry
 
-typealias ValidateStartLessonTime = (AttemptedLessonStartTime) -> LessonStartTime
+//errors
 
+sealed class StartLessonError : RuntimeException() {
+    object CannotAccessRegister : StartLessonError()
+    object StartingTooEarlyOrTooLate : StartLessonError()
+}

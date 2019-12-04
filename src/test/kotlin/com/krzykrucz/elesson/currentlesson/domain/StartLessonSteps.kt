@@ -8,6 +8,8 @@ import io.cucumber.java8.En
 import java.time.LocalDate
 import java.time.LocalDateTime
 import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
+import kotlin.test.assertTrue
 
 
 class StartLessonSteps : En {
@@ -18,6 +20,7 @@ class StartLessonSteps : En {
     lateinit var outputLesson: StartedLesson
     lateinit var checkSchedule: CheckSchedule
     lateinit var fetchClassRegistry: FetchClassRegistry
+    var exception: Exception? = null
 
     init {
         Given("Teacher {string}") { teacherName: String ->
@@ -46,7 +49,11 @@ class StartLessonSteps : En {
             }
         }
         When("Lesson is started") {
-            outputLesson = startLesson(checkSchedule, fetchClassRegistry, teacher, AttemptedLessonStartTime(RawText(time)))
+            try {
+                outputLesson = startLesson(checkSchedule, fetchClassRegistry, teacher, LessonStartTime(LocalDateTime.parse(time)))
+            } catch (ex: Exception) {
+                exception = ex
+            }
         }
         Then("Lesson before attendance should be started") {
             // don't modify this section
@@ -57,6 +64,9 @@ class StartLessonSteps : En {
 
             assertEquals(outputLesson.classRegistry.studentList.head.firstName.text, "Harry")
             assertEquals(outputLesson.classRegistry.studentList.head.secondName.text, "Potter")
+        }
+        Then("Lesson should not be started because it's too late or too soon") {
+            assertTrue { exception is StartLessonError.StartingTooEarlyOrTooLate }
         }
     }
 

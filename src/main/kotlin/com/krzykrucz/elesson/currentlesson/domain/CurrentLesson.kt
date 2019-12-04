@@ -4,13 +4,14 @@ import arrow.core.NonEmptyList
 import arrow.core.Option
 import arrow.core.toOption
 import com.virtuslab.basetypes.refined.NonEmptyText
-import com.virtuslab.basetypes.refined.RawText
 import java.time.Duration
 import java.time.LocalDateTime
 import java.time.LocalTime
 
 
 data class Teacher(val name: NonEmptyText)
+
+data class AttemptedLessonStartTime(val dateTime: LocalDateTime)
 
 data class LessonStartTime(val dateTime: LocalDateTime)
 
@@ -57,24 +58,27 @@ data class ScheduledLesson(
     val hourNumber: LessonHourNumber
 )
 
-typealias StartLesson = (CheckSchedule, FetchClassRegistry, Teacher, LessonStartTime) -> StartedLesson
+typealias StartLesson = (CheckSchedule, FetchClassRegistry, Teacher, AttemptedLessonStartTime) -> StartedLesson
 
 val startLesson: StartLesson = { checkSchedule, fetchClassRegistry, teacher, lessonStartTime ->
     val scheduledLesson = checkSchedule(teacher, lessonStartTime)
     val scheduledTime = scheduledLesson.scheduledTime
     val startTime = lessonStartTime.dateTime
-    if (startTime.isBefore(scheduledTime)
-            .or(startTime.isAfter(scheduledTime + Duration.ofMinutes(45)))) {
-        throw StartLessonError.StartingTooEarlyOrTooLate
-    }
+    val checkedLessonStartTime =
+        if (startTime.isBefore(scheduledTime)
+            or startTime.isAfter(scheduledTime + Duration.ofMinutes(45))) {
+            throw StartLessonError.StartingTooEarlyOrTooLate
+        } else {
+            LessonStartTime(lessonStartTime.dateTime)
+        }
     val registry = fetchClassRegistry(scheduledLesson.className)
-    StartedLesson(teacher, lessonStartTime, scheduledLesson.hourNumber, registry)
+    StartedLesson(teacher, checkedLessonStartTime, scheduledLesson.hourNumber, registry)
 }
 
 
 //dependencies
 
-typealias CheckSchedule = (Teacher, LessonStartTime) -> ScheduledLesson
+typealias CheckSchedule = (Teacher, AttemptedLessonStartTime) -> ScheduledLesson
 typealias FetchClassRegistry = (ClassName) -> ClassRegistry
 
 //errors

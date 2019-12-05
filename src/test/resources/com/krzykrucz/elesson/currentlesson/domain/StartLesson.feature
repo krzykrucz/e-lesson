@@ -23,3 +23,11 @@ Feature: Start lesson
       | startTime        |
       | 2019-09-09T07:59 |
       | 2019-09-09T08:46 |
+
+  Scenario: Should fail to start new lesson when registry unavailable
+    Given Teacher 'Albus Dumbledore'
+    And Current time 2019-09-09T08:00
+    And Scheduled lesson for class Gryffindor, lesson number 1 and date 2019-09-09
+    And Failed to fetch class registry
+    When Lesson is started
+    Then Lesson should not be started because class registry unavailable

@@ -84,6 +84,6 @@ typealias FetchClassRegistry = (ClassName) -> ClassRegistry
 //errors
 
 sealed class StartLessonError : RuntimeException() {
-    object CannotAccessRegister : StartLessonError()
+    object ClassRegistryUnavailable : StartLessonError()
     object StartingTooEarlyOrTooLate : StartLessonError()
 }

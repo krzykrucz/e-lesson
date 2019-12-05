@@ -3,12 +3,10 @@ package com.krzykrucz.elesson.currentlesson.domain
 
 import arrow.core.NonEmptyList
 import com.virtuslab.basetypes.refined.NonEmptyText
-import com.virtuslab.basetypes.refined.RawText
 import io.cucumber.java8.En
 import java.time.LocalDate
 import java.time.LocalDateTime
 import kotlin.test.assertEquals
-import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
 
@@ -48,6 +46,9 @@ class StartLessonSteps : En {
                     )))
             }
         }
+        Given("Failed to fetch class registry") {
+            fetchClassRegistry = { _ -> throw StartLessonError.ClassRegistryUnavailable }
+        }
         When("Lesson is started") {
             try {
                 outputLesson = startLesson(checkSchedule, fetchClassRegistry, teacher, AttemptedLessonStartTime(LocalDateTime.parse(time)))
@@ -67,6 +68,9 @@ class StartLessonSteps : En {
         }
         Then("Lesson should not be started because it's too late or too soon") {
             assertTrue { exception is StartLessonError.StartingTooEarlyOrTooLate }
+        }
+        Then("Lesson should not be started because class registry unavailable") {
+            assertTrue { exception is StartLessonError.ClassRegistryUnavailable }
         }
     }
 

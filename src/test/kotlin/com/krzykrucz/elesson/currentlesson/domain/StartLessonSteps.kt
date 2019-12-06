@@ -3,20 +3,18 @@ package com.krzykrucz.elesson.currentlesson.domain
 
 import arrow.core.NonEmptyList
 import com.virtuslab.basetypes.refined.NonEmptyText
-import com.virtuslab.basetypes.refined.RawText
 import io.cucumber.java8.En
 import java.time.LocalDate
 import java.time.LocalDateTime
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
-import kotlin.test.assertTrue
 
 
 class StartLessonSteps : En {
 
-    lateinit var teacher: Teacher
+    lateinit var teacher: String
     lateinit var time: String
-    lateinit var lessonHourNumber: LessonHourNumber
+    var lessonHourNumber: Int = 0
     lateinit var outputLesson: StartedLesson
     lateinit var checkSchedule: CheckSchedule
     lateinit var fetchClassRegistry: FetchClassRegistry
@@ -24,14 +22,15 @@ class StartLessonSteps : En {
 
     init {
         Given("Teacher {string}") { teacherName: String ->
-            this.teacher = Teacher(NonEmptyText.of(teacherName).orNull()!!)
+            this.teacher = teacherName
         }
         Given("Current time {word}") { time: String ->
             this.time = time
         }
         Given("Scheduled lesson for class {word}, lesson number {word} and date {word}") { className: String, hourNumber: String, date: String ->
-            lessonHourNumber = LessonHourNumber.of(hourNumber.toInt()).orNull()!!
-            checkSchedule = { _, lessonStartTime ->
+            lessonHourNumber = hourNumber.toInt()
+            checkSchedule = { teacher, lessonStartTime ->
+                val lessonHourNumber = LessonHourNumber.of(hourNumber.toInt()).orNull()!!
                 ScheduledLesson(
                     ClassName(NonEmptyText.of(className).orNull()!!),
                     ScheduledTime.of(LocalDate.parse(date), lessonHourNumber.time),
@@ -48,8 +47,14 @@ class StartLessonSteps : En {
                     )))
             }
         }
+        Given("Empty class registry for class {word}") { className: String ->
+            fetchClassRegistry = {
+                ClassRegistry(it, NonEmptyList.fromListUnsafe(emptyList()))
+            }
+        }
         When("Lesson is started") {
             try {
+                val teacher = Teacher(NonEmptyText.of(teacher).orNull()!!)
                 outputLesson = startLesson(checkSchedule, fetchClassRegistry, teacher, AttemptedLessonStartTime(LocalDateTime.parse(time)))
             } catch (ex: Exception) {
                 exception = ex
@@ -58,15 +63,15 @@ class StartLessonSteps : En {
         Then("Lesson before attendance should be started") {
             // don't modify this section
             assertEquals(outputLesson.startTime.dateTime, LocalDateTime.parse(time))
-            assertEquals(outputLesson.teacher, teacher)
-            assertEquals(outputLesson.hourNumber, lessonHourNumber)
+            assertEquals(outputLesson.teacher.name.text, teacher)
+            assertEquals(outputLesson.hourNumber.number.number, lessonHourNumber)
             assertEquals(outputLesson.classRegistry.className.name.text, "Gryffindor")
 
             assertEquals(outputLesson.classRegistry.studentList.head.firstName.text, "Harry")
             assertEquals(outputLesson.classRegistry.studentList.head.secondName.text, "Potter")
         }
-        Then("Lesson should not be started because it's too late or too soon") {
-            assertTrue { exception is StartLessonError.StartingTooEarlyOrTooLate }
+        Then("Lesson should not be started") {
+            assertNotNull(exception)
         }
     }
 

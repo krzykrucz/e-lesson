@@ -3,13 +3,13 @@ package com.krzykrucz.elesson.currentlesson.domain
 import arrow.core.NonEmptyList
 import arrow.core.Option
 import arrow.core.toOption
+import com.virtuslab.basetypes.refined.NaturalNumber
 import com.virtuslab.basetypes.refined.NonEmptyText
-import java.time.Duration
 import java.time.LocalDateTime
 import java.time.LocalTime
 
 
-data class Teacher(val name: NonEmptyText)
+data class Teacher(val name: NonEmptyText) // this will be todo
 
 data class AttemptedLessonStartTime(val dateTime: LocalDateTime)
 
@@ -24,14 +24,14 @@ data class StartedLesson(
 
 typealias Time = LocalTime
 
-sealed class LessonHourNumber(val time: Time) {
+sealed class LessonHourNumber(val time: Time, val number: NaturalNumber) {
 
-    object One : LessonHourNumber(Time.parse("08:00"))
-    object Two : LessonHourNumber(Time.parse("08:55"))
-    object Three : LessonHourNumber(Time.parse("09:50"))
+    object One : LessonHourNumber(Time.parse("08:00"), NaturalNumber.ONE)
+    object Two : LessonHourNumber(Time.parse("08:55"), NaturalNumber.TWO)
+    object Three : LessonHourNumber(Time.parse("09:50"), NaturalNumber.THREE)
 
     companion object {
-        fun of(number: Int): Option<LessonHourNumber> = when (number) {
+        fun of(number: Int): Option<LessonHourNumber> = when (number) { // this will be todo
             1 -> One.toOption()
             2 -> Two.toOption()
             3 -> Three.toOption()
@@ -47,7 +47,7 @@ typealias StudentList = NonEmptyList<StudentRecord>
 
 data class ClassRegistry(
     val className: ClassName,
-    val studentList: StudentList
+    val studentList: StudentList // this will be todo
 )
 
 typealias ScheduledTime = LocalDateTime
@@ -62,7 +62,7 @@ typealias StartLesson = (CheckSchedule, FetchClassRegistry, Teacher, AttemptedLe
 
 val startLesson: StartLesson = { checkSchedule, fetchClassRegistry, teacher, lessonStartTime ->
     val scheduledLesson = checkSchedule(teacher, lessonStartTime)
-    val checkedLessonStartTime = LessonStartTime(lessonStartTime.dateTime) // TODO
+    val checkedLessonStartTime = LessonStartTime(lessonStartTime.dateTime)
     val registry = fetchClassRegistry(scheduledLesson.className)
     StartedLesson(teacher, checkedLessonStartTime, scheduledLesson.hourNumber, registry)
 }
@@ -72,10 +72,3 @@ val startLesson: StartLesson = { checkSchedule, fetchClassRegistry, teacher, les
 
 typealias CheckSchedule = (Teacher, AttemptedLessonStartTime) -> ScheduledLesson
 typealias FetchClassRegistry = (ClassName) -> ClassRegistry
-
-//errors
-
-sealed class StartLessonError : RuntimeException() {
-    object ClassRegistryUnavailable : StartLessonError()
-    object StartingTooEarlyOrTooLate : StartLessonError()
-}

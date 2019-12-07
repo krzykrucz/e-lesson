@@ -2,9 +2,13 @@ package com.krzykrucz.elesson.currentlesson.domain
 
 import arrow.core.NonEmptyList
 import arrow.core.Option
+import arrow.core.Tuple2
 import arrow.core.toOption
+import arrow.core.toT
 import com.virtuslab.basetypes.refined.NonEmptyText
-import java.time.Duration
+import com.virtuslab.basetypes.result.Result
+import com.virtuslab.basetypes.result.flatMap
+import com.virtuslab.basetypes.result.map
 import java.time.LocalDateTime
 import java.time.LocalTime
 
@@ -58,36 +62,49 @@ data class ScheduledLesson(
     val hourNumber: LessonHourNumber
 )
 
-typealias StartLesson = (Teacher, AttemptedLessonStartTime) -> StartedLesson
+typealias StartLesson = (Teacher, AttemptedLessonStartTime) -> Result<StartedLesson, StartLessonError>
 
 typealias StartLessonWithDependencies = (CheckSchedule, FetchClassRegistry) -> StartLesson
 
+fun <T : Any, E : Exception, S : Any> Result<T, E>.tuple(s: S): Result<Tuple2<T, S>, E> = map { it.toT(s) }
 val startLesson: StartLessonWithDependencies = { checkSchedule, fetchClassRegistry ->
     { teacher, lessonStartTime ->
-        val scheduledLesson = checkSchedule(teacher, lessonStartTime)
-        val scheduledTime = scheduledLesson.scheduledTime
-        val startTime = lessonStartTime.dateTime
-        val checkedLessonStartTime =
-            if (startTime.isBefore(scheduledTime)
-                or startTime.isAfter(scheduledTime + Duration.ofMinutes(45))) {
-                throw StartLessonError.StartingTooEarlyOrTooLate
-            } else {
-                LessonStartTime(lessonStartTime.dateTime)
+        checkSchedule(teacher, lessonStartTime)
+            .flatMap { checkTime(it, lessonStartTime) }
+            .flatMap { fetchClassRegistry(it.className).tuple(it) }
+            .map { (registry, lesson) ->
+                StartedLesson(teacher, lesson.startTime, lesson.hourNumber, registry)
             }
-        val registry = fetchClassRegistry(scheduledLesson.className)
-        StartedLesson(teacher, checkedLessonStartTime, scheduledLesson.hourNumber, registry)
     }
 }
 
-
 //dependencies
 
-typealias CheckSchedule = (Teacher, AttemptedLessonStartTime) -> ScheduledLesson
-typealias FetchClassRegistry = (ClassName) -> ClassRegistry
+class ExternalError(val msg: String) : Exception()
+typealias CheckSchedule = (Teacher, AttemptedLessonStartTime) -> Result<ScheduledLesson, StartLessonError>
+typealias FetchClassRegistry = (ClassName) -> Result<ClassRegistry, StartLessonError>
+
+data class LessonAboutToStart(
+    val className: ClassName,
+    val startTime: LessonStartTime,
+    val hourNumber: LessonHourNumber
+)
+typealias CheckLessonStartTime = (ScheduledLesson, AttemptedLessonStartTime) -> Result<LessonAboutToStart, StartLessonError>
+
+val checkTime: CheckLessonStartTime = { lesson, startTime ->
+    when {
+        startTime.dateTime.isBefore(lesson.scheduledTime) -> Result.error(StartLessonError.StartingTooEarlyOrTooLate)
+        startTime.dateTime.isAfter(lesson.scheduledTime.plusMinutes(44)) -> Result.error(StartLessonError.StartingTooEarlyOrTooLate)
+        else -> Result.success(lesson)
+    }.map {
+        LessonAboutToStart(it.className, LessonStartTime(startTime.dateTime), it.hourNumber)
+    }
+}
 
 //errors
 
 sealed class StartLessonError : RuntimeException() {
     object ClassRegistryUnavailable : StartLessonError()
     object StartingTooEarlyOrTooLate : StartLessonError()
+    object ExternalError : StartLessonError()
 }

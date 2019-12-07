@@ -58,21 +58,25 @@ data class ScheduledLesson(
     val hourNumber: LessonHourNumber
 )
 
-typealias StartLesson = (CheckSchedule, FetchClassRegistry, Teacher, AttemptedLessonStartTime) -> StartedLesson
+typealias StartLesson = (Teacher, AttemptedLessonStartTime) -> StartedLesson
 
-val startLesson: StartLesson = { checkSchedule, fetchClassRegistry, teacher, lessonStartTime ->
-    val scheduledLesson = checkSchedule(teacher, lessonStartTime)
-    val scheduledTime = scheduledLesson.scheduledTime
-    val startTime = lessonStartTime.dateTime
-    val checkedLessonStartTime =
-        if (startTime.isBefore(scheduledTime)
-            or startTime.isAfter(scheduledTime + Duration.ofMinutes(45))) {
-            throw StartLessonError.StartingTooEarlyOrTooLate
-        } else {
-            LessonStartTime(lessonStartTime.dateTime)
-        }
-    val registry = fetchClassRegistry(scheduledLesson.className)
-    StartedLesson(teacher, checkedLessonStartTime, scheduledLesson.hourNumber, registry)
+typealias StartLessonWithDependencies = (CheckSchedule, FetchClassRegistry) -> StartLesson
+
+val startLesson: StartLessonWithDependencies = { checkSchedule, fetchClassRegistry ->
+    { teacher, lessonStartTime ->
+        val scheduledLesson = checkSchedule(teacher, lessonStartTime)
+        val scheduledTime = scheduledLesson.scheduledTime
+        val startTime = lessonStartTime.dateTime
+        val checkedLessonStartTime =
+            if (startTime.isBefore(scheduledTime)
+                or startTime.isAfter(scheduledTime + Duration.ofMinutes(45))) {
+                throw StartLessonError.StartingTooEarlyOrTooLate
+            } else {
+                LessonStartTime(lessonStartTime.dateTime)
+            }
+        val registry = fetchClassRegistry(scheduledLesson.className)
+        StartedLesson(teacher, checkedLessonStartTime, scheduledLesson.hourNumber, registry)
+    }
 }
 
 

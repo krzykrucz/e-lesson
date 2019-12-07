@@ -5,11 +5,13 @@ import arrow.core.Option
 import arrow.core.toOption
 import com.virtuslab.basetypes.refined.NonEmptyText
 import com.virtuslab.basetypes.result.Result
+import com.virtuslab.basetypes.result.flatMap
+import com.virtuslab.basetypes.result.map
+import com.virtuslab.basetypes.result.pairWith
 import com.virtuslab.basetypes.result.arrow.AsyncResult
 import com.virtuslab.basetypes.result.arrow.flatMapResult
 import com.virtuslab.basetypes.result.arrow.flatMapSuccess
 import com.virtuslab.basetypes.result.arrow.mapSuccess
-import com.virtuslab.basetypes.result.map
 import java.time.LocalDateTime
 import java.time.LocalTime
 
@@ -63,16 +65,16 @@ data class ScheduledLesson(
     val hourNumber: LessonHourNumber
 )
 
-typealias StartLesson = (Teacher, AttemptedLessonStartTime) -> AsyncResult<StartedLesson, StartLessonError> // TODO change to AsyncResult
+typealias StartLesson = (Teacher, AttemptedLessonStartTime) -> Result<StartedLesson, StartLessonError> // TODO change to AsyncResult
 
 typealias StartLessonWithDependencies = (CheckSchedule, FetchClassRegistry) -> StartLesson
 
 val startLesson: StartLessonWithDependencies = { checkSchedule, fetchClassRegistry ->
     { teacher, lessonStartTime ->
         checkSchedule(teacher, lessonStartTime)
-            .flatMapResult { checkTime(it, lessonStartTime) }
-            .flatMapSuccess { fetchClassRegistry(it.className).pairWith(it) }
-            .mapSuccess { (registry, lesson) ->
+            .flatMap { checkTime(it, lessonStartTime) }
+            .flatMap { fetchClassRegistry(it.className).pairWith(it) }
+            .map { (registry, lesson) ->
                 StartedLesson(teacher, lesson.startTime, lesson.hourNumber, registry)
             }
     }
@@ -81,8 +83,8 @@ val startLesson: StartLessonWithDependencies = { checkSchedule, fetchClassRegist
 //dependencies
 
 class ExternalError(val msg: String) : Exception()
-typealias CheckSchedule = (Teacher, AttemptedLessonStartTime) -> AsyncResult<ScheduledLesson, StartLessonError> // TODO change to AsyncResult
-typealias FetchClassRegistry = (ClassName) -> AsyncResult<ClassRegistry, StartLessonError> // TODO change to AsyncResult
+typealias CheckSchedule = (Teacher, AttemptedLessonStartTime) -> Result<ScheduledLesson, StartLessonError> // TODO change to AsyncResult
+typealias FetchClassRegistry = (ClassName) -> Result<ClassRegistry, StartLessonError> // TODO change to AsyncResult
 
 data class LessonAboutToStart(
     val className: ClassName,

@@ -36,7 +36,7 @@ class StartLessonSteps : En {
                     ClassName(NonEmptyText.of(className).orNull()!!),
                     ScheduledTime.of(LocalDate.parse(date), lessonHourNumber.time),
                     lessonHourNumber
-                ).toResult().toAsync()
+                ).toResult()
             }
         }
         Given("Class registry for class {word}") { className: String ->
@@ -45,11 +45,11 @@ class StartLessonSteps : En {
                     StudentRecord(
                         NonEmptyText.of("Harry").orNull()!!,
                         NonEmptyText.of("Potter").orNull()!!
-                    ))).toResult().toAsync()
+                    ))).toResult()
             }
         }
         Given("Failed to fetch class registry") {
-            fetchClassRegistry = { _ -> Result.error(StartLessonError.ClassRegistryUnavailable).toAsync() }
+            fetchClassRegistry = { _ -> Result.error(StartLessonError.ClassRegistryUnavailable) }
         }
         When("Lesson is started") {
             output = startLesson(checkSchedule, fetchClassRegistry)(teacher, AttemptedLessonStartTime(LocalDateTime.parse(time)))
@@ -66,11 +66,13 @@ class StartLessonSteps : En {
                 .assertThatSuccess { it.classRegistry.studentList.head.secondName.text == "Potter" }
         }
         Then("Lesson should not be started because it's too late or too soon") {
+            // don't modify this section
             output
                 .test()
                 .assertFailure(StartLessonError.StartingTooEarlyOrTooLate)
         }
         Then("Lesson should not be started because class registry unavailable") {
+            // don't modify this section
             output
                 .test()
                 .assertFailure(StartLessonError.ClassRegistryUnavailable)

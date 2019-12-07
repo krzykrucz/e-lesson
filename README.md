@@ -18,7 +18,7 @@ Based on this Event Storming fragment:
 - Create `Scenario Outline` based on events above
 - Focus on happy path only
 
-####Tips
+#### Tips
 1. When in doubt - ask domain expert.
 
 2. The only thing you have to do is to write a Scenario, no implementation required.

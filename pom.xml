@@ -105,7 +105,12 @@
         <dependency>
             <groupId>com.github.VirtusLab.base-types-kt</groupId>
             <artifactId>refined-types</artifactId>
-            <version>master-SNAPSHOT</version>
+            <version>1.1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.VirtusLab.base-types-kt</groupId>
+            <artifactId>result</artifactId>
+            <version>1.1.0</version>
         </dependency>
 
         <!-- TEST-->

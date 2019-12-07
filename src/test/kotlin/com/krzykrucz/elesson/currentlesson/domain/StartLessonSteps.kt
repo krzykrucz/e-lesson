@@ -35,7 +35,7 @@ class StartLessonSteps : En {
                     ClassName(NonEmptyText.of(className).orNull()!!),
                     ScheduledTime.of(LocalDate.parse(date), lessonHourNumber.time),
                     lessonHourNumber
-                ).toResult()
+                )// TODO
             }
         }
         Given("Class registry for class {word}") { className: String ->
@@ -44,11 +44,12 @@ class StartLessonSteps : En {
                     StudentRecord(
                         NonEmptyText.of("Harry").orNull()!!,
                         NonEmptyText.of("Potter").orNull()!!
-                    ))).toResult()
+                    )))// TODO
             }
         }
         Given("Failed to fetch class registry") {
-            fetchClassRegistry = { _ -> Result.error(StartLessonError.ClassRegistryUnavailable) }
+            // TODO
+            fetchClassRegistry = { _ -> throw StartLessonError.ClassRegistryUnavailable }
         }
         When("Lesson is started") {
             output = startLesson(checkSchedule, fetchClassRegistry)(teacher, AttemptedLessonStartTime(LocalDateTime.parse(time)))
@@ -66,12 +67,14 @@ class StartLessonSteps : En {
             assertEquals(outputLesson.classRegistry.studentList.head.secondName.text, "Potter")
         }
         Then("Lesson should not be started because it's too late or too soon") {
+            // don't modify this section
             assertTrue { output.isFailure() }
 
             val error = output.component2()!!
             assertTrue { error is StartLessonError.StartingTooEarlyOrTooLate }
         }
         Then("Lesson should not be started because class registry unavailable") {
+            // don't modify this section
             assertTrue { output.isFailure() }
 
             val error = output.component2()!!

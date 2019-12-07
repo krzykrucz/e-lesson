@@ -60,10 +60,11 @@ data class ScheduledLesson(
 
 typealias StartLesson = (Teacher, AttemptedLessonStartTime) -> StartedLesson
 
-typealias StartLessonWithDependencies = (CheckSchedule, FetchClassRegistry) -> StartLesson
+// TODO use this
+typealias StartLessonWithDependencies = (Any, Any) -> Unit
 
-val startLesson: StartLessonWithDependencies = { checkSchedule, fetchClassRegistry ->
-    { teacher, lessonStartTime ->
+val startLesson: StartLesson = // TODO
+    { checkSchedule, fetchClassRegistry, teacher, lessonStartTime ->
         val scheduledLesson = checkSchedule(teacher, lessonStartTime)
         val scheduledTime = scheduledLesson.scheduledTime
         val startTime = lessonStartTime.dateTime
@@ -77,7 +78,6 @@ val startLesson: StartLessonWithDependencies = { checkSchedule, fetchClassRegist
         val registry = fetchClassRegistry(scheduledLesson.className)
         StartedLesson(teacher, checkedLessonStartTime, scheduledLesson.hourNumber, registry)
     }
-}
 
 
 //dependencies

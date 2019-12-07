@@ -51,7 +51,7 @@ class StartLessonSteps : En {
         }
         When("Lesson is started") {
             try {
-                outputLesson = startLesson(checkSchedule, fetchClassRegistry)(teacher, AttemptedLessonStartTime(LocalDateTime.parse(time)))
+                outputLesson = startLesson(teacher, AttemptedLessonStartTime(LocalDateTime.parse(time))) // TODO
             } catch (ex: Exception) {
                 exception = ex
             }

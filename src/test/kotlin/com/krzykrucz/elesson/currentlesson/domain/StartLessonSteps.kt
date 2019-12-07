@@ -1,7 +1,6 @@
 package com.krzykrucz.elesson.currentlesson.domain
 
 
-import arrow.core.NonEmptyList
 import com.virtuslab.basetypes.refined.NonEmptyText
 import io.cucumber.java8.En
 import java.time.LocalDate
@@ -30,7 +29,7 @@ class StartLessonSteps : En {
         Given("Scheduled lesson for class {word}, lesson number {word} and date {word}") { className: String, hourNumber: String, date: String ->
             lessonHourNumber = hourNumber.toInt()
             checkSchedule = { teacher, lessonStartTime ->
-                val lessonHourNumber = LessonHourNumber.of(hourNumber.toInt()).orNull()!!
+                val lessonHourNumber = LessonHourNumber.of(hourNumber.toInt())
                 ScheduledLesson(
                     ClassName(NonEmptyText.of(className).orNull()!!),
                     ScheduledTime.of(LocalDate.parse(date), lessonHourNumber.time),
@@ -40,7 +39,7 @@ class StartLessonSteps : En {
         }
         Given("Class registry for class {word}") { className: String ->
             fetchClassRegistry = {
-                ClassRegistry(it, NonEmptyList.just(
+                ClassRegistry(it, listOf(
                     StudentRecord(
                         NonEmptyText.of("Harry").orNull()!!,
                         NonEmptyText.of("Potter").orNull()!!
@@ -49,12 +48,12 @@ class StartLessonSteps : En {
         }
         Given("Empty class registry for class {word}") { className: String ->
             fetchClassRegistry = {
-                ClassRegistry(it, NonEmptyList.fromListUnsafe(emptyList()))
+                ClassRegistry(it, emptyList())
             }
         }
         When("Lesson is started") {
             try {
-                val teacher = Teacher(NonEmptyText.of(teacher).orNull()!!)
+                val teacher = Teacher(teacher)
                 outputLesson = startLesson(checkSchedule, fetchClassRegistry, teacher, AttemptedLessonStartTime(LocalDateTime.parse(time)))
             } catch (ex: Exception) {
                 exception = ex
@@ -63,15 +62,15 @@ class StartLessonSteps : En {
         Then("Lesson before attendance should be started") {
             // don't modify this section
             assertEquals(outputLesson.startTime.dateTime, LocalDateTime.parse(time))
-            assertEquals(outputLesson.teacher.name.text, teacher)
+            assertEquals(outputLesson.teacher.name, teacher)
             assertEquals(outputLesson.hourNumber.number.number, lessonHourNumber)
             assertEquals(outputLesson.classRegistry.className.name.text, "Gryffindor")
 
-            assertEquals(outputLesson.classRegistry.studentList.head.firstName.text, "Harry")
-            assertEquals(outputLesson.classRegistry.studentList.head.secondName.text, "Potter")
+            assertEquals(outputLesson.classRegistry.studentList.first().firstName.text, "Harry")
+            assertEquals(outputLesson.classRegistry.studentList.first().secondName.text, "Potter")
         }
         Then("Lesson should not be started") {
-            assertNotNull(exception)
+            assertNotNull(exception, "Test should fail with exception")
         }
     }
 

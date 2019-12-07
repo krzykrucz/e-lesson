@@ -1,15 +1,12 @@
 package com.krzykrucz.elesson.currentlesson.domain
 
-import arrow.core.NonEmptyList
-import arrow.core.Option
-import arrow.core.toOption
 import com.virtuslab.basetypes.refined.NaturalNumber
 import com.virtuslab.basetypes.refined.NonEmptyText
 import java.time.LocalDateTime
 import java.time.LocalTime
 
 
-data class Teacher(val name: NonEmptyText) // this will be todo
+data class Teacher(val name: String) // TODO
 
 data class AttemptedLessonStartTime(val dateTime: LocalDateTime)
 
@@ -31,11 +28,10 @@ sealed class LessonHourNumber(val time: Time, val number: NaturalNumber) {
     object Three : LessonHourNumber(Time.parse("09:50"), NaturalNumber.THREE)
 
     companion object {
-        fun of(number: Int): Option<LessonHourNumber> = when (number) { // this will be todo
-            1 -> One.toOption()
-            2 -> Two.toOption()
-            3 -> Three.toOption()
-            else -> Option.empty()
+        fun of(number: Int): LessonHourNumber = when (number) { // TODO
+            1 -> One
+            2 -> Two
+            else -> Three
         }
     }
 }
@@ -43,11 +39,12 @@ sealed class LessonHourNumber(val time: Time, val number: NaturalNumber) {
 data class ClassName(val name: NonEmptyText)
 
 data class StudentRecord(val firstName: NonEmptyText, val secondName: NonEmptyText)
-typealias StudentList = NonEmptyList<StudentRecord>
+
+typealias StudentList = List<StudentRecord> // TODO
 
 data class ClassRegistry(
     val className: ClassName,
-    val studentList: StudentList // this will be todo
+    val studentList: StudentList
 )
 
 typealias ScheduledTime = LocalDateTime

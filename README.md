@@ -12,7 +12,7 @@ Based on this Event Storming fragment:
 
 - Go to [CurrentLesson.kt](src/main/kotlin/com/krzykrucz/elesson/currentlesson/domain/CurrentLesson.kt)
 - Complete `Check Schedule` and `Fetch Class Registry` workflows
-- Include them `StartLesson` workflow
+- Include them in `StartLesson` workflow
 - Go to [StartLessonSteps.kt](src/test/kotlin/com/krzykrucz/elesson/currentlesson/domain/StartLessonSteps.kt)
 - Implement missing `Check Schedule` and `Fetch Class Registry` steps
 - Make test pass

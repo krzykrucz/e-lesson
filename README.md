@@ -11,5 +11,5 @@ Based on this Event Storming fragment:
 ![Started Lesson](images/ex1/started-lesson-ex1.jpg)
 
 - Go to [CurrentLesson.kt](src/main/kotlin/com/krzykrucz/elesson/currentlesson/domain/CurrentLesson.kt)
-- Implement `LessonHourNumber` and `ScheduledLesson` as Sum types
+- Implement `LessonHourNumber` as Sum type
 

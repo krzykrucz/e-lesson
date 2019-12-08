@@ -12,5 +12,5 @@ This exercise will show you how to use types to enforce as much constraints as p
 
 #### Tips
 1. When in doubt - ask domain expert.
-2. Ask your self if given data types is too broad. For example, can teacher's name be empty?
+2. Ask yourself if given data type isn't too broad. For example, can teacher's name be empty?
 3. See `base-types` library for help

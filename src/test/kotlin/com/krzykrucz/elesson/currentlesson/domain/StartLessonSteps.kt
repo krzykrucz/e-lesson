@@ -52,7 +52,7 @@ class StartLessonSteps : En {
             fetchClassRegistry = { _ -> Result.error(StartLessonError.ClassRegistryUnavailable).toAsync() }
         }
         When("Lesson is started") {
-            output = startLesson(checkSchedule, fetchClassRegistry/*TODO*/)(teacher, AttemptedLessonStartTime(LocalDateTime.parse(time)))
+            output = startLesson(checkSchedule, fetchClassRegistry, createEvents)(teacher, AttemptedLessonStartTime(LocalDateTime.parse(time)))
         }
         Then("Lesson before attendance should be started") {
             // don't modify this section

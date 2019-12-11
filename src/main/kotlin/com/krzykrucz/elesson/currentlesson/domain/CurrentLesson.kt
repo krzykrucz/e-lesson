@@ -63,18 +63,19 @@ data class ScheduledLesson(
     val hourNumber: LessonHourNumber
 )
 
-typealias StartLesson = (Teacher, AttemptedLessonStartTime) -> AsyncResult<StartedLesson, StartLessonError> // TODO return event
+typealias StartLesson = (Teacher, AttemptedLessonStartTime) -> AsyncResult<LessonStartedEvent, StartLessonError> // TODO return event
 
-typealias StartLessonWithDependencies = (CheckSchedule, FetchClassRegistry/* TODO */) -> StartLesson
+typealias StartLessonWithDependencies = (CheckSchedule, FetchClassRegistry, CreateEvents) -> StartLesson
 
-val startLesson: StartLessonWithDependencies = { checkSchedule, fetchClassRegistry ->
+val startLesson: StartLessonWithDependencies = { checkSchedule, fetchClassRegistry, createEvents ->
     { teacher, lessonStartTime ->
         checkSchedule(teacher, lessonStartTime)
             .flatMapResult { checkTime(it, lessonStartTime) }
             .flatMapSuccess { fetchClassRegistry(it.className).pairWith(it) }
             .mapSuccess { (registry, lesson) ->
                 StartedLesson(teacher, lesson.startTime, lesson.hourNumber, registry)
-            }//TODO
+            }
+            .mapSuccess(createEvents)
     }
 }
 
@@ -109,7 +110,20 @@ sealed class StartLessonError : RuntimeException() {
 }
 
 //event
+typealias CreateEvents = (StartedLesson) -> LessonStartedEvent
+
+val createEvents: CreateEvents = {
+    LessonStartedEvent(
+        it.classRegistry.className,
+        it.teacher,
+        it.hourNumber,
+        it.startTime
+    )
+}
+
 data class LessonStartedEvent(
-    // TODO
-    val string: String
+    val className: ClassName,
+    val teacher: Teacher,
+    val hourNumber: LessonHourNumber,
+    val startTime: LessonStartTime
 )

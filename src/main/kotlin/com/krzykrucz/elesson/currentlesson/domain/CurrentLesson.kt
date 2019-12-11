@@ -65,7 +65,7 @@ data class ScheduledLesson(
 
 typealias StartLesson = (Teacher, AttemptedLessonStartTime) -> AsyncResult<StartedLesson, StartLessonError> // TODO return event
 
-typealias StartLessonWithDependencies = (CheckSchedule, FetchClassRegistry) -> StartLesson
+typealias StartLessonWithDependencies = (CheckSchedule, FetchClassRegistry/* TODO */) -> StartLesson
 
 val startLesson: StartLessonWithDependencies = { checkSchedule, fetchClassRegistry ->
     { teacher, lessonStartTime ->
@@ -74,7 +74,7 @@ val startLesson: StartLessonWithDependencies = { checkSchedule, fetchClassRegist
             .flatMapSuccess { fetchClassRegistry(it.className).pairWith(it) }
             .mapSuccess { (registry, lesson) ->
                 StartedLesson(teacher, lesson.startTime, lesson.hourNumber, registry)
-            }
+            }//TODO
     }
 }
 

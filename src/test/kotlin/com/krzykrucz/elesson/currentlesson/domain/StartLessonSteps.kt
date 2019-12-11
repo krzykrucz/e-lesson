@@ -18,7 +18,7 @@ class StartLessonSteps : En {
     lateinit var teacher: Teacher
     lateinit var time: String
     lateinit var lessonHourNumber: LessonHourNumber
-    lateinit var output: AsyncResult<StartedLesson, StartLessonError>
+    lateinit var output: AsyncResult<LessonStartedEvent, StartLessonError>
     lateinit var checkSchedule: CheckSchedule
     lateinit var fetchClassRegistry: FetchClassRegistry
 
@@ -61,16 +61,16 @@ class StartLessonSteps : En {
                 .assertThatSuccess { it.startTime.dateTime  == LocalDateTime.parse(time) }
                 .assertThatSuccess { it.teacher == teacher }
                 .assertThatSuccess { it.hourNumber == lessonHourNumber }
-                .assertThatSuccess { it.classRegistry.className.name.text == "Gryffindor" }
-                .assertThatSuccess { it.classRegistry.studentList.head.firstName.text == "Harry" }
-                .assertThatSuccess { it.classRegistry.studentList.head.secondName.text == "Potter" }
+                .assertThatSuccess { it.className.name.text == "Gryffindor" }
         }
         Then("Lesson should not be started because it's too late or too soon") {
+            // don't modify this section
             output
                 .test()
                 .assertFailure(StartLessonError.StartingTooEarlyOrTooLate)
         }
         Then("Lesson should not be started because class registry unavailable") {
+            // don't modify this section
             output
                 .test()
                 .assertFailure(StartLessonError.ClassRegistryUnavailable)

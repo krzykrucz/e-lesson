@@ -1,9 +1,12 @@
 package com.krzykrucz.elesson.currentlesson.adapters
 
+import com.krzykrucz.elesson.currentlesson.domain.CheckSchedule
 import com.krzykrucz.elesson.currentlesson.domain.ClassName
+import com.krzykrucz.elesson.currentlesson.domain.FetchClassRegistry
 import com.krzykrucz.elesson.currentlesson.domain.LessonHourNumber
 import com.krzykrucz.elesson.currentlesson.domain.StartLesson
 import com.krzykrucz.elesson.currentlesson.domain.StartLessonError
+import com.krzykrucz.elesson.currentlesson.domain.startLesson
 import com.virtuslab.basetypes.result.arrow.AsyncResult
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -36,5 +39,9 @@ fun startLessonApi(
 @Configuration
 class ApiConfig {
     @Bean
-    fun api(): StartLessonApi = TODO()
+    fun api(
+        persistStartedLesson: PersistStartedLesson,
+        checkSchedule: CheckSchedule,
+        fetchClassRegistry: FetchClassRegistry
+    ): StartLessonApi = TODO()
 }

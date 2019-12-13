@@ -15,7 +15,7 @@ import com.virtuslab.basetypes.result.arrow.toAsync
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
-
+// TODO parameterize this for tests
 class CheckScheduleAdapter : CheckSchedule {
     override fun invoke(teacher: Teacher, time: AttemptedLessonStartTime) =
         NonEmptyText.of("Gryffindor")
@@ -23,7 +23,7 @@ class CheckScheduleAdapter : CheckSchedule {
             .map {
                 ScheduledLesson(
                     it,
-                    ScheduledTime.now(),
+                    time.dateTime,
                     LessonHourNumber.One
                 )
             }

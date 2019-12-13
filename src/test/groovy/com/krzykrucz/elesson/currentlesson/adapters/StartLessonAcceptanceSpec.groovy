@@ -21,13 +21,13 @@ class StartLessonAcceptanceSpec extends AcceptanceSpec {
         ).body
 
         then:
-        lessonIdAndStudents.lessonId.className.name.text == 'Gryffindor'
-        lessonIdAndStudents.lessonId.date == TODAY
-        lessonIdAndStudents.lessonId.lessonHourNumber == new LessonHourNumber.One()
+        lessonIdAndStudents.lessonId.id ==~ /[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}/
         lessonIdAndStudents.students*.name == ['Harry Potter', 'Hermione Granger']
 
         and:
         Database.LESSON_DATABASE.containsKey(lessonIdAndStudents.lessonId)
     }
+
+    // TODO unhappy path specs
 
 }

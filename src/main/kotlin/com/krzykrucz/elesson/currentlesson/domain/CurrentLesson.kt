@@ -63,7 +63,7 @@ data class ScheduledLesson(
     val hourNumber: LessonHourNumber
 )
 
-typealias StartLesson = (Teacher, AttemptedLessonStartTime) -> AsyncResult<StartedLesson, StartLessonError> // TODO change to AsyncResult
+typealias StartLesson = (Teacher, AttemptedLessonStartTime) -> AsyncResult<StartedLesson, StartLessonError>
 
 typealias StartLessonWithDependencies = (CheckSchedule, FetchClassRegistry) -> StartLesson
 
@@ -81,8 +81,8 @@ val startLesson: StartLessonWithDependencies = { checkSchedule, fetchClassRegist
 //dependencies
 
 class ExternalError(val msg: String) : Exception()
-typealias CheckSchedule = (Teacher, AttemptedLessonStartTime) -> AsyncResult<ScheduledLesson, StartLessonError> // TODO change to AsyncResult
-typealias FetchClassRegistry = (ClassName) -> AsyncResult<ClassRegistry, StartLessonError> // TODO change to AsyncResult
+typealias CheckSchedule = (Teacher, AttemptedLessonStartTime) -> AsyncResult<ScheduledLesson, StartLessonError>
+typealias FetchClassRegistry = (ClassName) -> AsyncResult<ClassRegistry, StartLessonError>
 
 data class LessonAboutToStart(
     val className: ClassName,
@@ -106,5 +106,6 @@ val checkTime: CheckLessonStartTime = { lesson, startTime ->
 sealed class StartLessonError : RuntimeException() {
     object ClassRegistryUnavailable : StartLessonError()
     object StartingTooEarlyOrTooLate : StartLessonError()
+    object WrongTeacher: StartLessonError()
     object ExternalError : StartLessonError()
 }

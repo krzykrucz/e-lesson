@@ -14,16 +14,16 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
 
+// TODO parameterize this for tests
 class FetchClassRegistryAdapter : FetchClassRegistry {
 
     override fun invoke(className: ClassName) =
-        NonEmptyText.of("Harry")
-            .flatMap { first -> NonEmptyText.of("Potter").map { first.to(it) } }
-            .flatMap { (first, second) -> NonEmptyText.of("Gryffindor").map { Triple(first, second, it) } }
-            .map { (first, second, clazz) ->
+        NonEmptyText.of("Gryffindor")
+            .map(::ClassName)
+            .map { clazz ->
                 ClassRegistry(
-                    ClassName(clazz),
-                    StudentList(StudentRecord(first, second))
+                    clazz,
+                    StudentList(studentRecord("Harry", "Potter"), studentRecord("Hermione", "Granger"))
                 )
             }
             .map { Result.success(it) }
@@ -31,6 +31,12 @@ class FetchClassRegistryAdapter : FetchClassRegistry {
             .toAsync()
 
 }
+
+fun studentRecord(firstName: String, secondName: String): StudentRecord =
+    StudentRecord(
+        NonEmptyText.of(firstName).orNull()!!,
+        NonEmptyText.of(secondName).orNull()!!
+    )
 
 @Configuration
 class FetchClassRegistryAdapterConfig {

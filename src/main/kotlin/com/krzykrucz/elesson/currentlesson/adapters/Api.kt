@@ -5,6 +5,8 @@ import com.krzykrucz.elesson.currentlesson.domain.LessonHourNumber
 import com.krzykrucz.elesson.currentlesson.domain.StartLesson
 import com.krzykrucz.elesson.currentlesson.domain.StartLessonError
 import com.virtuslab.basetypes.result.arrow.AsyncResult
+import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Configuration
 import java.time.LocalDate
 
 data class StartLessonRequest(
@@ -29,4 +31,10 @@ fun startLessonApi(
     startLesson: StartLesson
 ): StartLessonApi = {
     TODO()
+}
+
+@Configuration
+class ApiConfig {
+    @Bean
+    fun api(): StartLessonApi = TODO()
 }

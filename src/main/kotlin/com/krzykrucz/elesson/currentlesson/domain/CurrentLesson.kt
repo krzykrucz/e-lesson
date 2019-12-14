@@ -80,7 +80,6 @@ val startLesson: StartLessonWithDependencies = { checkSchedule, fetchClassRegist
 
 //dependencies
 
-class ExternalError(val msg: String) : Exception()
 typealias CheckSchedule = (Teacher, AttemptedLessonStartTime) -> AsyncResult<ScheduledLesson, StartLessonError>
 typealias FetchClassRegistry = (ClassName) -> AsyncResult<ClassRegistry, StartLessonError>
 

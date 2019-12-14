@@ -4,7 +4,6 @@ import arrow.core.NonEmptyList
 import arrow.core.Option
 import arrow.core.toOption
 import com.virtuslab.basetypes.refined.NonEmptyText
-import java.time.Duration
 import java.time.LocalDateTime
 import java.time.LocalTime
 
@@ -77,5 +76,6 @@ typealias FetchClassRegistry = (ClassName) -> ClassRegistry
 
 sealed class StartLessonError : RuntimeException() {
     object ClassRegistryUnavailable : StartLessonError()
-    object StartingTooEarlyOrTooLate : StartLessonError()
+    object StartingTooEarly : StartLessonError()
+    object StartingTooLate : StartLessonError()
 }

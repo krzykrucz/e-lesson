@@ -54,7 +54,7 @@ class StartLessonRouteAdapter {
                                     else -> HttpStatus.BAD_REQUEST
                                 }
                                 ServerResponse.status(status)
-                                    .body(BodyInserters.fromObject(result.error))
+                                    .body(BodyInserters.fromObject(result.error.javaClass.simpleName))
                             }
                         }
                     }

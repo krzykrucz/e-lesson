@@ -14,7 +14,6 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
 
-// TODO parameterize this for tests
 class FetchClassRegistryAdapter : FetchClassRegistry {
 
     override fun invoke(className: ClassName) =

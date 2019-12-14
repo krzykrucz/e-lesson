@@ -26,7 +26,6 @@ import java.time.LocalDateTime
 data class StartLessonRequest(
     val teacher: String
 ) {
-    // TODO use this:
     fun toTeacher(): Result<Teacher, StartLessonError.WrongTeacher> =
         NonEmptyText.of(teacher)
             .map(::Teacher)

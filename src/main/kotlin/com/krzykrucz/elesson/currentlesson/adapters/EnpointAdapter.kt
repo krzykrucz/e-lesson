@@ -3,11 +3,8 @@ package com.krzykrucz.elesson.currentlesson.adapters
 import arrow.core.Left
 import arrow.core.Right
 import arrow.fx.IO
-import com.krzykrucz.elesson.currentlesson.domain.StartLessonError
-import com.virtuslab.basetypes.result.Result
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.web.reactive.function.BodyInserters
 import org.springframework.web.reactive.function.server.ServerResponse
@@ -38,25 +35,12 @@ class StartLessonRouteAdapter {
         router {
             POST("/startlesson") { request ->
                 request.bodyToMono(StartLessonRequest::class.java)
-                    .toIO()
-                    .flatMap(startLessonApi)
-                    .toMono()
+                    // TODO
                     .flatMap {
-                        when (val result = it) {
-                            is Result.Success ->
-                                ServerResponse.ok()
-                                    .contentType(MediaType.APPLICATION_JSON)
-                                    .body(BodyInserters.fromObject(result.value))
-                            is Result.Failure -> {
-                                val status = when (result.error) {
-                                    is StartLessonError.ExternalError,
-                                    StartLessonError.ClassRegistryUnavailable -> HttpStatus.INTERNAL_SERVER_ERROR
-                                    else -> HttpStatus.BAD_REQUEST
-                                }
-                                ServerResponse.status(status)
-                                    .body(BodyInserters.fromObject(result.error.javaClass.simpleName))
-                            }
-                        }
+                        // TODO:
+                        ServerResponse.ok()
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .body(BodyInserters.fromObject(it))
                     }
             }
         }

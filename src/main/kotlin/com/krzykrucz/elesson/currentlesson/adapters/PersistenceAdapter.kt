@@ -13,16 +13,5 @@ import java.util.UUID
 class StartedLessonPersistenceAdapterConfig {
 
     @Bean
-    fun create(): PersistStartedLesson = {
-        val id = "${UUID.randomUUID()}"
-            .let(::LessonIdentifier)
-        Database.LESSON_DATABASE[id] = PersistentCurrentLesson(
-            it.hourNumber,
-            it.startTime,
-            it.classRegistry,
-            it.teacher
-        )
-        id.toResult()
-            .toAsync()
-    }
+    fun create(): PersistStartedLesson = TODO()
 }

@@ -20,3 +20,4 @@ Based on this Event Storming fragment:
 - Be explicit!
 - Take a look at Event Storming to grasp where dependencies are
 - Provide dependencies as parameters
+- Currying is your friend

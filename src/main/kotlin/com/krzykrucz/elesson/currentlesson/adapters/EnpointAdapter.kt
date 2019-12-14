@@ -14,7 +14,6 @@ import org.springframework.web.reactive.function.server.ServerResponse
 import org.springframework.web.reactive.function.server.router
 import reactor.core.publisher.Mono
 
-// TODO use this
 fun <A> IO<A>.toMono(): Mono<A> =
     Mono.create<A> { sink ->
         val dispose = unsafeRunAsyncCancellable { result ->
@@ -23,7 +22,6 @@ fun <A> IO<A>.toMono(): Mono<A> =
         sink.onCancel { dispose.invoke() }
     }
 
-// TODO use this
 fun <A> Mono<A>.toIO(): IO<A> =
     IO.cancelable { cb ->
         val dispose = subscribe({ a -> cb(Right(a)) }, { e -> cb(Left(e)) })

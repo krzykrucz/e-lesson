@@ -68,12 +68,12 @@ data class LessonAboutToStart(
 
 typealias StartLesson = (Teacher, AttemptedLessonStartTime) -> StartedLesson // TODO change to return Result<Success, Failure>
 
-typealias StartLessonWithDependencies = (CheckSchedule, FetchClassRegistry) -> StartLesson
+typealias StartLessonWithDependencies = (CheckSchedule, FetchClassRegistry, CheckLessonStartTime) -> StartLesson
 
-val startLesson: StartLessonWithDependencies = { checkSchedule, fetchClassRegistry ->
+val startLesson: StartLessonWithDependencies = { checkSchedule, fetchClassRegistry, checkLessonStartTime ->
     { teacher, lessonStartTime ->
         val scheduledLesson = checkSchedule(teacher, lessonStartTime)
-        val lessonBeforeStart = checkTime(scheduledLesson, lessonStartTime)
+        val lessonBeforeStart = checkLessonStartTime(scheduledLesson, lessonStartTime)
         val registry = fetchClassRegistry(lessonBeforeStart.className)
         StartedLesson(teacher, lessonBeforeStart.startTime, lessonBeforeStart.hourNumber, registry)
     }

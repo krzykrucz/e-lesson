@@ -1,16 +1,7 @@
 package com.krzykrucz.elesson.currentlesson.adapters
 
 import arrow.core.getOrElse
-import com.krzykrucz.elesson.currentlesson.domain.AttemptedLessonStartTime
-import com.krzykrucz.elesson.currentlesson.domain.CheckSchedule
-import com.krzykrucz.elesson.currentlesson.domain.ClassName
-import com.krzykrucz.elesson.currentlesson.domain.FetchClassRegistry
-import com.krzykrucz.elesson.currentlesson.domain.LessonHourNumber
-import com.krzykrucz.elesson.currentlesson.domain.StartLesson
-import com.krzykrucz.elesson.currentlesson.domain.StartLessonError
-import com.krzykrucz.elesson.currentlesson.domain.StartedLesson
-import com.krzykrucz.elesson.currentlesson.domain.Teacher
-import com.krzykrucz.elesson.currentlesson.domain.startLesson
+import com.krzykrucz.elesson.currentlesson.domain.*
 import com.virtuslab.basetypes.refined.NonEmptyText
 import com.virtuslab.basetypes.result.Result
 import com.virtuslab.basetypes.result.arrow.AsyncResult
@@ -84,7 +75,8 @@ class ApiConfig {
             persistStartedLesson,
             startLesson(
                 checkSchedule,
-                fetchClassRegistry
+                fetchClassRegistry,
+                checkTime
             )
         )
 }

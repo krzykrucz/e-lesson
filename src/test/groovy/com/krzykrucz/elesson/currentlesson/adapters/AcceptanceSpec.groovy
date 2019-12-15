@@ -7,7 +7,7 @@ import org.springframework.boot.test.web.client.TestRestTemplate
 import spock.lang.Specification
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class AcceptanceSpec extends Specification {
+abstract class AcceptanceSpec extends Specification {
     @Autowired
     protected TestRestTemplate rest
 

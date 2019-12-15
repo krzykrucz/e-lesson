@@ -1,6 +1,6 @@
 # E-Lesson (functional DDD showcase)
 
-## Exercise #8: Effects in the functions
+## Exercise #8: Error Effects 
 
 Not every path is happy. In this exercise we will make our workflows aware of errors. 
 

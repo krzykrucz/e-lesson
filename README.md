@@ -13,6 +13,7 @@ Based on this Event Storming fragment:
 - Go to [CurrentLesson.kt](src/main/kotlin/com/krzykrucz/elesson/currentlesson/domain/CurrentLesson.kt)
 - Introduce `Result` effect from `base-types-kt` library to cover errors
 - Use error types like presented in storming
+- Make tests pass
 
 #### Tips
 

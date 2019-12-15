@@ -13,6 +13,7 @@ Based on this Event Storming fragment:
 - Go to [CurrentLesson.kt](src/main/kotlin/com/krzykrucz/elesson/currentlesson/domain/CurrentLesson.kt)
 - Implement `StartLessonWithDependencies` providing required dependencies of `CheckSchedule` and `FetchClassRegistry`
 - Change `startLesson` so that dependencies are not implicit
+- Provide dependencies in test
 
 
 #### Tips

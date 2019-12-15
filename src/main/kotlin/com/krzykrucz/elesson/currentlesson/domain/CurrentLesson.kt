@@ -65,12 +65,12 @@ data class ScheduledLesson(
 
 typealias StartLesson = (Teacher, AttemptedLessonStartTime) -> AsyncResult<StartedLesson, StartLessonError>
 
-typealias StartLessonWithDependencies = (CheckSchedule, FetchClassRegistry) -> StartLesson
+typealias StartLessonWithDependencies = (CheckSchedule, FetchClassRegistry, CheckLessonStartTime) -> StartLesson
 
-val startLesson: StartLessonWithDependencies = { checkSchedule, fetchClassRegistry ->
+val startLesson: StartLessonWithDependencies = { checkSchedule, fetchClassRegistry, checkLessonStartTime ->
     { teacher, lessonStartTime ->
         checkSchedule(teacher, lessonStartTime)
-            .flatMapResult { checkTime(it, lessonStartTime) }
+            .flatMapResult { checkLessonStartTime(it, lessonStartTime) }
             .flatMapSuccess { fetchClassRegistry(it.className).pairWith(it) }
             .mapSuccess { (registry, lesson) ->
                 StartedLesson(teacher, lesson.startTime, lesson.hourNumber, registry)

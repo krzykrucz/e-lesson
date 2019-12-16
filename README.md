@@ -1,6 +1,6 @@
 # E-Lesson (functional DDD showcase)
 
-## Exercise #10: Port&Adapters 
+## Exercise #11: Port&Adapters 
 
 It is recommended to push IO-based operations to the edge. Port and adapters architecture is a perfect way to achieve it.
 

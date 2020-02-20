@@ -2,27 +2,30 @@ package com.krzykrucz.elesson.currentlesson.infrastructure
 
 import arrow.core.Option
 import com.krzykrucz.elesson.currentlesson.adapters.LessonIdentifier
-import com.krzykrucz.elesson.currentlesson.domain.ClassRegistry
-import com.krzykrucz.elesson.currentlesson.domain.LessonHourNumber
-import com.krzykrucz.elesson.currentlesson.domain.LessonStartTime
+import com.krzykrucz.elesson.currentlesson.domain.ClassGroupName
+import com.krzykrucz.elesson.currentlesson.domain.Period
+import com.krzykrucz.elesson.currentlesson.domain.Register
 import com.krzykrucz.elesson.currentlesson.domain.StartedLesson
-import com.krzykrucz.elesson.currentlesson.domain.Teacher
+import com.krzykrucz.elesson.currentlesson.domain.Subject
+import java.time.LocalDate
 import java.util.concurrent.ConcurrentHashMap
 import arrow.core.Option.Companion as Option1
 
 
 data class PersistentCurrentLesson(
-    val lessonHourNumber: LessonHourNumber,
-    val startTime: LessonStartTime,
-    val classRegistry: ClassRegistry,
-    val teacher: Teacher
+    val period: Period,
+    val startTime: LocalDate,
+    val classRegistry:  Register,
+    val classGroupName: ClassGroupName,
+    val subject: Subject
 ) {
 
     fun toStartedLesson(): Option<StartedLesson> =
         StartedLesson(
-            this.teacher,
             this.startTime,
-            this.lessonHourNumber,
+            this.period,
+            this.classGroupName,
+            this.subject,
             this.classRegistry
         ).let(Option1::just)
 

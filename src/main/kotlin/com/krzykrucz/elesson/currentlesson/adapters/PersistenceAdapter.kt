@@ -17,10 +17,11 @@ class StartedLessonPersistenceAdapterConfig {
         val id = "${UUID.randomUUID()}"
             .let(::LessonIdentifier)
         Database.LESSON_DATABASE[id] = PersistentCurrentLesson(
-            it.hourNumber,
-            it.startTime,
-            it.classRegistry,
-            it.teacher
+            it.period,
+            it.date,
+            it.pupilRegister,
+            it.classGroupName,
+            it.subject
         )
         id.toResult()
             .toAsync()

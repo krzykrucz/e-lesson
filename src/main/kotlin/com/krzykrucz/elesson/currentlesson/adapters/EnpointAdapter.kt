@@ -3,7 +3,7 @@ package com.krzykrucz.elesson.currentlesson.adapters
 import arrow.core.Left
 import arrow.core.Right
 import arrow.fx.IO
-import com.krzykrucz.elesson.currentlesson.domain.StartLessonError
+import com.krzykrucz.elesson.currentlesson.domain.StartingLessonFailure
 import com.virtuslab.basetypes.result.Result
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -47,8 +47,8 @@ class StartLessonRouteAdapter {
                                     .body(BodyInserters.fromObject(result.value))
                             is Result.Failure -> {
                                 val status = when (result.error) {
-                                    is StartLessonError.ExternalError,
-                                    StartLessonError.ClassRegistryUnavailable -> HttpStatus.INTERNAL_SERVER_ERROR
+                                    is StartingLessonFailure.ExternalError,
+                                    StartingLessonFailure.RegisterUnavailable -> HttpStatus.INTERNAL_SERVER_ERROR
                                     else -> HttpStatus.BAD_REQUEST
                                 }
                                 ServerResponse.status(status)

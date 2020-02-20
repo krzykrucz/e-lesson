@@ -1,6 +1,7 @@
 package com.krzykrucz.elesson.currentlesson.adapters
 
 import arrow.core.getOrElse
+import arrow.core.toOption
 import com.krzykrucz.elesson.currentlesson.domain.*
 import com.virtuslab.basetypes.refined.NonEmptyText
 import com.virtuslab.basetypes.result.Result
@@ -17,11 +18,13 @@ import java.time.LocalDateTime
 data class StartLessonRequest(
     val teacher: String
 ) {
-    fun toTeacher(): Result<Teacher, StartLessonError.WrongTeacher> =
-        NonEmptyText.of(teacher)
-            .map(::Teacher)
+    fun toTeacher(): Result<Teacher, StartingLessonFailure.WrongTeacher> =
+        teacher.split(" ")
+            .toOption()
+            .filter { it.size == 2 }
+            .map { name -> Teacher(FirstName(NonEmptyText.of(name[0]).orNull()!!), SecondName(NonEmptyText.of(name[1]).orNull()!!)) }
             .map { Result.success(it) }
-            .getOrElse { Result.error(StartLessonError.WrongTeacher) }
+            .getOrElse { Result.error(StartingLessonFailure.WrongTeacher) }
 }
 
 data class LessonIdentifier(val id: String)
@@ -35,13 +38,13 @@ data class ClassRegistryResponse(
 fun StartedLesson.toClassRegistryResponse(identifier: LessonIdentifier) =
     ClassRegistryResponse(
         identifier,
-        classRegistry.studentList
-            .map { record -> "${record.firstName.text} ${record.secondName.text}" }
+        pupilRegister.pupils
+            .map { record -> "${record.firstName.name} ${record.secondName.name}" }
             .map(::StudentResponse)
             .toList()
     )
 
-typealias StartLessonApi = (StartLessonRequest) -> AsyncResult<ClassRegistryResponse, StartLessonError>
+typealias StartLessonApi = (StartLessonRequest) -> AsyncResult<ClassRegistryResponse, StartingLessonFailure>
 
 fun startLessonApi(
     persistStartedLesson: PersistStartedLesson,
@@ -57,7 +60,7 @@ fun startLessonApi(
         .flatMapSuccess { lesson ->
             persistStartedLesson(lesson)
                 .mapSuccess { lesson to it }
-                .mapFailure { StartLessonError.ExternalError }
+                .mapFailure { StartingLessonFailure.ExternalError }
         }.mapSuccess { (startedLesson, identifier) ->
             startedLesson.toClassRegistryResponse(identifier)
         }

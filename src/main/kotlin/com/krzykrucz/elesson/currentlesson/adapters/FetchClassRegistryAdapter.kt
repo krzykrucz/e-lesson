@@ -1,12 +1,14 @@
 package com.krzykrucz.elesson.currentlesson.adapters
 
-import arrow.core.getOrElse
-import com.krzykrucz.elesson.currentlesson.domain.ClassName
-import com.krzykrucz.elesson.currentlesson.domain.ClassRegistry
+import arrow.core.NonEmptyList
+import com.krzykrucz.elesson.currentlesson.domain.ClassGroupName
 import com.krzykrucz.elesson.currentlesson.domain.FetchClassRegistry
-import com.krzykrucz.elesson.currentlesson.domain.StartLessonError
-import com.krzykrucz.elesson.currentlesson.domain.StudentList
-import com.krzykrucz.elesson.currentlesson.domain.StudentRecord
+import com.krzykrucz.elesson.currentlesson.domain.FirstName
+import com.krzykrucz.elesson.currentlesson.domain.PupilEntry
+import com.krzykrucz.elesson.currentlesson.domain.Register
+import com.krzykrucz.elesson.currentlesson.domain.RegisterOrdinal
+import com.krzykrucz.elesson.currentlesson.domain.SecondName
+import com.virtuslab.basetypes.refined.NaturalNumber
 import com.virtuslab.basetypes.refined.NonEmptyText
 import com.virtuslab.basetypes.result.Result
 import com.virtuslab.basetypes.result.arrow.toAsync
@@ -16,25 +18,23 @@ import org.springframework.context.annotation.Configuration
 
 class FetchClassRegistryAdapter : FetchClassRegistry {
 
-    override fun invoke(className: ClassName) =
-        NonEmptyText.of("Gryffindor")
-            .map(::ClassName)
-            .map { clazz ->
-                ClassRegistry(
-                    clazz,
-                    StudentList(studentRecord("Harry", "Potter"), studentRecord("Hermione", "Granger"))
-                )
-            }
-            .map { Result.success(it) }
-            .getOrElse { Result.error(StartLessonError.ExternalError) }
+    override fun invoke(className: ClassGroupName) =
+        Register(
+            NonEmptyList.invoke(
+                studentRecord(RegisterOrdinal(NaturalNumber.ONE), "Harry", "Potter"),
+                studentRecord(RegisterOrdinal(NaturalNumber.TWO), "Hermione", "Granger")
+            )
+        )
+            .let { Result.success(it) }
             .toAsync()
 
 }
 
-fun studentRecord(firstName: String, secondName: String): StudentRecord =
-    StudentRecord(
-        NonEmptyText.of(firstName).orNull()!!,
-        NonEmptyText.of(secondName).orNull()!!
+fun studentRecord(ordinal: RegisterOrdinal, firstName: String, secondName: String): PupilEntry =
+    PupilEntry(
+        ordinal,
+        FirstName(NonEmptyText.of(firstName).orNull()!!),
+        SecondName(NonEmptyText.of(secondName).orNull()!!)
     )
 
 @Configuration

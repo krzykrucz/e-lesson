@@ -19,6 +19,7 @@
         <spring-boot.version>2.1.4.RELEASE</spring-boot.version>
         <kotlinx-coroutines.version>1.3.2</kotlinx-coroutines.version>
         <archunit.version>0.11.0</archunit.version>
+        <base-types.version>1.2.1</base-types.version>
     </properties>
 
     <dependencyManagement>
@@ -102,6 +103,21 @@
             <groupId>org.springframework.retry</groupId>
             <artifactId>spring-retry</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.github.VirtusLab.base-types-kt</groupId>
+            <artifactId>refined-types</artifactId>
+            <version>${base-types.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.VirtusLab.base-types-kt</groupId>
+            <artifactId>result</artifactId>
+            <version>${base-types.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.VirtusLab.base-types-kt</groupId>
+            <artifactId>result-arrow</artifactId>
+            <version>${base-types.version}</version>
+        </dependency>
 
         <!-- TEST-->
         <dependency>
@@ -166,6 +182,10 @@
         <repository>
             <id>spek-dev</id>
             <url>https://dl.bintray.com/spekframework/spek-dev</url>
+        </repository>
+        <repository>
+            <id>jitpack</id>
+            <url>https://jitpack.io</url>
         </repository>
     </repositories>
 

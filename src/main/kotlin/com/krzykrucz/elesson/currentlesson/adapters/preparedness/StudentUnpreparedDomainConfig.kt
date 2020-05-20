@@ -16,7 +16,6 @@ import com.krzykrucz.elesson.currentlesson.domain.preparedness.domain.implementa
 import com.krzykrucz.elesson.currentlesson.domain.preparedness.domain.implementation.reportUnpreparedness
 import com.krzykrucz.elesson.currentlesson.domain.preparedness.domain.reportUnpreparedStudentApi
 import com.krzykrucz.elesson.currentlesson.domain.preparedness.readmodel.GetStudentSubjectUnpreparednessInASemester
-import com.krzykrucz.elesson.currentlesson.domain.preparedness.readmodel.WriteUnpreparednessInTheRegister
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
@@ -42,7 +41,6 @@ class StudentUnpreparedDomainConfig {
     @Bean
     fun reportUnpreparednessApiBean(
         reportUnpreparedness: ReportUnpreparedness,
-        writeUnpreparednessInTheRegister: WriteUnpreparednessInTheRegister,
         findCurrentLesson: FindCurrentLesson,
         persistUnpreparedStudentToLesson: PersistUnpreparedStudentToLesson,
         notifyStudentMarkedUnprepared: NotifyStudentMarkedUnprepared

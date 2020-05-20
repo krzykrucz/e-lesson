@@ -2,7 +2,6 @@ package com.krzykrucz.elesson.currentlesson.domain
 
 import arrow.core.Either
 import arrow.core.orNull
-import arrow.fx.IO
 import com.krzykrucz.elesson.currentlesson.domain.shared.ClassName
 import com.krzykrucz.elesson.currentlesson.domain.shared.FirstName
 import com.krzykrucz.elesson.currentlesson.domain.shared.LessonHourNumber
@@ -53,6 +52,5 @@ fun newClassName(name: String): ClassName =
 
 fun lessonHourNumberOf(number: Int) = LessonHourNumber.of(number).orNull()!!
 
-fun <T, E> IO<Either<E, T>>.evaluate() = this.unsafeRunSync()
 fun <T, E> Either<E, T>.getError() = this.swap().orNull()!!
 fun <T, E> Either<E, T>.getSuccess() = this.orNull()!!

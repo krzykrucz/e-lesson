@@ -1,9 +1,11 @@
 package com.krzykrucz.elesson.currentlesson.domain.preparedness
 
 
+import arrow.core.Either
 import arrow.core.orNull
 import com.krzykrucz.elesson.currentlesson.domain.attendance.CheckedAttendanceList
 import com.krzykrucz.elesson.currentlesson.domain.attendance.PresentStudent
+import com.krzykrucz.elesson.currentlesson.domain.evaluate
 import com.krzykrucz.elesson.currentlesson.domain.preparedness.domain.api.ReportUnpreparedness
 import com.krzykrucz.elesson.currentlesson.domain.preparedness.domain.api.StudentMarkedUnprepared
 import com.krzykrucz.elesson.currentlesson.domain.preparedness.domain.api.StudentReportingUnpreparedness
@@ -34,10 +36,8 @@ import com.krzykrucz.elesson.currentlesson.domain.shared.LessonTopic
 import com.krzykrucz.elesson.currentlesson.domain.shared.NaturalNumber
 import com.krzykrucz.elesson.currentlesson.domain.shared.NonEmptyText
 import com.krzykrucz.elesson.currentlesson.domain.shared.NumberInRegister
-import com.krzykrucz.elesson.currentlesson.domain.shared.Output
 import com.krzykrucz.elesson.currentlesson.domain.shared.SecondName
 import com.krzykrucz.elesson.currentlesson.domain.shared.TopicTitle
-import com.krzykrucz.elesson.currentlesson.domain.evaluate
 import io.cucumber.java8.En
 import java.time.LocalDate
 import kotlin.test.assertEquals
@@ -65,7 +65,7 @@ class StudentUnpreparedSteps : En {
             createEvent
         )
 
-    lateinit var result: Output<UnpreparednessError, StudentMarkedUnprepared>
+    lateinit var result: Either<UnpreparednessError, StudentMarkedUnprepared>
 
     init {
         Given("Present {word} {word} from class {word}") { firstName: String, secondName: String, className: String ->

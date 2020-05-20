@@ -8,9 +8,7 @@ import arrow.core.Some
 import arrow.core.extensions.either.applicativeError.handleError
 import arrow.core.flatMap
 import arrow.core.getOrHandle
-import arrow.core.right
 import arrow.core.maybe
-import arrow.core.right
 import arrow.effects.IO
 
 data class NonEmptyText(val text: String) {
@@ -121,9 +119,7 @@ class NonEmptyList<T> private constructor(private val elements: List<T>) : List<
     }
 }
 
-typealias Async<T> = IO<T>
-typealias Output<Error, Success> = Either<Error, Success>
-typealias AsyncOutput<Error, Success> = IO<Output<Error, Success>>
+typealias AsyncOutput<Error, Success> = IO<Either<Error, Success>>
 typealias AsyncOutputFactory = IO.Companion
 
 
@@ -151,15 +147,15 @@ fun <S1, Error, S2> AsyncOutput<Error, S1>.flatMapAsyncSuccess(transformer: (S1)
     }
 }
 
-fun <S1, Error, S2> AsyncOutput<Error, S1>.flatMapSuccess(transformer: (S1) -> Output<Error, S2>): AsyncOutput<Error, S2> {
+fun <S1, Error, S2> AsyncOutput<Error, S1>.flatMapSuccess(transformer: (S1) -> Either<Error, S2>): AsyncOutput<Error, S2> {
     return this.flatMap { either ->
         either.map { success -> this.map { transformer(success) } }
-                .getOrHandle { IO.just(Either.left(it)) }
+            .getOrHandle { IO.just(Either.left(it)) }
     }
 }
 
-fun <T, E> Output<E, T>.isSuccess() = this.isRight()
-fun <T, E> Output<E, T>.isError() = this.isLeft()
+fun <T, E> Either<E, T>.isSuccess() = this.isRight()
+fun <T, E> Either<E, T>.isError() = this.isLeft()
 
 class AsyncFactory {
     companion object {

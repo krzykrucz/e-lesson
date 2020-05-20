@@ -9,9 +9,9 @@ import com.krzykrucz.elesson.currentlesson.domain.shared.Teacher
 import java.time.LocalDateTime
 
 
-typealias FetchScheduledLesson = (Teacher, LocalDateTime) -> IO<Either<StartLessonError, ScheduledLesson>>
-typealias FetchClassRegistry = (ClassName) -> IO<Either<StartLessonError, ClassRegistry>>// TODO can be removed if class is an aggregate root
+typealias FetchScheduledLesson = suspend (Teacher, LocalDateTime) ->  Either<StartLessonError, ScheduledLesson>
+typealias FetchClassRegistry = suspend (ClassName) -> Either<StartLessonError, ClassRegistry>// TODO can be removed if class is an aggregate root
 
 typealias LessonStartTime = LocalDateTime
 typealias ValidateLessonStartTime = (ScheduledLesson, LocalDateTime) -> Either<StartLessonError, ValidatedScheduledLesson>
-typealias StartLesson = (Teacher, LessonStartTime) -> IO<Either<StartLessonError, StartedLesson>>
+typealias StartLesson = suspend (Teacher, LessonStartTime) -> Either<StartLessonError, StartedLesson>

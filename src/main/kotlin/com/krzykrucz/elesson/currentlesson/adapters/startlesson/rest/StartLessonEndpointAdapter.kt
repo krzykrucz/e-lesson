@@ -1,8 +1,6 @@
 package com.krzykrucz.elesson.currentlesson.adapters.startlesson.rest
 
-import arrow.core.getOrHandle
-import com.krzykrucz.elesson.currentlesson.adapters.MonoDomainError
-import com.krzykrucz.elesson.currentlesson.adapters.handleErrors
+import com.krzykrucz.elesson.currentlesson.adapters.doIfRight
 import com.krzykrucz.elesson.currentlesson.domain.shared.FirstName
 import com.krzykrucz.elesson.currentlesson.domain.shared.LessonIdentifier
 import com.krzykrucz.elesson.currentlesson.domain.shared.NonEmptyText
@@ -12,13 +10,15 @@ import com.krzykrucz.elesson.currentlesson.domain.shared.Teacher
 import com.krzykrucz.elesson.currentlesson.domain.startlesson.LessonStartTime
 import com.krzykrucz.elesson.currentlesson.domain.startlesson.PersistStartedLessonIfDoesNotExist
 import com.krzykrucz.elesson.currentlesson.domain.startlesson.StartLesson
+import com.krzykrucz.elesson.currentlesson.domain.startlesson.StartLessonError
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
-import org.springframework.web.reactive.function.BodyInserters
 import org.springframework.web.reactive.function.server.ServerResponse
-import org.springframework.web.reactive.function.server.router
-import reactor.core.publisher.Mono
+import org.springframework.web.reactive.function.server.awaitBody
+import org.springframework.web.reactive.function.server.bodyValueAndAwait
+import org.springframework.web.reactive.function.server.coRouter
 import javax.validation.constraints.NotEmpty
 
 data class StudentResponse(val name: String)
@@ -50,17 +50,6 @@ private fun StartedLesson.toDto() =
         .map { StudentResponse("${it.firstName.name.text} ${it.secondName.name.text}") }
         .let { ClassRegistryResponse(this.id, it) }
 
-fun startLessonToMono(startLessonRequest: StartLessonRequest, startLesson: StartLesson): Mono<StartedLesson> =
-    startLesson(startLessonRequest.toTeacher(), LessonStartTime.now())
-        .unsafeRunSync()
-        .map { Mono.just(it) }
-        .getOrHandle { Mono.error(MonoDomainError(it)) }
-
-fun persistLessonToMono(startedLesson: StartedLesson, persistLesson: PersistStartedLessonIfDoesNotExist): Mono<StartedLesson> =
-    persistLesson(startedLesson)
-        .unsafeRunSync()
-        .let { Mono.just(startedLesson) }
-
 @Configuration
 class StartLessonRouteAdapter {
 
@@ -68,28 +57,27 @@ class StartLessonRouteAdapter {
     fun startLessonRoute(persistLesson: PersistStartedLessonIfDoesNotExist,
                          startLesson: StartLesson
     ) =
-        router {
+        coRouter {
             POST("/startlesson") { request ->
-                request.bodyToMono(StartLessonRequest::class.java)
-                    .flatMap {
-                        startLessonToMono(
-                            it,
-                            startLesson
-                        )
-                    }
-                    .flatMap {
-                        persistLessonToMono(
-                            it,
-                            persistLesson
-                        )
-                    }
-                    .map { it.toDto() }
-                    .flatMap {
+                val startLessonRequest = request.awaitBody<StartLessonRequest>()
+                val teacher = startLessonRequest.toTeacher()
+                val now = LessonStartTime.now()
+
+                startLesson(teacher, now)
+                    .doIfRight { persistLesson(it) }
+                    .map(StartedLesson::toDto)
+                    .fold({
+                        val status: HttpStatus = when (it) {
+                            is StartLessonError.ClassRegistryUnavailable -> HttpStatus.INTERNAL_SERVER_ERROR
+                            else -> HttpStatus.BAD_REQUEST
+                        }
+                        ServerResponse.status(status)
+                            .bodyValueAndAwait(it.javaClass.simpleName)
+                    }, {
                         ServerResponse.ok()
                             .contentType(MediaType.APPLICATION_JSON)
-                            .body(BodyInserters.fromObject(it))
-                    }
-                    .handleErrors()
+                            .bodyValueAndAwait(it)
+                    })
             }
         }
 }

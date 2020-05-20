@@ -25,13 +25,7 @@ fun Mono<ServerResponse>.handleErrors(): Mono<ServerResponse> = this.onErrorResu
     }
 }
 
-fun <A, B> Either<A, B>.toServerResponse(): Mono<ServerResponse> =
-    this.fold(
-        ifLeft = { ServerResponse.badRequest().body(BodyInserters.fromObject(it)) },
-        ifRight = { ServerResponse.ok().body(BodyInserters.fromObject(it)) }
-    )
-
-suspend fun <A, B> Either<A, B>.toServerResponseAsync(): ServerResponse =
+suspend fun <A, B> Either<A, B>.toServerResponse(): ServerResponse =
     this.fold(
         ifLeft = { ServerResponse.badRequest().bodyValueAndAwait(it as Any) },
         ifRight = { ServerResponse.ok().bodyValueAndAwait(it as Any) }

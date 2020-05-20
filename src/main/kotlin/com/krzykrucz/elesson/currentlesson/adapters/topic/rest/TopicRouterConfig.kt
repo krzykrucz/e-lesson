@@ -1,7 +1,7 @@
 package com.krzykrucz.elesson.currentlesson.adapters.topic.rest
 
 
-import com.krzykrucz.elesson.currentlesson.adapters.toServerResponseAsync
+import com.krzykrucz.elesson.currentlesson.adapters.toServerResponse
 import com.krzykrucz.elesson.currentlesson.adapters.topic.ChooseTopicDto
 import com.krzykrucz.elesson.currentlesson.adapters.topic.usecase.handleChooseTopicDto
 import org.springframework.context.annotation.Bean
@@ -24,7 +24,7 @@ class TopicRouterConfig {
     private val handleChooseTopicRequest: suspend (ServerRequest) -> ServerResponse = { request ->
         val chooseTopicDto = request.awaitBody<ChooseTopicDto>()
         handleChooseTopicDto(chooseTopicDto)
-            .toServerResponseAsync()
+            .toServerResponse()
     }
 
 }

@@ -2,35 +2,32 @@ package com.krzykrucz.elesson.currentlesson.adapters.finishlesson
 
 import com.krzykrucz.elesson.currentlesson.adapters.toServerResponse
 import com.krzykrucz.elesson.currentlesson.domain.shared.LessonIdentifier
-import com.krzykrucz.elesson.currentlesson.infrastructure.run
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.MediaType
 import org.springframework.web.reactive.function.server.ServerRequest
 import org.springframework.web.reactive.function.server.ServerResponse
-import org.springframework.web.reactive.function.server.router
-import reactor.core.publisher.Mono
+import org.springframework.web.reactive.function.server.awaitBody
+import org.springframework.web.reactive.function.server.coRouter
 
 @Configuration
 class FinishLessonRestAdapter {
 
     @Bean
-    fun finishLessonRoute() = router {
+    fun finishLessonRoute() = coRouter {
         (path("/finished-lessons") and accept(MediaType.APPLICATION_JSON)).nest {
-            PUT("", handleFinishLessonRequest())
+            PUT("", handleFinishLessonRequest)
         }
     }
 
-    private fun handleFinishLessonRequest(): (ServerRequest) -> Mono<out ServerResponse> = { request ->
-        request
-            .bodyToMono(FinishLessonDto::class.java)
-            .flatMap { dto -> finishLesson(dto) }
+    private val handleFinishLessonRequest: suspend (ServerRequest) -> ServerResponse = { request ->
+        request.awaitBody<FinishLessonDto>()
+            .let { finishLesson(it) }
     }
 
-    private fun finishLesson(dto: FinishLessonDto) =
+    private suspend fun finishLesson(dto: FinishLessonDto) =
         finishInProgressLesson(dto.lessonIdentifier)
-            .map { it.toServerResponse() }
-            .run()
+            .toServerResponse()
 
 }
 

@@ -1,12 +1,11 @@
 package com.krzykrucz.elesson.currentlesson.domain.preparedness.domain.api
 
-import arrow.effects.IO
-import com.krzykrucz.elesson.currentlesson.domain.shared.AsyncOutput
+import arrow.core.Either
 import com.krzykrucz.elesson.currentlesson.domain.shared.CurrentLesson
 import com.krzykrucz.elesson.currentlesson.domain.shared.LessonIdentifier
 
 //persistence
-typealias PersistUnpreparedStudentToLesson = (StudentMarkedUnprepared) -> IO<LessonIdentifier>
+typealias PersistUnpreparedStudentToLesson = suspend (StudentMarkedUnprepared) -> LessonIdentifier
 
-typealias NotifyStudentMarkedUnprepared = (StudentMarkedUnprepared) -> IO<Unit>
-typealias FindCurrentLesson = (LessonIdentifier) -> AsyncOutput<UnpreparednessError.LessonNotStarted, CurrentLesson>
+typealias NotifyStudentMarkedUnprepared = suspend (StudentMarkedUnprepared) -> Unit
+typealias FindCurrentLesson = suspend (LessonIdentifier) -> Either<UnpreparednessError.LessonNotStarted, CurrentLesson>

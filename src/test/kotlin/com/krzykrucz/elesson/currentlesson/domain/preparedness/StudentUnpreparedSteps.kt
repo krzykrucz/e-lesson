@@ -3,9 +3,9 @@ package com.krzykrucz.elesson.currentlesson.domain.preparedness
 
 import arrow.core.Either
 import arrow.core.orNull
+import arrow.core.right
 import com.krzykrucz.elesson.currentlesson.domain.attendance.CheckedAttendanceList
 import com.krzykrucz.elesson.currentlesson.domain.attendance.PresentStudent
-import com.krzykrucz.elesson.currentlesson.domain.evaluate
 import com.krzykrucz.elesson.currentlesson.domain.preparedness.domain.api.ReportUnpreparedness
 import com.krzykrucz.elesson.currentlesson.domain.preparedness.domain.api.StudentMarkedUnprepared
 import com.krzykrucz.elesson.currentlesson.domain.preparedness.domain.api.StudentReportingUnpreparedness
@@ -23,7 +23,6 @@ import com.krzykrucz.elesson.currentlesson.domain.preparedness.domain.implementa
 import com.krzykrucz.elesson.currentlesson.domain.preparedness.domain.implementation.reportUnpreparedness
 import com.krzykrucz.elesson.currentlesson.domain.preparedness.readmodel.StudentInSemester
 import com.krzykrucz.elesson.currentlesson.domain.preparedness.readmodel.StudentSubjectUnpreparednessInASemester
-import com.krzykrucz.elesson.currentlesson.domain.shared.AsyncFactory
 import com.krzykrucz.elesson.currentlesson.domain.shared.ClassName
 import com.krzykrucz.elesson.currentlesson.domain.shared.CurrentLesson
 import com.krzykrucz.elesson.currentlesson.domain.shared.FirstName
@@ -39,6 +38,7 @@ import com.krzykrucz.elesson.currentlesson.domain.shared.NumberInRegister
 import com.krzykrucz.elesson.currentlesson.domain.shared.SecondName
 import com.krzykrucz.elesson.currentlesson.domain.shared.TopicTitle
 import io.cucumber.java8.En
+import kotlinx.coroutines.runBlocking
 import java.time.LocalDate
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
@@ -55,8 +55,7 @@ class StudentUnpreparedSteps : En {
         reportUnpreparedness(
             checkStudentCanReportUnprepared(
                 checkNumberOfTimesStudentWasUnpreparedInSemester {
-                    studentSubjectUnpreparednessInASemester
-                        .let { AsyncFactory.justSuccess(it) }
+                    studentSubjectUnpreparednessInASemester.right()
                 },
                 hasStudentUsedAllUnpreparedness
             ),
@@ -167,7 +166,7 @@ class StudentUnpreparedSteps : En {
                     firstName,
                     secondName
                 )
-            result = reportUnpreparednessFacade(student, currentLesson).evaluate()
+            result = runBlocking { reportUnpreparednessFacade(student, currentLesson) }
         }
 
         Then("{word} {word} should be noted unprepared for lesson") { firstName: String, secondName: String ->

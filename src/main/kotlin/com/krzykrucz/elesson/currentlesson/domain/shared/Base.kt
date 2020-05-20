@@ -3,12 +3,11 @@ package com.krzykrucz.elesson.currentlesson.domain.shared
 import arrow.core.Either
 import arrow.core.None
 import arrow.core.Option
-import arrow.core.Predicate
 import arrow.core.Some
-import arrow.core.extensions.either.applicativeError.handleError
 import arrow.core.flatMap
-import arrow.core.getOrHandle
+import arrow.core.left
 import arrow.core.maybe
+import arrow.core.right
 import arrow.effects.IO
 
 data class NonEmptyText(val text: String) {
@@ -119,40 +118,11 @@ class NonEmptyList<T> private constructor(private val elements: List<T>) : List<
     }
 }
 
-typealias AsyncOutput<Error, Success> = IO<Either<Error, Success>>
 typealias AsyncOutputFactory = IO.Companion
 
 
-fun <Success, Error> AsyncOutput<Error, Success>.failIf(predicate: Predicate<Success>, error: Error): AsyncOutput<Error, Success> {
-    return this.map { either -> either.flatMap { success: Success -> if (predicate(success)) Either.Left(error) else Either.Right(success) } }
-}
-
-fun <Success, Error> AsyncOutput<Error, Success>.handleError(handler: (Error) -> Success): AsyncOutput<Error, Success> {
-    return this.map { either -> either.handleError(handler) }
-}
-
-
-fun <S1, Error, S2> AsyncOutput<Error, S1>.mapSuccess(transformer: (S1) -> S2): AsyncOutput<Error, S2> {
-    return this.map { either -> either.map(transformer) }
-}
-
-fun <Success, E1, E2> AsyncOutput<E1, Success>.mapError(transformer: (E1) -> E2): AsyncOutput<E2, Success> {
-    return this.map { either -> either.mapLeft(transformer) }
-}
-
-fun <S1, Error, S2> AsyncOutput<Error, S1>.flatMapAsyncSuccess(transformer: (S1) -> AsyncOutput<Error, S2>): AsyncOutput<Error, S2> {
-    return this.flatMap { either ->
-        either.map { transformer(it) }
-                .getOrHandle { IO.just(Either.left(it)) }
-    }
-}
-
-fun <S1, Error, S2> AsyncOutput<Error, S1>.flatMapSuccess(transformer: (S1) -> Either<Error, S2>): AsyncOutput<Error, S2> {
-    return this.flatMap { either ->
-        either.map { success -> this.map { transformer(success) } }
-            .getOrHandle { IO.just(Either.left(it)) }
-    }
-}
+fun <L, R> Either<L, R>.failIf(predicate: (R) -> Boolean, defaultLeft: L): Either<L, R> =
+    flatMap { if (predicate(it)) defaultLeft.left() else it.right() }
 
 fun <T, E> Either<E, T>.isSuccess() = this.isRight()
 fun <T, E> Either<E, T>.isError() = this.isLeft()

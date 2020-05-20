@@ -12,14 +12,14 @@ import com.krzykrucz.elesson.currentlesson.domain.preparedness.readmodel.GetStud
 import com.krzykrucz.elesson.currentlesson.domain.preparedness.readmodel.StudentInSemester
 
 fun checkNumberOfTimesStudentWasUnpreparedInSemester(
-        getStudentSubjectUnpreparednessInASemester: GetStudentSubjectUnpreparednessInASemester
+    getStudentSubjectUnpreparednessInASemester: GetStudentSubjectUnpreparednessInASemester
 ): CheckNumberOfTimesStudentWasUnpreparedInSemester = { student, className ->
     StudentInSemester(
         className,
         student.firstName,
         student.secondName
     )
-            .let(getStudentSubjectUnpreparednessInASemester)
+        .let { getStudentSubjectUnpreparednessInASemester(it) }
 }
 
 val hasStudentAlreadyRaisedUnprepared: HasStudentAlreadyRaisedUnprepared = { studentsUnpreparedForLesson, presentStudent ->
@@ -27,20 +27,20 @@ val hasStudentAlreadyRaisedUnprepared: HasStudentAlreadyRaisedUnprepared = { stu
         presentStudent.firstName,
         presentStudent.secondName
     )
-            .let { studentsUnpreparedForLesson.students.contains(it) }
+        .let { studentsUnpreparedForLesson.students.contains(it) }
 }
 val hasStudentUsedAllUnpreparedness: HasStudentUsedAllUnpreparedness = {
     it.count >= 3
 }
 val areStudentsEqual: AreStudentsEqual = { presentStudent, studentReportingUnpreparedness ->
     (presentStudent.firstName.name.text == studentReportingUnpreparedness.firstName)
-            .and(presentStudent.secondName.name.text == studentReportingUnpreparedness.secondName)
+        .and(presentStudent.secondName.name.text == studentReportingUnpreparedness.secondName)
 }
 
 fun checkStudentIsPresent(
-        areStudentsEqual: AreStudentsEqual
+    areStudentsEqual: AreStudentsEqual
 ): CheckStudentIsPresent = { studentReportingUnpreparedness, checkedAttendanceList ->
     checkedAttendanceList.presentStudents
-            .find { areStudentsEqual(it, studentReportingUnpreparedness) }
-            .toEither { UnpreparednessError.StudentNotPresent }
+        .find { areStudentsEqual(it, studentReportingUnpreparedness) }
+        .toEither { UnpreparednessError.StudentNotPresent }
 }

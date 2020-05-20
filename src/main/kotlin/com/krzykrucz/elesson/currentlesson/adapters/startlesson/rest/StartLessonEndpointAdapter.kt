@@ -1,6 +1,6 @@
 package com.krzykrucz.elesson.currentlesson.adapters.startlesson.rest
 
-import com.krzykrucz.elesson.currentlesson.adapters.doIfRight
+import com.krzykrucz.elesson.currentlesson.adapters.asyncDoIfRight
 import com.krzykrucz.elesson.currentlesson.domain.shared.FirstName
 import com.krzykrucz.elesson.currentlesson.domain.shared.LessonIdentifier
 import com.krzykrucz.elesson.currentlesson.domain.shared.NonEmptyText
@@ -64,7 +64,7 @@ class StartLessonRouteAdapter {
                 val now = LessonStartTime.now()
 
                 startLesson(teacher, now)
-                    .doIfRight { persistLesson(it) }
+                    .asyncDoIfRight { persistLesson(it) }
                     .map(StartedLesson::toDto)
                     .fold({
                         val status: HttpStatus = when (it) {

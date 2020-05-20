@@ -24,7 +24,7 @@ suspend fun <A, B, C> EitherOf<A, B>.asyncFlatMap(f: suspend (B) -> Either<A, C>
 suspend fun <A, B, C> EitherOf<A, B>.asyncMap(f: suspend (B) -> C): Either<A, C> =
     asyncFlatMap { Either.Right(f(it)) }
 
-suspend fun <A, B> EitherOf<A, B>.doIfRight(f: suspend (B) -> Unit): Either<A, B> =
+suspend fun <A, B> EitherOf<A, B>.asyncDoIfRight(f: suspend (B) -> Unit): Either<A, B> =
     asyncMap {
         f(it)
         it

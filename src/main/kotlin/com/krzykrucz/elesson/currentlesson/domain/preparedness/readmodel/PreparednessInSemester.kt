@@ -1,9 +1,9 @@
 package com.krzykrucz.elesson.currentlesson.domain.preparedness.readmodel
 
+import arrow.core.Either
 import arrow.core.Option
 import arrow.effects.IO
 import com.krzykrucz.elesson.currentlesson.domain.preparedness.domain.api.StudentMarkedUnprepared
-import com.krzykrucz.elesson.currentlesson.domain.shared.AsyncOutput
 import com.krzykrucz.elesson.currentlesson.domain.shared.ClassName
 import com.krzykrucz.elesson.currentlesson.domain.shared.FirstName
 import com.krzykrucz.elesson.currentlesson.domain.shared.SecondName
@@ -12,7 +12,7 @@ import com.krzykrucz.elesson.currentlesson.domain.shared.WholeNumber
 
 typealias WriteUnpreparednessInTheRegister = (StudentMarkedUnprepared) -> IO<StudentSubjectUnpreparednessInASemester>
 
-typealias GetStudentSubjectUnpreparednessInASemester = (StudentInSemester) -> AsyncOutput<StudentInSemesterReadError, StudentSubjectUnpreparednessInASemester>
+typealias GetStudentSubjectUnpreparednessInASemester = suspend (StudentInSemester) -> Either<StudentInSemesterReadError, StudentSubjectUnpreparednessInASemester>
 
 data class StudentInSemester(val className: ClassName, val firstName: FirstName, val secondName: SecondName) // todo add subject
 
@@ -27,14 +27,15 @@ data class StudentSubjectUnpreparednessInASemester private constructor(
                 student,
                 WholeNumber.ZERO
             )
+
         fun create(number: Int, student: StudentInSemester): Option<StudentSubjectUnpreparednessInASemester> =
-                WholeNumber.of(number)
-                        ?.let {
-                            StudentSubjectUnpreparednessInASemester(
-                                student,
-                                it
-                            )
-                        }
-                        .let { Option.fromNullable(it) }
+            WholeNumber.of(number)
+                ?.let {
+                    StudentSubjectUnpreparednessInASemester(
+                        student,
+                        it
+                    )
+                }
+                .let { Option.fromNullable(it) }
     }
 }

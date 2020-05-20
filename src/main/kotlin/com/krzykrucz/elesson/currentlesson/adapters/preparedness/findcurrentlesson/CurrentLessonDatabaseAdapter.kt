@@ -2,11 +2,10 @@ package com.krzykrucz.elesson.currentlesson.adapters.preparedness.findcurrentles
 
 import arrow.core.orElse
 import arrow.core.toOption
-import arrow.effects.IO
-import com.krzykrucz.elesson.currentlesson.infrastructure.Database
-import com.krzykrucz.elesson.currentlesson.infrastructure.PersistentCurrentLesson
 import com.krzykrucz.elesson.currentlesson.domain.preparedness.domain.api.FindCurrentLesson
 import com.krzykrucz.elesson.currentlesson.domain.preparedness.domain.api.UnpreparednessError
+import com.krzykrucz.elesson.currentlesson.infrastructure.Database
+import com.krzykrucz.elesson.currentlesson.infrastructure.PersistentCurrentLesson
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
@@ -19,6 +18,5 @@ class AdapterConfig {
             .orElse { lesson.flatMap(PersistentCurrentLesson::toLessonInProgress) }
             .orElse { lesson.flatMap(PersistentCurrentLesson::toStartedLesson) }
             .toEither { UnpreparednessError.LessonNotStarted }
-            .let { IO.just(it) }
     }
 }

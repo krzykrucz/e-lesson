@@ -5,11 +5,10 @@ import com.krzykrucz.elesson.currentlesson.domain.attendance.CheckedAttendanceLi
 import com.krzykrucz.elesson.currentlesson.domain.attendance.PresentStudent
 import com.krzykrucz.elesson.currentlesson.domain.preparedness.readmodel.StudentInSemesterReadError
 import com.krzykrucz.elesson.currentlesson.domain.preparedness.readmodel.StudentSubjectUnpreparednessInASemester
-import com.krzykrucz.elesson.currentlesson.domain.shared.AsyncOutput
 import com.krzykrucz.elesson.currentlesson.domain.shared.ClassName
 
 
-typealias CheckNumberOfTimesStudentWasUnpreparedInSemester = (PresentStudent, ClassName) -> AsyncOutput<StudentInSemesterReadError, StudentSubjectUnpreparednessInASemester>
+typealias CheckNumberOfTimesStudentWasUnpreparedInSemester = suspend (PresentStudent, ClassName) -> Either<StudentInSemesterReadError, StudentSubjectUnpreparednessInASemester>
 
 typealias HasStudentUsedAllUnpreparedness = (StudentSubjectUnpreparednessInASemester) -> Boolean
 

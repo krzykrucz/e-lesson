@@ -2,7 +2,6 @@ package com.krzykrucz.elesson.currentlesson.domain.preparedness.readmodel
 
 import arrow.core.Either
 import arrow.core.Option
-import arrow.effects.IO
 import com.krzykrucz.elesson.currentlesson.domain.preparedness.domain.api.StudentMarkedUnprepared
 import com.krzykrucz.elesson.currentlesson.domain.shared.ClassName
 import com.krzykrucz.elesson.currentlesson.domain.shared.FirstName
@@ -10,7 +9,7 @@ import com.krzykrucz.elesson.currentlesson.domain.shared.SecondName
 import com.krzykrucz.elesson.currentlesson.domain.shared.WholeNumber
 
 
-typealias WriteUnpreparednessInTheRegister = (StudentMarkedUnprepared) -> IO<StudentSubjectUnpreparednessInASemester>
+typealias WriteUnpreparednessInTheRegister = suspend (StudentMarkedUnprepared) -> StudentSubjectUnpreparednessInASemester
 
 typealias GetStudentSubjectUnpreparednessInASemester = suspend (StudentInSemester) -> Either<StudentInSemesterReadError, StudentSubjectUnpreparednessInASemester>
 

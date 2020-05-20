@@ -3,31 +3,27 @@ package com.krzykrucz.elesson.currentlesson.adapters.preparedness.readmodel
 import arrow.core.Option
 import arrow.core.getOrElse
 import arrow.core.right
-import arrow.effects.IO
 import com.krzykrucz.elesson.currentlesson.adapters.preparedness.readmodel.StudentInSemesterReadModel.READ_MODEL
 import com.krzykrucz.elesson.currentlesson.domain.preparedness.domain.api.StudentMarkedUnprepared
 import com.krzykrucz.elesson.currentlesson.domain.preparedness.readmodel.GetStudentSubjectUnpreparednessInASemester
 import com.krzykrucz.elesson.currentlesson.domain.preparedness.readmodel.StudentInSemester
 import com.krzykrucz.elesson.currentlesson.domain.preparedness.readmodel.StudentSubjectUnpreparednessInASemester
 import com.krzykrucz.elesson.currentlesson.domain.preparedness.readmodel.WriteUnpreparednessInTheRegister
+import kotlinx.coroutines.runBlocking
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.event.EventListener
 import java.util.concurrent.ConcurrentHashMap
 
-private class UnpreparednessReadModel : WriteUnpreparednessInTheRegister {
-
-    @EventListener
-    override fun invoke(event: StudentMarkedUnprepared) =
-        StudentInSemester(
-            event.lessonId.className,
-            event.unpreparedStudent.firstName,
-            event.unpreparedStudent.secondName
-        )
-            .let { READ_MODEL[it] ?: StudentSubjectUnpreparednessInASemester.createEmpty(it) }
-            .let { it.copy(count = it.count.inc()) }
-            .apply { READ_MODEL[this.student] = this }
-            .let { IO.just(it) }
+val writeUnpreparednessInTheRegister: WriteUnpreparednessInTheRegister = {
+    StudentInSemester(
+        it.lessonId.className,
+        it.unpreparedStudent.firstName,
+        it.unpreparedStudent.secondName
+    )
+        .let { READ_MODEL[it] ?: StudentSubjectUnpreparednessInASemester.createEmpty(it) }
+        .let { it.copy(count = it.count.inc()) }
+        .apply { READ_MODEL[this.student] = this }
 }
 
 private val getStudentSubjectUnpreparednessInASemester: GetStudentSubjectUnpreparednessInASemester = { student ->
@@ -49,7 +45,14 @@ class ReadModelBeans {
     fun getBean() =
         getStudentSubjectUnpreparednessInASemester
 
+    @EventListener
+    fun eventListenerStudentMarkedUnprepared(event: StudentMarkedUnprepared) {
+        runBlocking {
+            writeUnpreparednessInTheRegister(event)
+        }
+    }
+
     @Bean
     fun writeBean(): WriteUnpreparednessInTheRegister =
-        UnpreparednessReadModel()
+        writeUnpreparednessInTheRegister
 }

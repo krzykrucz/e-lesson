@@ -1,7 +1,6 @@
 package com.krzykrucz.elesson.currentlesson.adapters.lessonprogress.persistence
 
 import arrow.core.toOption
-import arrow.fx.IO
 import com.krzykrucz.elesson.currentlesson.adapters.lessonprogress.usecase.LessonProgress
 import com.krzykrucz.elesson.currentlesson.adapters.lessonprogress.usecase.LessonProgressError
 import com.krzykrucz.elesson.currentlesson.adapters.lessonprogress.usecase.LoadLessonProgress
@@ -26,7 +25,6 @@ class LessonProgressDatabaseConnector {
                 )
             }
             .toEither(ifEmpty = { LessonProgressError.LessonNotFound() })
-            .let { IO.just(it) }
     }
 
 }

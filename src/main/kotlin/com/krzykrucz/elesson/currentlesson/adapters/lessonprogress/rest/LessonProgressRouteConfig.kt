@@ -4,13 +4,13 @@ import com.krzykrucz.elesson.currentlesson.adapters.lessonprogress.usecase.LoadL
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.MediaType
-import org.springframework.web.reactive.function.server.router
+import org.springframework.web.reactive.function.server.coRouter
 
 @Configuration
 class LessonProgressRouteConfig {
 
     @Bean
-    fun lessonProgressRouter(loadLessonProgress: LoadLessonProgress) = router {
+    fun lessonProgressRouter(loadLessonProgress: LoadLessonProgress) = coRouter {
         (path("/progress") and accept(MediaType.APPLICATION_JSON)).nest {
             GET("", handleLessonProgressViewRequest(loadLessonProgress))
         }

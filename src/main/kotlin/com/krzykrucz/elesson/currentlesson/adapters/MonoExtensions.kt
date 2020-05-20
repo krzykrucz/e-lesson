@@ -5,6 +5,7 @@ import com.krzykrucz.elesson.currentlesson.domain.startlesson.StartLessonError
 import org.springframework.http.HttpStatus
 import org.springframework.web.reactive.function.BodyInserters
 import org.springframework.web.reactive.function.server.ServerResponse
+import org.springframework.web.reactive.function.server.bodyValueAndAwait
 import reactor.core.publisher.Mono
 
 data class MonoDomainError(val domainError: Any) : RuntimeException()
@@ -28,4 +29,10 @@ fun <A, B> Either<A, B>.toServerResponse(): Mono<ServerResponse> =
     this.fold(
         ifLeft = { ServerResponse.badRequest().body(BodyInserters.fromObject(it)) },
         ifRight = { ServerResponse.ok().body(BodyInserters.fromObject(it)) }
+    )
+
+suspend fun <A, B> Either<A, B>.toServerResponseAsync(): ServerResponse =
+    this.fold(
+        ifLeft = { ServerResponse.badRequest().bodyValueAndAwait(it as Any) },
+        ifRight = { ServerResponse.ok().bodyValueAndAwait(it as Any) }
     )

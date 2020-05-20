@@ -51,8 +51,4 @@ class ReadModelBeans {
             writeUnpreparednessInTheRegister(event)
         }
     }
-
-    @Bean
-    fun writeBean(): WriteUnpreparednessInTheRegister =
-        writeUnpreparednessInTheRegister
 }

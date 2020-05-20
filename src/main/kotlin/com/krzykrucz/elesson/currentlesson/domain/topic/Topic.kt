@@ -12,4 +12,5 @@ sealed class ChooseTopicError {
     data class AttendanceNotChecked(val error: String = "Cannot choose topic for lesson that does not have attendance checked") : ChooseTopicError()
 }
 
-typealias ChooseTopic = (IsAttendanceChecked, TopicTitle, FinishedLessonsCount, LessonIdentifier) -> Either<ChooseTopicError, InProgressLesson>
+typealias ChooseTopic =
+    (IsAttendanceChecked, TopicTitle, FinishedLessonsCount, LessonIdentifier) -> Either<ChooseTopicError, InProgressLesson>

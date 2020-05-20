@@ -8,7 +8,7 @@ import com.krzykrucz.elesson.currentlesson.domain.shared.LessonOrdinalInSemester
 import com.krzykrucz.elesson.currentlesson.domain.shared.LessonTopic
 import com.krzykrucz.elesson.currentlesson.domain.shared.NaturalNumber
 
-fun chooseTopic(): ChooseTopic = { isAttendanceChecked, topicTitle, finishedLessonsCount, lessonId ->
+val chooseTopic: ChooseTopic = { isAttendanceChecked, topicTitle, finishedLessonsCount, lessonId ->
     isAttendanceChecked.maybe {
         (finishedLessonsCount.count + 1)
             .let { NaturalNumber.of(it).getOrElse { NaturalNumber.ONE } }

@@ -2,6 +2,9 @@ package com.krzykrucz.elesson.currentlesson.domain.topic
 
 
 import arrow.core.Either
+import com.krzykrucz.elesson.currentlesson.domain.getSuccess
+import com.krzykrucz.elesson.currentlesson.domain.lessonHourNumberOf
+import com.krzykrucz.elesson.currentlesson.domain.newClassName
 import com.krzykrucz.elesson.currentlesson.domain.shared.InProgressLesson
 import com.krzykrucz.elesson.currentlesson.domain.shared.LessonIdentifier
 import com.krzykrucz.elesson.currentlesson.domain.shared.LessonOrdinalInSemester
@@ -9,9 +12,6 @@ import com.krzykrucz.elesson.currentlesson.domain.shared.LessonTopic
 import com.krzykrucz.elesson.currentlesson.domain.shared.NaturalNumber
 import com.krzykrucz.elesson.currentlesson.domain.shared.NonEmptyText
 import com.krzykrucz.elesson.currentlesson.domain.shared.TopicTitle
-import com.krzykrucz.elesson.currentlesson.domain.getSuccess
-import com.krzykrucz.elesson.currentlesson.domain.lessonHourNumberOf
-import com.krzykrucz.elesson.currentlesson.domain.newClassName
 import io.cucumber.java8.En
 import org.assertj.core.api.Assertions.assertThat
 import java.time.LocalDate
@@ -44,7 +44,7 @@ class ChooseTopicSteps : En {
             isAttendanceChecked = false
         }
         When("Choosing a topic") {
-            inProgressLesson = chooseTopic()(isAttendanceChecked, topicTitle, finishedLessonsCount, lessonIdentifier)
+            inProgressLesson = chooseTopic(isAttendanceChecked, topicTitle, finishedLessonsCount, lessonIdentifier)
         }
         Then("Lesson is in progress") {
             assertThat(inProgressLesson.getSuccess()).isEqualToComparingFieldByField(

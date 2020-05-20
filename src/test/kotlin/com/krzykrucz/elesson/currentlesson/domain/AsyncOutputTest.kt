@@ -3,7 +3,6 @@ package com.krzykrucz.elesson.currentlesson.domain
 import arrow.core.Either
 import com.krzykrucz.elesson.currentlesson.domain.shared.AsyncFactory
 import com.krzykrucz.elesson.currentlesson.domain.shared.AsyncOutput
-import com.krzykrucz.elesson.currentlesson.domain.shared.Output
 import com.krzykrucz.elesson.currentlesson.domain.shared.failIf
 import com.krzykrucz.elesson.currentlesson.domain.shared.flatMapAsyncSuccess
 import com.krzykrucz.elesson.currentlesson.domain.shared.flatMapSuccess
@@ -96,7 +95,7 @@ class AsyncOutputTest {
     fun shouldFlatMapSuccessToSuccess() {
         //given
         val asyncIntOf1: AsyncOutput<Error, Int> = AsyncFactory.justSuccess(1)
-        val addOne: (Int) -> Output<Error, Int> = { Output.right(it + 1) }
+        val addOne: (Int) -> Either<Error, Int> = { Either.right(it + 1) }
 
         //when
         val finalOutput: AsyncOutput<Error, Int> = asyncIntOf1.flatMapSuccess(addOne)
@@ -109,7 +108,7 @@ class AsyncOutputTest {
     fun shouldFlatMapSuccessFromError() {
         //given
         val asyncOutputWithDomainError: AsyncOutput<Error, Int> = AsyncFactory.justError(sampleError)
-        val addOne: (Int) -> Output<Error, Int> = { Output.right(it + 1) }
+        val addOne: (Int) -> Either<Error, Int> = { Either.right(it + 1) }
 
         //when
         val finalOutput: AsyncOutput<Error, Int> = asyncOutputWithDomainError.flatMapSuccess(addOne)
@@ -122,7 +121,7 @@ class AsyncOutputTest {
     fun shouldFlatMapSuccessToError() {
         //given
         val asyncIntOf1: AsyncOutput<Error, Int> = AsyncFactory.justSuccess(1)
-        val errorProvider: (Int) -> Output<Error, Int> = { Output.left(sampleError) }
+        val errorProvider: (Int) -> Either<Error, Int> = { Either.left(sampleError) }
 
         //when
         val finalOutput: AsyncOutput<Error, Int> = asyncIntOf1.flatMapSuccess(errorProvider)

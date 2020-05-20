@@ -5,7 +5,12 @@ import arrow.core.Either
 import arrow.core.left
 import arrow.core.orNull
 import arrow.core.right
-import arrow.fx.IO
+import com.krzykrucz.elesson.currentlesson.domain.getError
+import com.krzykrucz.elesson.currentlesson.domain.getSuccess
+import com.krzykrucz.elesson.currentlesson.domain.lessonHourNumberOf
+import com.krzykrucz.elesson.currentlesson.domain.newClassName
+import com.krzykrucz.elesson.currentlesson.domain.newStudent
+import com.krzykrucz.elesson.currentlesson.domain.newTeacher
 import com.krzykrucz.elesson.currentlesson.domain.shared.ClassName
 import com.krzykrucz.elesson.currentlesson.domain.shared.ClassRegistry
 import com.krzykrucz.elesson.currentlesson.domain.shared.LessonSubject
@@ -14,14 +19,8 @@ import com.krzykrucz.elesson.currentlesson.domain.shared.StartedLesson
 import com.krzykrucz.elesson.currentlesson.domain.shared.Teacher
 import com.krzykrucz.elesson.currentlesson.domain.shared.isError
 import com.krzykrucz.elesson.currentlesson.domain.shared.isSuccess
-import com.krzykrucz.elesson.currentlesson.domain.evaluate
-import com.krzykrucz.elesson.currentlesson.domain.getError
-import com.krzykrucz.elesson.currentlesson.domain.getSuccess
-import com.krzykrucz.elesson.currentlesson.domain.lessonHourNumberOf
-import com.krzykrucz.elesson.currentlesson.domain.newClassName
-import com.krzykrucz.elesson.currentlesson.domain.newStudent
-import com.krzykrucz.elesson.currentlesson.domain.newTeacher
 import io.cucumber.java8.En
+import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers.instanceOf
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.core.IsEqual.equalTo
@@ -31,8 +30,9 @@ import kotlin.test.assertTrue
 
 class StartLessonSteps : En {
     lateinit var teacher: Teacher
-    var scheduledLessonProvider: FetchScheduledLesson = { teacher, localDateTime -> IO.never }
-    var classRegistryProvider: FetchClassRegistry = { className -> IO.never }
+    var scheduledLessonProvider: FetchScheduledLesson = { _, _ -> TODO() }
+    var classRegistryProvider: FetchClassRegistry = { TODO() }
+
     //    var checkLessonStarted: CheckLessonStarted = { false }
     lateinit var currentLessonOrError: Either<StartLessonError, StartedLesson>
     lateinit var givenClassName: ClassName
@@ -47,48 +47,45 @@ class StartLessonSteps : En {
         Given("Scheduled lesson for class {word} and {word}") { className: String, time: String ->
             givenDate = LocalDateTime.parse(time).toLocalDate()
             scheduledLessonProvider = { teacher, _ ->
-                IO.just(
-                    ScheduledLesson(
-                        LocalDateTime.parse(time),
-                        givenLessonHourNumber,
-                        teacher,
-                        newClassName(className),
-                        LessonSubject(
-                            NonEmptyText(
-                                "Elixirs"
-                            )
+                ScheduledLesson(
+                    LocalDateTime.parse(time),
+                    givenLessonHourNumber,
+                    teacher,
+                    newClassName(className),
+                    LessonSubject(
+                        NonEmptyText(
+                            "Elixirs"
                         )
-                    ).right()
-                )
+                    )
+                ).right()
             }
         }
         Given("Class registry for class {word}") { className: String ->
             givenClassName = newClassName(className)
             classRegistryProvider = {
-                IO.just(
-                    ClassRegistry(
-                        listOf(
-                            newStudent(
-                                "Harry",
-                                "Potter",
-                                1
-                            )
-                        ), it
-                    ).right())
+                ClassRegistry(
+                    listOf(
+                        newStudent(
+                            "Harry",
+                            "Potter",
+                            1
+                        )
+                    ), it
+                ).right()
             }
         }
         Given("Failed to check lesson schedule") {
-            scheduledLessonProvider = { _, _ -> IO.just(StartLessonError.NotScheduledLesson().left()) }
+            scheduledLessonProvider = { _, _ -> StartLessonError.NotScheduledLesson().left() }
         }
         Given("Failed to fetch class registry") {
-            classRegistryProvider = { _ -> IO.just(StartLessonError.ClassRegistryUnavailable().left()) }
+            classRegistryProvider = { _ -> StartLessonError.ClassRegistryUnavailable().left() }
         }
 //        Given("Lesson was already started") {
 //            checkLessonStarted = { true }
 //        }
         When("Lesson is started at {word}") { startTime: String ->
             attemptedStartTime = LocalDateTime.parse(startTime)
-            val result =
+            val result = runBlocking {
                 startLesson(
                     scheduledLessonProvider,
                     validateStartTime(),
@@ -97,7 +94,8 @@ class StartLessonSteps : En {
                     teacher,
                     attemptedStartTime
                 )
-            currentLessonOrError = result.evaluate()
+            }
+            currentLessonOrError = result
         }
         Then("Lesson before attendance should be started") {
             assertTrue(currentLessonOrError.isSuccess())
@@ -107,7 +105,7 @@ class StartLessonSteps : En {
             assertThat(lessonBeforeAttendance.id.className, equalTo(givenClassName))
             assertThat(lessonBeforeAttendance.id.date, equalTo(givenDate))
             assertThat(lessonBeforeAttendance.id.lessonHourNumber, equalTo(givenLessonHourNumber))
-            assertThat(lessonBeforeAttendance.clazz, equalTo(classRegistryProvider(givenClassName).evaluate().orNull()))
+            assertThat(lessonBeforeAttendance.clazz, equalTo(runBlocking { classRegistryProvider(givenClassName) }.orNull()))
         }
         Then("Lesson should not be started because no scheduled lesson") {
             assertTrue { this.currentLessonOrError.isError() }

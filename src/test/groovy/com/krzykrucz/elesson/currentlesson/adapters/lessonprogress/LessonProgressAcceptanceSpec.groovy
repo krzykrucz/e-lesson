@@ -3,8 +3,6 @@ package com.krzykrucz.elesson.currentlesson.adapters.lessonprogress
 import arrow.core.None
 import com.krzykrucz.elesson.currentlesson.adapters.AcceptanceSpec
 import com.krzykrucz.elesson.currentlesson.adapters.lessonprogress.rest.LessonProgressDto
-import com.krzykrucz.elesson.currentlesson.infrastructure.Database
-import com.krzykrucz.elesson.currentlesson.infrastructure.PersistentCurrentLesson
 import com.krzykrucz.elesson.currentlesson.domain.attendance.AbsentStudent
 import com.krzykrucz.elesson.currentlesson.domain.attendance.CheckedAttendanceList
 import com.krzykrucz.elesson.currentlesson.domain.attendance.PresentStudent
@@ -13,6 +11,8 @@ import com.krzykrucz.elesson.currentlesson.domain.shared.InProgress
 import com.krzykrucz.elesson.currentlesson.domain.shared.LessonSubject
 import com.krzykrucz.elesson.currentlesson.domain.shared.NonEmptyText
 import com.krzykrucz.elesson.currentlesson.domain.shared.WinterSemester
+import com.krzykrucz.elesson.currentlesson.infrastructure.Database
+import com.krzykrucz.elesson.currentlesson.infrastructure.PersistentCurrentLesson
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpMethod
 
@@ -35,11 +35,11 @@ class LessonProgressAcceptanceSpec extends AcceptanceSpec {
         when: 'Fetching lesson progress view'
         def lessonProgress = rest.exchange(
                 "/progress?date=${lessonId.date.toString()}" +
-                        "&lessonHourNumber=${lessonId.lessonHourNumber.number.number.toString()}" +
+                        "&lessonHourNumber=${lessonId.lessonHourNumber.number.number}" +
                         "&className=${lessonId.className.name.text}",
                 HttpMethod.GET,
                 HttpEntity.EMPTY,
-                LessonProgressDto.class
+                LessonProgressDto
         ).body
 
         then: 'It should create LessonProgress view of Lesson in database'

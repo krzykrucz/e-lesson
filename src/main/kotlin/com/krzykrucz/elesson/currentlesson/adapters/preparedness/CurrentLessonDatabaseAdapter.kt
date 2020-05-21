@@ -1,4 +1,4 @@
-package com.krzykrucz.elesson.currentlesson.adapters.preparedness.findcurrentlesson
+package com.krzykrucz.elesson.currentlesson.adapters.preparedness
 
 import arrow.core.orElse
 import arrow.core.toOption

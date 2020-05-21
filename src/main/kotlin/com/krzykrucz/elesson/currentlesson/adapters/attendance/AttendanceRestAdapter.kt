@@ -1,9 +1,6 @@
-package com.krzykrucz.elesson.currentlesson.adapters.attendance.rest
+package com.krzykrucz.elesson.currentlesson.adapters.attendance
 
 import com.krzykrucz.elesson.currentlesson.adapters.RestApi
-import com.krzykrucz.elesson.currentlesson.adapters.attendance.usecase.HandleNoteLate
-import com.krzykrucz.elesson.currentlesson.adapters.attendance.usecase.NoteAbsentApi
-import com.krzykrucz.elesson.currentlesson.adapters.attendance.usecase.NotePresentApi
 import com.krzykrucz.elesson.currentlesson.adapters.toServerResponse
 import com.krzykrucz.elesson.currentlesson.domain.attendance.AbsentStudent
 import com.krzykrucz.elesson.currentlesson.domain.attendance.UncheckedStudent

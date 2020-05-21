@@ -1,9 +1,9 @@
-package com.krzykrucz.elesson.currentlesson.adapters.preparedness.readmodel
+package com.krzykrucz.elesson.currentlesson.adapters.preparedness
 
 import arrow.core.Option
 import arrow.core.getOrElse
 import arrow.core.right
-import com.krzykrucz.elesson.currentlesson.adapters.preparedness.readmodel.StudentInSemesterReadModel.READ_MODEL
+import com.krzykrucz.elesson.currentlesson.adapters.preparedness.StudentInSemesterReadModel.READ_MODEL
 import com.krzykrucz.elesson.currentlesson.domain.preparedness.GetStudentSubjectUnpreparednessInASemester
 import com.krzykrucz.elesson.currentlesson.domain.preparedness.StudentInSemester
 import com.krzykrucz.elesson.currentlesson.domain.preparedness.StudentMarkedUnprepared

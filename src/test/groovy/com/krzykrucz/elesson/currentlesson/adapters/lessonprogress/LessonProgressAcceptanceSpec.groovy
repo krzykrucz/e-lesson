@@ -4,7 +4,6 @@ import arrow.core.None
 import com.krzykrucz.elesson.currentlesson.Database
 import com.krzykrucz.elesson.currentlesson.PersistentCurrentLesson
 import com.krzykrucz.elesson.currentlesson.adapters.AcceptanceSpec
-import com.krzykrucz.elesson.currentlesson.adapters.lessonprogress.rest.LessonProgressDto
 import com.krzykrucz.elesson.currentlesson.domain.attendance.AbsentStudent
 import com.krzykrucz.elesson.currentlesson.domain.attendance.CheckedAttendanceList
 import com.krzykrucz.elesson.currentlesson.domain.attendance.PresentStudent

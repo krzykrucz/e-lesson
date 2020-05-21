@@ -1,4 +1,4 @@
-package com.krzykrucz.elesson.currentlesson.adapters.preparedness.persistence
+package com.krzykrucz.elesson.currentlesson.adapters.preparedness
 
 import com.krzykrucz.elesson.currentlesson.Database
 import com.krzykrucz.elesson.currentlesson.domain.preparedness.PersistUnpreparedStudentToLesson

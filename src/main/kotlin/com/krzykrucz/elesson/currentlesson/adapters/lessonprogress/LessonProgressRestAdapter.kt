@@ -1,7 +1,18 @@
-package com.krzykrucz.elesson.currentlesson.adapters.lessonprogress.rest
+package com.krzykrucz.elesson.currentlesson.adapters.lessonprogress
 
-import com.krzykrucz.elesson.currentlesson.adapters.lessonprogress.usecase.LessonProgress
 import com.krzykrucz.elesson.currentlesson.domain.shared.LessonTopic
+import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Configuration
+import org.springframework.web.reactive.function.server.coRouter
+
+@Configuration
+class LessonProgressRestAdapter {
+
+    @Bean
+    fun lessonProgressRouter(loadLessonProgress: LoadLessonProgress) = coRouter {
+        GET("/progress", handleLessonProgressViewRequest(loadLessonProgress))
+    }
+}
 
 data class LessonProgressDto(
     val semester: Int,
@@ -23,4 +34,3 @@ data class LessonProgressDto(
             )
     }
 }
-

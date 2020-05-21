@@ -1,15 +1,12 @@
-package com.krzykrucz.elesson.currentlesson.adapters.lessonprogress.persistence
+package com.krzykrucz.elesson.currentlesson.adapters.lessonprogress
 
 import arrow.core.toOption
 import com.krzykrucz.elesson.currentlesson.Database
-import com.krzykrucz.elesson.currentlesson.adapters.lessonprogress.usecase.LessonProgress
-import com.krzykrucz.elesson.currentlesson.adapters.lessonprogress.usecase.LessonProgressError
-import com.krzykrucz.elesson.currentlesson.adapters.lessonprogress.usecase.LoadLessonProgress
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
 @Configuration
-class LessonProgressDatabaseConnector {
+class LessonProgressDatabaseAdapter {
 
     @Bean
     fun loadLessonProgress(): LoadLessonProgress = { lessonIdentifier ->

@@ -1,4 +1,4 @@
-package com.krzykrucz.elesson.currentlesson.adapters.attendance.persistence
+package com.krzykrucz.elesson.currentlesson.adapters.attendance
 
 import arrow.core.toOption
 import com.krzykrucz.elesson.currentlesson.Database
@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
 @Configuration
-class AttendanceDatabaseConnector {
+class AttendancePersistenceAdapter {
 
     @Bean
     fun fetchCheckedAttendance(): FetchCheckedAttendance = { lessonId ->

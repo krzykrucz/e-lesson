@@ -1,4 +1,4 @@
-package com.krzykrucz.elesson.currentlesson.adapters.preparedness.eventpublisher
+package com.krzykrucz.elesson.currentlesson.adapters.preparedness
 
 import com.krzykrucz.elesson.currentlesson.domain.preparedness.NotifyStudentMarkedUnprepared
 import org.springframework.context.ApplicationEventPublisher

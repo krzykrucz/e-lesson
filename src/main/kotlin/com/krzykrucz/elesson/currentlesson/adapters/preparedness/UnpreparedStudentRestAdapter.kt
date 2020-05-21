@@ -1,4 +1,4 @@
-package com.krzykrucz.elesson.currentlesson.adapters.preparedness.rest
+package com.krzykrucz.elesson.currentlesson.adapters.preparedness
 
 import com.krzykrucz.elesson.currentlesson.domain.preparedness.ReportUnpreparedStudentApi
 import com.krzykrucz.elesson.currentlesson.domain.preparedness.StudentReportingUnpreparedness

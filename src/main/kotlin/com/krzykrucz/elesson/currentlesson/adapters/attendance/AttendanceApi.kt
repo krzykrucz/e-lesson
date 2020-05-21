@@ -1,4 +1,4 @@
-package com.krzykrucz.elesson.currentlesson.adapters.attendance.usecase
+package com.krzykrucz.elesson.currentlesson.adapters.attendance
 
 import arrow.core.Either
 import arrow.core.Option
@@ -6,8 +6,6 @@ import arrow.core.extensions.either.monad.flatten
 import arrow.core.extensions.fx
 import arrow.core.fix
 import com.krzykrucz.elesson.currentlesson.adapters.asyncMap
-import com.krzykrucz.elesson.currentlesson.adapters.attendance.rest.AttendanceDto
-import com.krzykrucz.elesson.currentlesson.adapters.attendance.rest.LateAttendanceDto
 import com.krzykrucz.elesson.currentlesson.domain.attendance.AttendanceError
 import com.krzykrucz.elesson.currentlesson.domain.attendance.FetchCheckedAttendance
 import com.krzykrucz.elesson.currentlesson.domain.attendance.FetchIncompleteAttendance

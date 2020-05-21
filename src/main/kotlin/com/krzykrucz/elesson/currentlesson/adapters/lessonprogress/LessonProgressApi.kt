@@ -1,10 +1,9 @@
-package com.krzykrucz.elesson.currentlesson.adapters.lessonprogress.rest
+package com.krzykrucz.elesson.currentlesson.adapters.lessonprogress
 
 import arrow.core.Option
 import arrow.core.extensions.fx
 import com.krzykrucz.elesson.currentlesson.adapters.RestApi
 import com.krzykrucz.elesson.currentlesson.adapters.asyncFlatMap
-import com.krzykrucz.elesson.currentlesson.adapters.lessonprogress.usecase.LoadLessonProgress
 import com.krzykrucz.elesson.currentlesson.adapters.toServerResponse
 import com.krzykrucz.elesson.currentlesson.domain.shared.ClassName
 import com.krzykrucz.elesson.currentlesson.domain.shared.LessonHourNumber

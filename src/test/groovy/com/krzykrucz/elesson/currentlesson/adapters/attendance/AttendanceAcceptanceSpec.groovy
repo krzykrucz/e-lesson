@@ -2,9 +2,6 @@ package com.krzykrucz.elesson.currentlesson.adapters.attendance
 
 
 import com.krzykrucz.elesson.currentlesson.Database
-import com.krzykrucz.elesson.currentlesson.adapters.attendance.rest.AttendanceDto
-import com.krzykrucz.elesson.currentlesson.adapters.attendance.rest.AttendanceResponseDto
-import com.krzykrucz.elesson.currentlesson.adapters.attendance.rest.LateAttendanceDto
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpMethod
 

@@ -1,4 +1,4 @@
-package com.krzykrucz.elesson.currentlesson.adapters.startlesson.persistence
+package com.krzykrucz.elesson.currentlesson.adapters.startlesson
 
 import arrow.core.Option
 import com.krzykrucz.elesson.currentlesson.domain.shared.InProgress
@@ -10,7 +10,17 @@ import com.krzykrucz.elesson.currentlesson.infrastructure.PersistentCurrentLesso
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
-object StartedLessonInMemoryRepository {
+
+// TODO maybe check if lesson not started somewhere else
+private val persistStartedLessonInRepository: PersistStartedLessonIfDoesNotExist =
+    { lesson ->
+        if (!StartedLessonInMemoryRepository.contains(lesson.id)) {
+            StartedLessonInMemoryRepository.store(lesson)
+        }
+        lesson.id
+    }
+
+private object StartedLessonInMemoryRepository {
 
     fun store(startedLesson: StartedLesson) =
         LESSON_DATABASE.put(startedLesson.id,
@@ -37,19 +47,11 @@ object StartedLessonInMemoryRepository {
 
 }
 
-// TODO maybe check if lesson not started somewhere else
-fun persistStartedLessonInRepository(repository: StartedLessonInMemoryRepository): PersistStartedLessonIfDoesNotExist =
-    { lesson ->
-        if (!repository.contains(lesson.id)) {
-            repository.store(lesson)
-        }
-        lesson.id
-    }
 
 @Configuration
 class StartedLessonPersistenceAdapterConfig {
 
     @Bean
     fun create(): PersistStartedLessonIfDoesNotExist =
-        persistStartedLessonInRepository(StartedLessonInMemoryRepository)
+        persistStartedLessonInRepository
 }

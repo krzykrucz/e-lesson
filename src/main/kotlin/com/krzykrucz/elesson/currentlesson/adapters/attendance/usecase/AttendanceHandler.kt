@@ -31,6 +31,7 @@ typealias HandleNotePresent = suspend (AttendanceDto) -> Either<AttendanceError,
 typealias HandleNoteAbsent = suspend (AttendanceDto) -> Either<AttendanceError, IsAttendanceChecked>
 typealias HandleNoteLate = suspend (LateAttendanceDto) -> Either<AttendanceError, IsAttendanceChecked>
 
+// TODO remove this whole layer
 @Configuration
 class AttendanceHandler(
     val persistAttendance: PersistAttendance,

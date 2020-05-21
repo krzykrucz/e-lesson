@@ -1,4 +1,4 @@
-package com.krzykrucz.elesson.currentlesson.adapters.startlesson.schedules
+package com.krzykrucz.elesson.currentlesson.adapters.startlesson
 
 import com.krzykrucz.elesson.currentlesson.domain.shared.ClassName
 import com.krzykrucz.elesson.currentlesson.domain.shared.LessonHourNumber

@@ -1,4 +1,4 @@
-package com.krzykrucz.elesson.currentlesson.adapters.startlesson.registry
+package com.krzykrucz.elesson.currentlesson.adapters.startlesson
 
 import arrow.core.right
 import com.krzykrucz.elesson.currentlesson.domain.shared.ClassRegistry

@@ -21,8 +21,8 @@ private fun Either<StartLessonError, ClassRegistry>.toCurrentLessonWithClass(
 
 fun startLesson(
     fetchScheduledLesson: FetchScheduledLesson,
-    validateLessonStartTime: ValidateLessonStartTime,
-    fetchClassRegistry: FetchClassRegistry
+    fetchClassRegistry: FetchClassRegistry,
+    validateLessonStartTime: ValidateLessonStartTime = validateStartTime()
 ): StartLesson = { teacher, attemptedStartTime ->
     val scheduledLessonOrError = fetchScheduledLesson(teacher, attemptedStartTime)
 
@@ -38,7 +38,7 @@ fun startLesson(
         }
 }
 
-fun validateStartTime(): ValidateLessonStartTime = { lesson, time ->
+private fun validateStartTime(): ValidateLessonStartTime = { lesson, time ->
     when {
         time.isBefore(lesson.scheduledTime) -> Either.left(StartLessonError.NotScheduledLesson())
         time.isAfter(lesson.scheduledTime.plusMinutes(44)) -> Either.left(StartLessonError.NotScheduledLesson())

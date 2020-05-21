@@ -88,7 +88,6 @@ class StartLessonSteps : En {
             val result = runBlocking {
                 startLesson(
                     scheduledLessonProvider,
-                    validateStartTime(),
                     classRegistryProvider
                 )(
                     teacher,

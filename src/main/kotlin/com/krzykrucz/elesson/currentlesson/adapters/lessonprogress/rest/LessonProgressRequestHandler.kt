@@ -2,6 +2,7 @@ package com.krzykrucz.elesson.currentlesson.adapters.lessonprogress.rest
 
 import arrow.core.Option
 import arrow.core.extensions.fx
+import com.krzykrucz.elesson.currentlesson.adapters.AsyncRequestHandler
 import com.krzykrucz.elesson.currentlesson.adapters.asyncFlatMap
 import com.krzykrucz.elesson.currentlesson.adapters.lessonprogress.usecase.LoadLessonProgress
 import com.krzykrucz.elesson.currentlesson.adapters.toServerResponse
@@ -9,12 +10,10 @@ import com.krzykrucz.elesson.currentlesson.domain.shared.ClassName
 import com.krzykrucz.elesson.currentlesson.domain.shared.LessonHourNumber
 import com.krzykrucz.elesson.currentlesson.domain.shared.LessonIdentifier
 import com.krzykrucz.elesson.currentlesson.domain.shared.NonEmptyText
-import org.springframework.web.reactive.function.server.ServerRequest
-import org.springframework.web.reactive.function.server.ServerResponse
 import java.time.LocalDate
 import java.util.Optional
 
-fun handleLessonProgressViewRequest(loadLessonProgress: LoadLessonProgress): suspend (ServerRequest) -> ServerResponse = { serverRequest ->
+fun handleLessonProgressViewRequest(loadLessonProgress: LoadLessonProgress): AsyncRequestHandler = { serverRequest ->
     val readDateFromParams = serverRequest.queryParam("date").toOption()
         .map { LocalDate.parse(it) }
     val readLessonHourNumberFromParams = serverRequest.queryParam("lessonHourNumber").toOption()

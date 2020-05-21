@@ -11,20 +11,36 @@ import com.krzykrucz.elesson.currentlesson.domain.shared.Teacher
 import com.krzykrucz.elesson.currentlesson.domain.startlesson.LessonStartTime
 import com.krzykrucz.elesson.currentlesson.domain.startlesson.PersistStartedLessonIfDoesNotExist
 import com.krzykrucz.elesson.currentlesson.domain.startlesson.StartLesson
-import org.springframework.context.annotation.Bean
-import org.springframework.context.annotation.Configuration
 import org.springframework.web.reactive.function.server.awaitBody
 import org.springframework.web.reactive.function.server.coRouter
 import javax.validation.constraints.NotEmpty
 
-data class StudentResponse(val name: String)
 
-data class ClassRegistryResponse(
+internal fun startLessonRestAdapter(persistLesson: PersistStartedLessonIfDoesNotExist,
+                                    startLesson: StartLesson
+) =
+    coRouter {
+        POST("/startlesson") { request ->
+            val startLessonRequest = request.awaitBody<StartLessonRequest>()
+            val teacher = startLessonRequest.toTeacher()
+            val now = LessonStartTime.now()
+
+            startLesson(teacher, now)
+                .asyncDoIfRight { persistLesson(it) }
+                .map(StartedLesson::toDto)
+                .toServerResponse()
+        }
+    }
+
+
+private data class StudentResponse(val name: String)
+
+private data class ClassRegistryResponse(
     val lessonId: LessonIdentifier,
     val students: List<StudentResponse>
 )
 
-data class StartLessonRequest(
+private data class StartLessonRequest(
     @NotEmpty
     val teacherFirstName: String,
     @NotEmpty
@@ -46,23 +62,3 @@ private fun StartedLesson.toDto() =
         .map { StudentResponse("${it.firstName.name.text} ${it.secondName.name.text}") }
         .let { ClassRegistryResponse(this.id, it) }
 
-@Configuration
-class StartLessonRouteAdapter {
-
-    @Bean
-    fun startLessonRoute(persistLesson: PersistStartedLessonIfDoesNotExist,
-                         startLesson: StartLesson
-    ) =
-        coRouter {
-            POST("/startlesson") { request ->
-                val startLessonRequest = request.awaitBody<StartLessonRequest>()
-                val teacher = startLessonRequest.toTeacher()
-                val now = LessonStartTime.now()
-
-                startLesson(teacher, now)
-                    .asyncDoIfRight { persistLesson(it) }
-                    .map(StartedLesson::toDto)
-                    .toServerResponse()
-            }
-        }
-}

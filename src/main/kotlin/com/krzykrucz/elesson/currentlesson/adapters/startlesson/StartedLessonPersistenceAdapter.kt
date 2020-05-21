@@ -7,12 +7,10 @@ import com.krzykrucz.elesson.currentlesson.domain.shared.StartedLesson
 import com.krzykrucz.elesson.currentlesson.domain.startlesson.PersistStartedLessonIfDoesNotExist
 import com.krzykrucz.elesson.currentlesson.infrastructure.Database.Companion.LESSON_DATABASE
 import com.krzykrucz.elesson.currentlesson.infrastructure.PersistentCurrentLesson
-import org.springframework.context.annotation.Bean
-import org.springframework.context.annotation.Configuration
 
 
 // TODO maybe check if lesson not started somewhere else
-private val persistStartedLessonInRepository: PersistStartedLessonIfDoesNotExist =
+internal val startedLessonPersistenceAdapter: PersistStartedLessonIfDoesNotExist =
     { lesson ->
         if (!StartedLessonInMemoryRepository.contains(lesson.id)) {
             StartedLessonInMemoryRepository.store(lesson)
@@ -45,13 +43,4 @@ private object StartedLessonInMemoryRepository {
                 )
             }
 
-}
-
-
-@Configuration
-class StartedLessonPersistenceAdapterConfig {
-
-    @Bean
-    fun create(): PersistStartedLessonIfDoesNotExist =
-        persistStartedLessonInRepository
 }

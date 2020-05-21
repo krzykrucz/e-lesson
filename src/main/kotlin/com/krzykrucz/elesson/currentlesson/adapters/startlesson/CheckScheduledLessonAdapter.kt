@@ -12,7 +12,7 @@ import com.krzykrucz.elesson.currentlesson.domain.startlesson.StartLessonError
 import java.time.LocalDateTime
 
 
-val lessonSchedulesClient: FetchScheduledLesson = { teacher: Teacher, time: LocalDateTime ->
+internal val checkScheduledLessonAdapter: FetchScheduledLesson = { teacher: Teacher, time: LocalDateTime ->
     LessonHourNumber.of(NaturalNumber.THREE)
         .map {
             ScheduledLesson(

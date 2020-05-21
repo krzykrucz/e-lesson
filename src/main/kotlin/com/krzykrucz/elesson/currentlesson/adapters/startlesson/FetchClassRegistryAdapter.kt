@@ -11,7 +11,7 @@ import com.krzykrucz.elesson.currentlesson.domain.shared.StudentRecord
 import com.krzykrucz.elesson.currentlesson.domain.startlesson.FetchClassRegistry
 
 
-val eRegisterClient: FetchClassRegistry = { className ->
+internal val fetchClassRegistryAdapter: FetchClassRegistry = { className ->
     listOf(
         StudentRecord(
             FirstName(

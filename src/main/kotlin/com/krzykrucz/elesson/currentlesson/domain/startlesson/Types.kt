@@ -16,6 +16,7 @@ data class ScheduledLesson(val scheduledTime: ScheduledLessonStartTime,
 
 typealias ValidatedScheduledLesson = ScheduledLesson
 
+typealias LessonStartTime = LocalDateTime
 
 sealed class StartLessonError {
     data class NotScheduledLesson(val error: String = "Cannot start a lesson outside of a lesson hour for which it's scheduled") : StartLessonError()

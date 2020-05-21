@@ -4,7 +4,7 @@ import arrow.core.Option
 import com.krzykrucz.elesson.currentlesson.domain.attendance.Attendance
 import com.krzykrucz.elesson.currentlesson.domain.attendance.CheckedAttendanceList
 import com.krzykrucz.elesson.currentlesson.domain.attendance.IncompleteAttendanceList
-import com.krzykrucz.elesson.currentlesson.domain.preparedness.domain.api.StudentsUnpreparedForLesson
+import com.krzykrucz.elesson.currentlesson.domain.preparedness.StudentsUnpreparedForLesson
 import com.krzykrucz.elesson.currentlesson.domain.shared.ClassName
 import com.krzykrucz.elesson.currentlesson.domain.shared.ClassRegistry
 import com.krzykrucz.elesson.currentlesson.domain.shared.FirstName

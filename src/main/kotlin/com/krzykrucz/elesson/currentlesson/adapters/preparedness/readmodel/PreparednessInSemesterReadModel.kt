@@ -4,11 +4,11 @@ import arrow.core.Option
 import arrow.core.getOrElse
 import arrow.core.right
 import com.krzykrucz.elesson.currentlesson.adapters.preparedness.readmodel.StudentInSemesterReadModel.READ_MODEL
-import com.krzykrucz.elesson.currentlesson.domain.preparedness.domain.api.StudentMarkedUnprepared
-import com.krzykrucz.elesson.currentlesson.domain.preparedness.readmodel.GetStudentSubjectUnpreparednessInASemester
-import com.krzykrucz.elesson.currentlesson.domain.preparedness.readmodel.StudentInSemester
-import com.krzykrucz.elesson.currentlesson.domain.preparedness.readmodel.StudentSubjectUnpreparednessInASemester
-import com.krzykrucz.elesson.currentlesson.domain.preparedness.readmodel.WriteUnpreparednessInTheRegister
+import com.krzykrucz.elesson.currentlesson.domain.preparedness.GetStudentSubjectUnpreparednessInASemester
+import com.krzykrucz.elesson.currentlesson.domain.preparedness.StudentInSemester
+import com.krzykrucz.elesson.currentlesson.domain.preparedness.StudentMarkedUnprepared
+import com.krzykrucz.elesson.currentlesson.domain.preparedness.StudentSubjectUnpreparednessInASemester
+import com.krzykrucz.elesson.currentlesson.domain.preparedness.WriteUnpreparednessInTheRegister
 import kotlinx.coroutines.runBlocking
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration

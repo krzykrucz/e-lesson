@@ -1,10 +1,9 @@
-package com.krzykrucz.elesson.currentlesson.domain.preparedness.domain.api
+package com.krzykrucz.elesson.currentlesson.domain.preparedness
 
 import arrow.core.Either
 import com.krzykrucz.elesson.currentlesson.domain.shared.CurrentLesson
 import com.krzykrucz.elesson.currentlesson.domain.shared.LessonIdentifier
 
-//persistence
 typealias PersistUnpreparedStudentToLesson = suspend (StudentMarkedUnprepared) -> LessonIdentifier
 
 typealias NotifyStudentMarkedUnprepared = suspend (StudentMarkedUnprepared) -> Unit

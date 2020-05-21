@@ -1,4 +1,4 @@
-package com.krzykrucz.elesson.currentlesson.domain.preparedness.domain.api
+package com.krzykrucz.elesson.currentlesson.domain.preparedness
 
 import com.krzykrucz.elesson.currentlesson.domain.shared.FirstName
 import com.krzykrucz.elesson.currentlesson.domain.shared.LessonIdentifier

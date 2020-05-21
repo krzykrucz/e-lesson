@@ -1,8 +1,7 @@
-package com.krzykrucz.elesson.currentlesson.domain.preparedness.readmodel
+package com.krzykrucz.elesson.currentlesson.domain.preparedness
 
 import arrow.core.Either
 import arrow.core.Option
-import com.krzykrucz.elesson.currentlesson.domain.preparedness.domain.api.StudentMarkedUnprepared
 import com.krzykrucz.elesson.currentlesson.domain.shared.ClassName
 import com.krzykrucz.elesson.currentlesson.domain.shared.FirstName
 import com.krzykrucz.elesson.currentlesson.domain.shared.SecondName

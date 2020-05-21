@@ -14,7 +14,6 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.web.reactive.function.server.awaitBody
 import org.springframework.web.reactive.function.server.coRouter
 
-// TODO divide this config to 3 different adapters
 @Configuration
 class AttendanceRouterConfig {
 

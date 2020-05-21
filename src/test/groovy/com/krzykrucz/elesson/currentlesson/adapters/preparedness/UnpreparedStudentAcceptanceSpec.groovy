@@ -2,19 +2,19 @@ package com.krzykrucz.elesson.currentlesson.adapters.preparedness
 
 import arrow.core.None
 import com.krzykrucz.elesson.currentlesson.adapters.AcceptanceSpec
-import com.krzykrucz.elesson.currentlesson.infrastructure.Database
-import com.krzykrucz.elesson.currentlesson.infrastructure.PersistentCurrentLesson
 import com.krzykrucz.elesson.currentlesson.adapters.preparedness.readmodel.StudentInSemesterReadModel
 import com.krzykrucz.elesson.currentlesson.adapters.preparedness.rest.ReportUnpreparedRequest
 import com.krzykrucz.elesson.currentlesson.domain.attendance.CheckedAttendanceList
-import com.krzykrucz.elesson.currentlesson.domain.preparedness.domain.api.StudentReportingUnpreparedness
-import com.krzykrucz.elesson.currentlesson.domain.preparedness.domain.api.StudentsUnpreparedForLesson
-import com.krzykrucz.elesson.currentlesson.domain.preparedness.readmodel.StudentInSemester
-import com.krzykrucz.elesson.currentlesson.domain.preparedness.readmodel.StudentSubjectUnpreparednessInASemester
+import com.krzykrucz.elesson.currentlesson.domain.preparedness.StudentInSemester
+import com.krzykrucz.elesson.currentlesson.domain.preparedness.StudentReportingUnpreparedness
+import com.krzykrucz.elesson.currentlesson.domain.preparedness.StudentSubjectUnpreparednessInASemester
+import com.krzykrucz.elesson.currentlesson.domain.preparedness.StudentsUnpreparedForLesson
 import com.krzykrucz.elesson.currentlesson.domain.shared.InProgress
 import com.krzykrucz.elesson.currentlesson.domain.shared.LessonSubject
 import com.krzykrucz.elesson.currentlesson.domain.shared.NonEmptyText
 import com.krzykrucz.elesson.currentlesson.domain.shared.WinterSemester
+import com.krzykrucz.elesson.currentlesson.infrastructure.Database
+import com.krzykrucz.elesson.currentlesson.infrastructure.PersistentCurrentLesson
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus

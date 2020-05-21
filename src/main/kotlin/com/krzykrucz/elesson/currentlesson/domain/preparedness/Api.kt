@@ -1,14 +1,8 @@
-package com.krzykrucz.elesson.currentlesson.domain.preparedness.domain
+package com.krzykrucz.elesson.currentlesson.domain.preparedness
 
 import arrow.core.Either
 import com.krzykrucz.elesson.currentlesson.adapters.asyncDoIfRight
 import com.krzykrucz.elesson.currentlesson.adapters.asyncFlatMap
-import com.krzykrucz.elesson.currentlesson.domain.preparedness.domain.api.FindCurrentLesson
-import com.krzykrucz.elesson.currentlesson.domain.preparedness.domain.api.NotifyStudentMarkedUnprepared
-import com.krzykrucz.elesson.currentlesson.domain.preparedness.domain.api.PersistUnpreparedStudentToLesson
-import com.krzykrucz.elesson.currentlesson.domain.preparedness.domain.api.ReportUnpreparedness
-import com.krzykrucz.elesson.currentlesson.domain.preparedness.domain.api.StudentReportingUnpreparedness
-import com.krzykrucz.elesson.currentlesson.domain.preparedness.domain.api.UnpreparednessError
 import com.krzykrucz.elesson.currentlesson.domain.shared.LessonIdentifier
 
 
@@ -17,9 +11,10 @@ typealias ReportUnpreparedStudentApi =
 
 fun reportUnpreparedStudentApi(
     findCurrentLesson: FindCurrentLesson,
-    reportUnpreparedness: ReportUnpreparedness,
     persistUnpreparedStudentToLesson: PersistUnpreparedStudentToLesson,
-    notifyStudentMarkedUnprepared: NotifyStudentMarkedUnprepared
+    notifyStudentMarkedUnprepared: NotifyStudentMarkedUnprepared,
+    getStudentSubjectUnpreparednessInASemester: GetStudentSubjectUnpreparednessInASemester,
+    reportUnpreparedness: ReportUnpreparedness = reportUnpreparednessWorkflow(getStudentSubjectUnpreparednessInASemester)
 ): ReportUnpreparedStudentApi = { lessonId, student ->
     findCurrentLesson(lessonId)
         .asyncFlatMap { currentLesson -> reportUnpreparedness(student, currentLesson) }

@@ -5,7 +5,7 @@ import com.krzykrucz.elesson.currentlesson.adapters.AcceptanceSpec
 import com.krzykrucz.elesson.currentlesson.domain.attendance.AbsentStudent
 import com.krzykrucz.elesson.currentlesson.domain.attendance.CheckedAttendanceList
 import com.krzykrucz.elesson.currentlesson.domain.attendance.PresentStudent
-import com.krzykrucz.elesson.currentlesson.domain.preparedness.domain.api.StudentsUnpreparedForLesson
+import com.krzykrucz.elesson.currentlesson.domain.preparedness.StudentsUnpreparedForLesson
 import com.krzykrucz.elesson.currentlesson.domain.shared.Finished
 import com.krzykrucz.elesson.currentlesson.domain.shared.InProgress
 import com.krzykrucz.elesson.currentlesson.domain.shared.LessonOrdinalInSemester

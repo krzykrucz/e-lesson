@@ -12,15 +12,9 @@ import com.krzykrucz.elesson.currentlesson.domain.attendance.AttendanceError
 import com.krzykrucz.elesson.currentlesson.domain.attendance.FetchCheckedAttendance
 import com.krzykrucz.elesson.currentlesson.domain.attendance.FetchIncompleteAttendance
 import com.krzykrucz.elesson.currentlesson.domain.attendance.PersistAttendance
-import com.krzykrucz.elesson.currentlesson.domain.attendance.addAbsentStudent
-import com.krzykrucz.elesson.currentlesson.domain.attendance.addPresentStudent
-import com.krzykrucz.elesson.currentlesson.domain.attendance.completeList
-import com.krzykrucz.elesson.currentlesson.domain.attendance.getLessonStartTime
-import com.krzykrucz.elesson.currentlesson.domain.attendance.isInRegistry
-import com.krzykrucz.elesson.currentlesson.domain.attendance.isNotTooLate
-import com.krzykrucz.elesson.currentlesson.domain.attendance.noteAbsence
-import com.krzykrucz.elesson.currentlesson.domain.attendance.noteLate
-import com.krzykrucz.elesson.currentlesson.domain.attendance.notePresence
+import com.krzykrucz.elesson.currentlesson.domain.attendance.noteAbsenceWorkflow
+import com.krzykrucz.elesson.currentlesson.domain.attendance.noteLateWorkflow
+import com.krzykrucz.elesson.currentlesson.domain.attendance.notePresenceWorkflow
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import java.time.LocalDateTime
@@ -45,11 +39,7 @@ class AttendanceHandler(
 
         val notePresenceResult = Option.fx {
             val (incompleteAttendance) = incompleteAttendanceDtoOpt
-            notePresence(
-                isInRegistry(),
-                completeList(),
-                addPresentStudent()
-            )(
+            notePresenceWorkflow()(
                 attendanceDto.uncheckedStudent,
                 incompleteAttendance.incompleteAttendanceList,
                 incompleteAttendance.classRegistry
@@ -68,11 +58,7 @@ class AttendanceHandler(
 
         val noteAbsenceResult = Option.fx {
             val (incompleteAttendance) = incompleteAttendanceDtoOpt
-            noteAbsence(
-                isInRegistry(),
-                completeList(),
-                addAbsentStudent()
-            )(
+            noteAbsenceWorkflow()(
                 attendanceDto.uncheckedStudent,
                 incompleteAttendance.incompleteAttendanceList,
                 incompleteAttendance.classRegistry
@@ -93,9 +79,7 @@ class AttendanceHandler(
         val checkedAttendanceOpt = fetchCheckedAttendance(lateAttendanceDto.lessonId)
         val noteLateResult = Option.fx {
             val (checkedAttendance) = checkedAttendanceOpt
-            noteLate(
-                isNotTooLate(getLessonStartTime())
-            )(
+            noteLateWorkflow()(
                 lateAttendanceDto.lessonId.lessonHourNumber,
                 lateAttendanceDto.absentStudent,
                 checkedAttendance,

@@ -1,9 +1,6 @@
 package com.krzykrucz.elesson.currentlesson.domain.attendance
 
-import arrow.core.Either
-import com.krzykrucz.elesson.currentlesson.domain.shared.ClassRegistry
 import com.krzykrucz.elesson.currentlesson.domain.shared.FirstName
-import com.krzykrucz.elesson.currentlesson.domain.shared.LessonHourNumber
 import com.krzykrucz.elesson.currentlesson.domain.shared.NumberInRegister
 import com.krzykrucz.elesson.currentlesson.domain.shared.SecondName
 import java.time.LocalDateTime
@@ -62,16 +59,4 @@ sealed class AttendanceError {
 typealias CurrentTime = LocalDateTime
 typealias LessonTime = LocalTime
 
-typealias IsInRegistry = (Student, ClassRegistry) -> Boolean
-typealias GetLessonStartTime = (LessonHourNumber) -> LessonTime
-typealias IsNotTooLate = (LessonHourNumber, CurrentTime) -> Boolean
-
-typealias AddAbsentStudent = (IncompleteAttendanceList, UncheckedStudent) -> IncompleteAttendanceList
-typealias AddPresentStudent = (IncompleteAttendanceList, UncheckedStudent) -> IncompleteAttendanceList
-
-typealias CompleteListIfAllStudentsChecked = (IncompleteAttendanceList, ClassRegistry) -> Attendance
-
-typealias NotePresence = (UncheckedStudent, IncompleteAttendanceList, ClassRegistry) -> Either<AttendanceError, Attendance>
-typealias NoteAbsence = (UncheckedStudent, IncompleteAttendanceList, ClassRegistry) -> Either<AttendanceError, Attendance>
-typealias NoteLate = (LessonHourNumber, AbsentStudent, CheckedAttendanceList, CurrentTime) -> CheckedAttendanceList
 

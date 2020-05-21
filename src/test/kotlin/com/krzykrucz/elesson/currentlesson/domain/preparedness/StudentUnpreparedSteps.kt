@@ -6,23 +6,6 @@ import arrow.core.orNull
 import arrow.core.right
 import com.krzykrucz.elesson.currentlesson.domain.attendance.CheckedAttendanceList
 import com.krzykrucz.elesson.currentlesson.domain.attendance.PresentStudent
-import com.krzykrucz.elesson.currentlesson.domain.preparedness.domain.api.ReportUnpreparedness
-import com.krzykrucz.elesson.currentlesson.domain.preparedness.domain.api.StudentMarkedUnprepared
-import com.krzykrucz.elesson.currentlesson.domain.preparedness.domain.api.StudentReportingUnpreparedness
-import com.krzykrucz.elesson.currentlesson.domain.preparedness.domain.api.StudentsUnpreparedForLesson
-import com.krzykrucz.elesson.currentlesson.domain.preparedness.domain.api.UnpreparedStudent
-import com.krzykrucz.elesson.currentlesson.domain.preparedness.domain.api.UnpreparednessError
-import com.krzykrucz.elesson.currentlesson.domain.preparedness.domain.implementation.areStudentsEqual
-import com.krzykrucz.elesson.currentlesson.domain.preparedness.domain.implementation.checkNumberOfTimesStudentWasUnpreparedInSemester
-import com.krzykrucz.elesson.currentlesson.domain.preparedness.domain.implementation.checkStudentCanReportUnprepared
-import com.krzykrucz.elesson.currentlesson.domain.preparedness.domain.implementation.checkStudentIsPresent
-import com.krzykrucz.elesson.currentlesson.domain.preparedness.domain.implementation.createEvent
-import com.krzykrucz.elesson.currentlesson.domain.preparedness.domain.implementation.hasStudentAlreadyRaisedUnprepared
-import com.krzykrucz.elesson.currentlesson.domain.preparedness.domain.implementation.hasStudentUsedAllUnpreparedness
-import com.krzykrucz.elesson.currentlesson.domain.preparedness.domain.implementation.noteStudentUnprepared
-import com.krzykrucz.elesson.currentlesson.domain.preparedness.domain.implementation.reportUnpreparedness
-import com.krzykrucz.elesson.currentlesson.domain.preparedness.readmodel.StudentInSemester
-import com.krzykrucz.elesson.currentlesson.domain.preparedness.readmodel.StudentSubjectUnpreparednessInASemester
 import com.krzykrucz.elesson.currentlesson.domain.shared.ClassName
 import com.krzykrucz.elesson.currentlesson.domain.shared.CurrentLesson
 import com.krzykrucz.elesson.currentlesson.domain.shared.FirstName
@@ -52,17 +35,7 @@ class StudentUnpreparedSteps : En {
     lateinit var studentSubjectUnpreparednessInASemester: StudentSubjectUnpreparednessInASemester
 
     val reportUnpreparednessFacade: ReportUnpreparedness =
-        reportUnpreparedness(
-            checkStudentCanReportUnprepared(
-                checkNumberOfTimesStudentWasUnpreparedInSemester {
-                    studentSubjectUnpreparednessInASemester.right()
-                },
-                hasStudentUsedAllUnpreparedness
-            ),
-            noteStudentUnprepared(hasStudentAlreadyRaisedUnprepared),
-            checkStudentIsPresent(areStudentsEqual),
-            createEvent
-        )
+        reportUnpreparednessWorkflow { studentSubjectUnpreparednessInASemester.right() }
 
     lateinit var result: Either<UnpreparednessError, StudentMarkedUnprepared>
 

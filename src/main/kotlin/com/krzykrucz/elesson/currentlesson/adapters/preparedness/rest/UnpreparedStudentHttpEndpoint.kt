@@ -1,7 +1,7 @@
 package com.krzykrucz.elesson.currentlesson.adapters.preparedness.rest
 
-import com.krzykrucz.elesson.currentlesson.domain.preparedness.domain.ReportUnpreparedStudentApi
-import com.krzykrucz.elesson.currentlesson.domain.preparedness.domain.api.StudentReportingUnpreparedness
+import com.krzykrucz.elesson.currentlesson.domain.preparedness.ReportUnpreparedStudentApi
+import com.krzykrucz.elesson.currentlesson.domain.preparedness.StudentReportingUnpreparedness
 import com.krzykrucz.elesson.currentlesson.domain.shared.LessonIdentifier
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration

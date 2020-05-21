@@ -1,6 +1,6 @@
 package com.krzykrucz.elesson.currentlesson.adapters.preparedness.eventpublisher
 
-import com.krzykrucz.elesson.currentlesson.domain.preparedness.domain.api.NotifyStudentMarkedUnprepared
+import com.krzykrucz.elesson.currentlesson.domain.preparedness.NotifyStudentMarkedUnprepared
 import org.springframework.context.ApplicationEventPublisher
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration

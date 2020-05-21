@@ -1,6 +1,10 @@
 package com.krzykrucz.elesson.currentlesson.domain.attendance
 
 import arrow.core.Either
+import com.krzykrucz.elesson.currentlesson.domain.getError
+import com.krzykrucz.elesson.currentlesson.domain.getSuccess
+import com.krzykrucz.elesson.currentlesson.domain.newClassName
+import com.krzykrucz.elesson.currentlesson.domain.newStudent
 import com.krzykrucz.elesson.currentlesson.domain.shared.ClassRegistry
 import com.krzykrucz.elesson.currentlesson.domain.shared.FirstName
 import com.krzykrucz.elesson.currentlesson.domain.shared.LessonHourNumber
@@ -10,10 +14,6 @@ import com.krzykrucz.elesson.currentlesson.domain.shared.NumberInRegister
 import com.krzykrucz.elesson.currentlesson.domain.shared.SecondName
 import com.krzykrucz.elesson.currentlesson.domain.shared.isError
 import com.krzykrucz.elesson.currentlesson.domain.shared.isSuccess
-import com.krzykrucz.elesson.currentlesson.domain.getError
-import com.krzykrucz.elesson.currentlesson.domain.getSuccess
-import com.krzykrucz.elesson.currentlesson.domain.newClassName
-import com.krzykrucz.elesson.currentlesson.domain.newStudent
 import io.cucumber.java8.En
 import org.assertj.core.api.Assertions.assertThat
 import java.time.LocalDateTime
@@ -27,27 +27,9 @@ class CheckAttendanceSteps : En {
     lateinit var checkedAttendance: CheckedAttendanceList
     lateinit var currentTime: LocalDateTime
 
-    val completeListIfAllStudentsChecked: CompleteListIfAllStudentsChecked =
-        completeList()
-    val isInRegistry: IsInRegistry =
-        isInRegistry()
-    val noteAbsence: NoteAbsence =
-        noteAbsence(
-            isInRegistry,
-            completeListIfAllStudentsChecked,
-            addAbsentStudent()
-        )
-    val notePresence: NotePresence =
-        notePresence(
-            isInRegistry,
-            completeListIfAllStudentsChecked,
-            addPresentStudent()
-        )
-    val noteLate: NoteLate =
-        noteLate(
-            isNotTooLate(getLessonStartTime())
-        )
-
+    val noteAbsence: NoteAbsence = noteAbsenceWorkflow()
+    val notePresence: NotePresence = notePresenceWorkflow()
+    val noteLate: NoteLate = noteLateWorkflow()
 
     val className = newClassName("Slytherin")
     val lessonHourNumber = LessonHourNumber.of(NaturalNumber.ONE).orNull()!!
@@ -151,10 +133,10 @@ class CheckAttendanceSteps : En {
         When("Noting Student is late") {
             val absentStudent = student as AbsentStudent
             currentCheckedAttendance = noteLate(
-                    lessonHourNumber,
-                    absentStudent,
-                    checkedAttendance,
-                    currentTime
+                lessonHourNumber,
+                absentStudent,
+                checkedAttendance,
+                currentTime
             )
         }
 
@@ -202,25 +184,25 @@ class CheckAttendanceSteps : En {
         Then("Student is present") {
             assertThat(currentCheckedAttendance.absentStudents).doesNotContain(student as AbsentStudent)
             assertThat(currentCheckedAttendance.presentStudents)
-                    .contains(
-                        PresentStudent(
-                            student.firstName,
-                            student.secondName,
-                            student.numberInRegister
-                        )
+                .contains(
+                    PresentStudent(
+                        student.firstName,
+                        student.secondName,
+                        student.numberInRegister
                     )
+                )
         }
 
         Then("Student is still absent") {
             assertThat(currentCheckedAttendance.absentStudents).contains(student as AbsentStudent)
             assertThat(currentCheckedAttendance.presentStudents)
-                    .doesNotContain(
-                        PresentStudent(
-                            student.firstName,
-                            student.secondName,
-                            student.numberInRegister
-                        )
+                .doesNotContain(
+                    PresentStudent(
+                        student.firstName,
+                        student.secondName,
+                        student.numberInRegister
                     )
+                )
         }
 
         Then("The result should be an error explaining that student is not in registry") {

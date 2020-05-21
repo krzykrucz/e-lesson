@@ -5,7 +5,7 @@ import arrow.core.None
 import arrow.core.Option
 import arrow.core.Some
 import com.krzykrucz.elesson.currentlesson.domain.attendance.CheckedAttendanceList
-import com.krzykrucz.elesson.currentlesson.domain.preparedness.domain.api.StudentsUnpreparedForLesson
+import com.krzykrucz.elesson.currentlesson.domain.preparedness.StudentsUnpreparedForLesson
 import java.time.LocalDate
 import java.time.LocalTime
 

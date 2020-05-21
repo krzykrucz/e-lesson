@@ -9,6 +9,7 @@ import com.krzykrucz.elesson.currentlesson.domain.shared.InProgressLesson
 import com.krzykrucz.elesson.currentlesson.domain.shared.LessonIdentifier
 import com.krzykrucz.elesson.currentlesson.infrastructure.Database
 
+// TODO extract port
 suspend fun readInProgressLesson(id: LessonIdentifier): Either<FinishLessonError, InProgressLesson> =
     Database.LESSON_DATABASE[id].toOption()
         .filter { lesson -> lesson.status.status == InProgress.status }

@@ -1,6 +1,8 @@
 package com.krzykrucz.elesson.currentlesson.domain.finishlesson
 
 import arrow.core.Either
+import com.krzykrucz.elesson.currentlesson.domain.lessonHourNumberOf
+import com.krzykrucz.elesson.currentlesson.domain.newClassName
 import com.krzykrucz.elesson.currentlesson.domain.shared.InProgressLesson
 import com.krzykrucz.elesson.currentlesson.domain.shared.LessonIdentifier
 import com.krzykrucz.elesson.currentlesson.domain.shared.LessonOrdinalInSemester
@@ -8,8 +10,6 @@ import com.krzykrucz.elesson.currentlesson.domain.shared.LessonTopic
 import com.krzykrucz.elesson.currentlesson.domain.shared.NaturalNumber
 import com.krzykrucz.elesson.currentlesson.domain.shared.NonEmptyText
 import com.krzykrucz.elesson.currentlesson.domain.shared.TopicTitle
-import com.krzykrucz.elesson.currentlesson.domain.lessonHourNumberOf
-import com.krzykrucz.elesson.currentlesson.domain.newClassName
 import io.cucumber.java8.En
 import java.time.LocalDate
 import kotlin.test.assertTrue
@@ -37,7 +37,7 @@ class FinishLessonSteps : En {
         }
 
         When("Finishing a lesson") {
-            finishedLesson = finishLesson(bellRang())(
+            finishedLesson = finishLessonWorkflow()(
                 inProgressLesson,
                 finishLessonTime
             )

@@ -46,7 +46,7 @@ class ChooseTopicSteps : En {
         }
         When("Choosing a topic") {
             inProgressLesson = runBlocking {
-                chooseTopic(isAttendanceChecked, topicTitle, finishedLessonsCount, lessonIdentifier)
+                chooseTopicWorkflow(isAttendanceChecked, finishedLessonsCount)(topicTitle, lessonIdentifier)
             }
         }
         Then("Lesson is in progress") {

@@ -5,28 +5,20 @@ import com.krzykrucz.elesson.currentlesson.adapters.asyncDoIfRight
 import com.krzykrucz.elesson.currentlesson.adapters.toServerResponse
 import com.krzykrucz.elesson.currentlesson.domain.shared.LessonIdentifier
 import com.krzykrucz.elesson.currentlesson.domain.shared.TopicTitle
-import com.krzykrucz.elesson.currentlesson.domain.topic.CheckIfAttendanceIsChecked
-import com.krzykrucz.elesson.currentlesson.domain.topic.CountFinishedLessons
+import com.krzykrucz.elesson.currentlesson.domain.topic.ChooseTopic
 import com.krzykrucz.elesson.currentlesson.domain.topic.PersistInProgressLesson
-import com.krzykrucz.elesson.currentlesson.domain.topic.chooseTopic
 import org.springframework.web.reactive.function.server.awaitBody
 import org.springframework.web.reactive.function.server.coRouter
 
 
 internal fun topicRestAdapter(
-    checkIfAttendanceIsChecked: CheckIfAttendanceIsChecked,
-    fetchFinishedLessons: CountFinishedLessons,
+    chooseTopic: ChooseTopic,
     persistInProgressLesson: PersistInProgressLesson
 ) = coRouter {
     POST("/topic") { request ->
-        val chooseTopicDto = request.awaitBody<ChooseTopicDto>()
-        chooseTopic(
-            checkIfAttendanceIsChecked,
-            chooseTopicDto.topicTitle,
-            fetchFinishedLessons,
-            chooseTopicDto.lessonIdentifier
-        )
-            .asyncDoIfRight { inProgressLesson -> persistInProgressLesson(chooseTopicDto.lessonIdentifier, inProgressLesson) }
+        val (id, title) = request.awaitBody<ChooseTopicDto>()
+        chooseTopic(title, id)
+            .asyncDoIfRight { inProgressLesson -> persistInProgressLesson(id, inProgressLesson) }
             .toServerResponse()
     }
 }

@@ -86,7 +86,7 @@ class StartLessonSteps : En {
         When("Lesson is started at {word}") { startTime: String ->
             attemptedStartTime = LocalDateTime.parse(startTime)
             val result = runBlocking {
-                startLesson(
+                startLessonWorkflow(
                     scheduledLessonProvider,
                     classRegistryProvider
                 )(

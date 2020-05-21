@@ -2,13 +2,21 @@ package com.krzykrucz.elesson.currentlesson.adapters.finishlesson
 
 import arrow.core.Some
 import com.krzykrucz.elesson.currentlesson.adapters.AcceptanceSpec
-import com.krzykrucz.elesson.currentlesson.infrastructure.Database
-import com.krzykrucz.elesson.currentlesson.infrastructure.PersistentCurrentLesson
 import com.krzykrucz.elesson.currentlesson.domain.attendance.AbsentStudent
 import com.krzykrucz.elesson.currentlesson.domain.attendance.CheckedAttendanceList
 import com.krzykrucz.elesson.currentlesson.domain.attendance.PresentStudent
 import com.krzykrucz.elesson.currentlesson.domain.preparedness.domain.api.StudentsUnpreparedForLesson
-import com.krzykrucz.elesson.currentlesson.domain.shared.*
+import com.krzykrucz.elesson.currentlesson.domain.shared.Finished
+import com.krzykrucz.elesson.currentlesson.domain.shared.InProgress
+import com.krzykrucz.elesson.currentlesson.domain.shared.LessonOrdinalInSemester
+import com.krzykrucz.elesson.currentlesson.domain.shared.LessonSubject
+import com.krzykrucz.elesson.currentlesson.domain.shared.LessonTopic
+import com.krzykrucz.elesson.currentlesson.domain.shared.NaturalNumber
+import com.krzykrucz.elesson.currentlesson.domain.shared.NonEmptyText
+import com.krzykrucz.elesson.currentlesson.domain.shared.TopicTitle
+import com.krzykrucz.elesson.currentlesson.domain.shared.WinterSemester
+import com.krzykrucz.elesson.currentlesson.infrastructure.Database
+import com.krzykrucz.elesson.currentlesson.infrastructure.PersistentCurrentLesson
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
@@ -42,7 +50,7 @@ class FinishLessonAcceptanceSpec extends AcceptanceSpec {
                 "/finished-lessons",
                 HttpMethod.PUT,
                 new HttpEntity<>(dto),
-                String.class
+                String
         )
 
         then: "in progress lesson is finished"

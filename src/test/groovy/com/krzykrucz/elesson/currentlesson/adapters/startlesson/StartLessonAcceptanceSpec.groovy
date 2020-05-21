@@ -4,8 +4,6 @@ import com.krzykrucz.elesson.currentlesson.adapters.AcceptanceSpec
 import com.krzykrucz.elesson.currentlesson.adapters.startlesson.rest.ClassRegistryResponse
 import com.krzykrucz.elesson.currentlesson.adapters.startlesson.rest.StartLessonRequest
 import com.krzykrucz.elesson.currentlesson.infrastructure.Database
-import org.springframework.http.HttpEntity
-import org.springframework.http.HttpMethod
 
 import java.time.LocalDate
 
@@ -15,10 +13,9 @@ class StartLessonAcceptanceSpec extends AcceptanceSpec {
 
     def "should start lesson"() {
         when: 'Dark Arts classes started by Severus Snape'
-        def lessonIdAndStudents = rest.exchange(
+        def lessonIdAndStudents = rest.postForEntity(
                 "/startlesson",
-                HttpMethod.POST,
-                new HttpEntity<>(new StartLessonRequest('Severus', 'Snape')),
+                new StartLessonRequest('Severus', 'Snape'),
                 ClassRegistryResponse
         ).body
 

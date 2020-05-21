@@ -1,5 +1,6 @@
 package com.krzykrucz.elesson.currentlesson
 
+import com.krzykrucz.elesson.currentlesson.adapters.finishlesson.finishLessonAdapters
 import com.krzykrucz.elesson.currentlesson.adapters.startlesson.startLessonAdapters
 import com.krzykrucz.elesson.currentlesson.adapters.topic.topicAdapters
 import org.springframework.boot.autoconfigure.SpringBootApplication
@@ -18,5 +19,6 @@ object BeansInitializer : ApplicationContextInitializer<GenericApplicationContex
     override fun initialize(context: GenericApplicationContext) {
         startLessonAdapters.initialize(context)
         topicAdapters.initialize(context)
+        finishLessonAdapters.initialize(context)
     }
 }

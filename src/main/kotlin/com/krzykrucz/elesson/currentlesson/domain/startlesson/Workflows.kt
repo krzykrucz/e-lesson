@@ -26,7 +26,7 @@ private fun validateStartTime(): ValidateLessonStartTime = { lesson, time ->
 
 typealias StartLesson = suspend (Teacher, LessonStartTime) -> Either<StartLessonError, StartedLesson>
 
-fun startLesson(
+fun startLessonWorkflow(
     fetchScheduledLesson: FetchScheduledLesson,
     fetchClassRegistry: FetchClassRegistry,
     validateLessonStartTime: ValidateLessonStartTime = validateStartTime()

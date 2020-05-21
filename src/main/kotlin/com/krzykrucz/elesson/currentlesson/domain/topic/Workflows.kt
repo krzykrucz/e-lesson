@@ -14,12 +14,12 @@ import com.krzykrucz.elesson.currentlesson.domain.shared.TopicTitle
 typealias CountFinishedLessons = suspend () -> FinishedLessonsCount
 typealias CheckIfAttendanceIsChecked = suspend (LessonIdentifier) -> Boolean
 
-typealias ChooseTopic = suspend (CheckIfAttendanceIsChecked,
-                                 TopicTitle,
-                                 CountFinishedLessons,
-                                 LessonIdentifier) -> Either<ChooseTopicError, InProgressLesson>
+typealias ChooseTopic = suspend (TopicTitle, LessonIdentifier) -> Either<ChooseTopicError, InProgressLesson>
 
-val chooseTopic: ChooseTopic = { checkIfAttendanceIsChecked, topicTitle, countFinishedLessons, lessonId ->
+fun chooseTopicWorkflow(
+    checkIfAttendanceIsChecked: CheckIfAttendanceIsChecked,
+    countFinishedLessons: CountFinishedLessons
+): ChooseTopic = { topicTitle, lessonId ->
     val isAttendanceChecked = checkIfAttendanceIsChecked(lessonId)
     val finishedLessonsCount = countFinishedLessons()
     isAttendanceChecked.maybe {

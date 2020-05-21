@@ -4,10 +4,6 @@ import com.krzykrucz.elesson.currentlesson.domain.shared.LessonOrdinalInSemester
 import com.krzykrucz.elesson.currentlesson.domain.shared.LessonTopic
 import java.time.LocalTime
 
-enum class LessonBell {
-    RANG, NOT_RANG
-}
-
 data class FinishedLesson private constructor(val lessonTopic: LessonTopic, val lessonOrdinalInSemester: LessonOrdinalInSemester) {
     constructor(lessonTopic: LessonTopic) : this(lessonTopic, lessonTopic.lessonOrdinalInSemester)
 }

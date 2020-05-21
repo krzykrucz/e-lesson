@@ -2,7 +2,7 @@ package com.krzykrucz.elesson.currentlesson.adapters.lessonprogress.rest
 
 import arrow.core.Option
 import arrow.core.extensions.fx
-import com.krzykrucz.elesson.currentlesson.adapters.AsyncRequestHandler
+import com.krzykrucz.elesson.currentlesson.adapters.RestApi
 import com.krzykrucz.elesson.currentlesson.adapters.asyncFlatMap
 import com.krzykrucz.elesson.currentlesson.adapters.lessonprogress.usecase.LoadLessonProgress
 import com.krzykrucz.elesson.currentlesson.adapters.toServerResponse
@@ -13,7 +13,7 @@ import com.krzykrucz.elesson.currentlesson.domain.shared.NonEmptyText
 import java.time.LocalDate
 import java.util.Optional
 
-fun handleLessonProgressViewRequest(loadLessonProgress: LoadLessonProgress): AsyncRequestHandler = { serverRequest ->
+fun handleLessonProgressViewRequest(loadLessonProgress: LoadLessonProgress): RestApi = { serverRequest ->
     val readDateFromParams = serverRequest.queryParam("date").toOption()
         .map { LocalDate.parse(it) }
     val readLessonHourNumberFromParams = serverRequest.queryParam("lessonHourNumber").toOption()

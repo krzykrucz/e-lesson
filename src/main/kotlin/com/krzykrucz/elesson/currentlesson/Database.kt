@@ -1,4 +1,4 @@
-package com.krzykrucz.elesson.currentlesson.infrastructure
+package com.krzykrucz.elesson.currentlesson
 
 import arrow.core.Option
 import com.krzykrucz.elesson.currentlesson.domain.attendance.Attendance

@@ -4,4 +4,4 @@ import com.krzykrucz.elesson.currentlesson.domain.shared.LessonIdentifier
 import com.krzykrucz.elesson.currentlesson.domain.shared.StartedLesson
 
 
-typealias PersistStartedLessonIfDoesNotExist = suspend (StartedLesson) -> LessonIdentifier
+typealias PersistStartedLesson = suspend (StartedLesson) -> LessonIdentifier

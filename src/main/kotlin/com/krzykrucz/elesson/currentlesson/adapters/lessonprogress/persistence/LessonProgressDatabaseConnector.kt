@@ -1,10 +1,10 @@
 package com.krzykrucz.elesson.currentlesson.adapters.lessonprogress.persistence
 
 import arrow.core.toOption
+import com.krzykrucz.elesson.currentlesson.Database
 import com.krzykrucz.elesson.currentlesson.adapters.lessonprogress.usecase.LessonProgress
 import com.krzykrucz.elesson.currentlesson.adapters.lessonprogress.usecase.LessonProgressError
 import com.krzykrucz.elesson.currentlesson.adapters.lessonprogress.usecase.LoadLessonProgress
-import com.krzykrucz.elesson.currentlesson.infrastructure.Database
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 

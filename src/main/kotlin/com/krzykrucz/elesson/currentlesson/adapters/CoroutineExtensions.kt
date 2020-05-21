@@ -33,4 +33,4 @@ suspend fun <L, R> Either<L, R>.toServerResponse(statusHandler: (L) -> HttpStatu
         ifRight = { ServerResponse.ok().bodyValueAndAwait(it as Any) }
     )
 
-typealias AsyncRequestHandler = suspend (ServerRequest) -> ServerResponse
+typealias RestApi = suspend (ServerRequest) -> ServerResponse

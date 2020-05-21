@@ -1,16 +1,16 @@
 package com.krzykrucz.elesson.currentlesson.adapters.startlesson
 
 import arrow.core.Option
+import com.krzykrucz.elesson.currentlesson.Database.LESSON_DATABASE
+import com.krzykrucz.elesson.currentlesson.PersistentCurrentLesson
 import com.krzykrucz.elesson.currentlesson.domain.shared.InProgress
 import com.krzykrucz.elesson.currentlesson.domain.shared.LessonIdentifier
 import com.krzykrucz.elesson.currentlesson.domain.shared.StartedLesson
-import com.krzykrucz.elesson.currentlesson.domain.startlesson.PersistStartedLessonIfDoesNotExist
-import com.krzykrucz.elesson.currentlesson.infrastructure.Database.LESSON_DATABASE
-import com.krzykrucz.elesson.currentlesson.infrastructure.PersistentCurrentLesson
+import com.krzykrucz.elesson.currentlesson.domain.startlesson.PersistStartedLesson
 
 
 // TODO maybe check if lesson not started somewhere else
-internal val startedLessonPersistenceAdapter: PersistStartedLessonIfDoesNotExist =
+internal val startedLessonPersistenceAdapter: PersistStartedLesson =
     { lesson ->
         if (!StartedLessonInMemoryRepository.contains(lesson.id)) {
             StartedLessonInMemoryRepository.store(lesson)

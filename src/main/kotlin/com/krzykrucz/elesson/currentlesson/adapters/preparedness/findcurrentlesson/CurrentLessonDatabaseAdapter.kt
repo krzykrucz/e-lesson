@@ -2,10 +2,10 @@ package com.krzykrucz.elesson.currentlesson.adapters.preparedness.findcurrentles
 
 import arrow.core.orElse
 import arrow.core.toOption
+import com.krzykrucz.elesson.currentlesson.Database
+import com.krzykrucz.elesson.currentlesson.PersistentCurrentLesson
 import com.krzykrucz.elesson.currentlesson.domain.preparedness.FindCurrentLesson
 import com.krzykrucz.elesson.currentlesson.domain.preparedness.UnpreparednessError
-import com.krzykrucz.elesson.currentlesson.infrastructure.Database
-import com.krzykrucz.elesson.currentlesson.infrastructure.PersistentCurrentLesson
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 

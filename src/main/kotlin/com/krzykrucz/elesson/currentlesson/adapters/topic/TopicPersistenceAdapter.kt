@@ -4,13 +4,13 @@ import arrow.core.getOrElse
 import arrow.core.some
 import arrow.core.toOption
 import arrow.fx.IO
+import com.krzykrucz.elesson.currentlesson.Database
 import com.krzykrucz.elesson.currentlesson.domain.attendance.CheckedAttendanceList
 import com.krzykrucz.elesson.currentlesson.domain.shared.Finished
 import com.krzykrucz.elesson.currentlesson.domain.topic.CheckIfAttendanceIsChecked
 import com.krzykrucz.elesson.currentlesson.domain.topic.CountFinishedLessons
 import com.krzykrucz.elesson.currentlesson.domain.topic.FinishedLessonsCount
 import com.krzykrucz.elesson.currentlesson.domain.topic.PersistInProgressLesson
-import com.krzykrucz.elesson.currentlesson.infrastructure.Database
 
 
 internal val fetchFinishedLessonsCount: CountFinishedLessons = {

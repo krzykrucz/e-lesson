@@ -1,6 +1,8 @@
 package com.krzykrucz.elesson.currentlesson.adapters.finishlesson
 
 import arrow.core.Some
+import com.krzykrucz.elesson.currentlesson.Database
+import com.krzykrucz.elesson.currentlesson.PersistentCurrentLesson
 import com.krzykrucz.elesson.currentlesson.adapters.AcceptanceSpec
 import com.krzykrucz.elesson.currentlesson.domain.attendance.AbsentStudent
 import com.krzykrucz.elesson.currentlesson.domain.attendance.CheckedAttendanceList
@@ -15,8 +17,6 @@ import com.krzykrucz.elesson.currentlesson.domain.shared.NaturalNumber
 import com.krzykrucz.elesson.currentlesson.domain.shared.NonEmptyText
 import com.krzykrucz.elesson.currentlesson.domain.shared.TopicTitle
 import com.krzykrucz.elesson.currentlesson.domain.shared.WinterSemester
-import com.krzykrucz.elesson.currentlesson.infrastructure.Database
-import com.krzykrucz.elesson.currentlesson.infrastructure.PersistentCurrentLesson
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus

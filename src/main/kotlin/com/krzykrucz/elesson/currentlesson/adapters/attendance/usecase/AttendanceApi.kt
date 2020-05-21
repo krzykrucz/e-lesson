@@ -6,8 +6,8 @@ import arrow.core.extensions.either.monad.flatten
 import arrow.core.extensions.fx
 import arrow.core.fix
 import com.krzykrucz.elesson.currentlesson.adapters.asyncMap
-import com.krzykrucz.elesson.currentlesson.adapters.attendance.AttendanceDto
-import com.krzykrucz.elesson.currentlesson.adapters.attendance.LateAttendanceDto
+import com.krzykrucz.elesson.currentlesson.adapters.attendance.rest.AttendanceDto
+import com.krzykrucz.elesson.currentlesson.adapters.attendance.rest.LateAttendanceDto
 import com.krzykrucz.elesson.currentlesson.domain.attendance.AttendanceError
 import com.krzykrucz.elesson.currentlesson.domain.attendance.FetchCheckedAttendance
 import com.krzykrucz.elesson.currentlesson.domain.attendance.FetchIncompleteAttendance
@@ -21,11 +21,10 @@ import java.time.LocalDateTime
 
 
 typealias IsAttendanceChecked = Boolean
-typealias HandleNotePresent = suspend (AttendanceDto) -> Either<AttendanceError, IsAttendanceChecked>
-typealias HandleNoteAbsent = suspend (AttendanceDto) -> Either<AttendanceError, IsAttendanceChecked>
+typealias NotePresentApi = suspend (AttendanceDto) -> Either<AttendanceError, IsAttendanceChecked>
+typealias NoteAbsentApi = suspend (AttendanceDto) -> Either<AttendanceError, IsAttendanceChecked>
 typealias HandleNoteLate = suspend (LateAttendanceDto) -> Either<AttendanceError, IsAttendanceChecked>
 
-// TODO remove this whole layer
 @Configuration
 class AttendanceHandler(
     val persistAttendance: PersistAttendance,
@@ -34,7 +33,7 @@ class AttendanceHandler(
 ) {
 
     @Bean("notePresent")
-    fun handleNotePresentDto(): HandleNotePresent = { attendanceDto ->
+    fun handleNotePresentDto(): NotePresentApi = { attendanceDto ->
         val incompleteAttendanceDtoOpt = fetchIncompleteAttendance(attendanceDto.lessonId)
 
         val notePresenceResult = Option.fx {
@@ -53,7 +52,7 @@ class AttendanceHandler(
     }
 
     @Bean("noteAbsent")
-    fun handleNoteAbsentDto(): HandleNoteAbsent = { attendanceDto ->
+    fun handleNoteAbsentDto(): NoteAbsentApi = { attendanceDto ->
         val incompleteAttendanceDtoOpt = fetchIncompleteAttendance(attendanceDto.lessonId)
 
         val noteAbsenceResult = Option.fx {

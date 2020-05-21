@@ -1,7 +1,7 @@
 package com.krzykrucz.elesson.currentlesson.adapters.preparedness.persistence
 
+import com.krzykrucz.elesson.currentlesson.Database
 import com.krzykrucz.elesson.currentlesson.domain.preparedness.PersistUnpreparedStudentToLesson
-import com.krzykrucz.elesson.currentlesson.infrastructure.Database
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 

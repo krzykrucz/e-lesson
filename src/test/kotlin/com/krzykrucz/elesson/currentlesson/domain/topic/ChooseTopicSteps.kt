@@ -13,14 +13,15 @@ import com.krzykrucz.elesson.currentlesson.domain.shared.NaturalNumber
 import com.krzykrucz.elesson.currentlesson.domain.shared.NonEmptyText
 import com.krzykrucz.elesson.currentlesson.domain.shared.TopicTitle
 import io.cucumber.java8.En
+import kotlinx.coroutines.runBlocking
 import org.assertj.core.api.Assertions.assertThat
 import java.time.LocalDate
 
 class ChooseTopicSteps : En {
     lateinit var topicTitle: TopicTitle
     lateinit var inProgressLesson: Either<ChooseTopicError, InProgressLesson>
-    lateinit var finishedLessonsCount: FinishedLessonsCount
-    var isAttendanceChecked: Boolean = true
+    lateinit var finishedLessonsCount: CountFinishedLessons
+    var isAttendanceChecked: CheckIfAttendanceIsChecked = { true }
     private val today = LocalDate.now()
     private val lessonIdentifier = LessonIdentifier(
         today,
@@ -35,16 +36,18 @@ class ChooseTopicSteps : En {
             )
         }
         Given("Checked Attendance") {
-            isAttendanceChecked = true
+            isAttendanceChecked = { true }
         }
         And("Finished Lessons Count") {
-            finishedLessonsCount = FinishedLessonsCount(4)
+            finishedLessonsCount = { FinishedLessonsCount(4) }
         }
         And("Attendance is not checked") {
-            isAttendanceChecked = false
+            isAttendanceChecked = { false }
         }
         When("Choosing a topic") {
-            inProgressLesson = chooseTopic(isAttendanceChecked, topicTitle, finishedLessonsCount, lessonIdentifier)
+            inProgressLesson = runBlocking {
+                chooseTopic(isAttendanceChecked, topicTitle, finishedLessonsCount, lessonIdentifier)
+            }
         }
         Then("Lesson is in progress") {
             assertThat(inProgressLesson.getSuccess()).isEqualToComparingFieldByField(

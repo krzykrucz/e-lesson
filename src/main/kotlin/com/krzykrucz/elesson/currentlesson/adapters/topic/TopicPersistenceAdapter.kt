@@ -1,4 +1,4 @@
-package com.krzykrucz.elesson.currentlesson.adapters.topic.usecase.persistence
+package com.krzykrucz.elesson.currentlesson.adapters.topic
 
 import arrow.core.getOrElse
 import arrow.core.some
@@ -13,21 +13,21 @@ import com.krzykrucz.elesson.currentlesson.domain.topic.PersistInProgressLesson
 import com.krzykrucz.elesson.currentlesson.infrastructure.Database
 
 
-val fetchFinishedLessonsCount: CountFinishedLessons = {
+internal val fetchFinishedLessonsCount: CountFinishedLessons = {
     Database.LESSON_DATABASE.values.stream()
         .filter { it.status == Finished }
         .count()
         .let { FinishedLessonsCount(it.toInt()) }
 }
 
-val checkIfAttendanceIsChecked: CheckIfAttendanceIsChecked = { lessonId ->
+internal val checkIfAttendanceIsChecked: CheckIfAttendanceIsChecked = { lessonId ->
     Database.LESSON_DATABASE[lessonId].toOption()
         .map { lesson -> lesson.attendance is CheckedAttendanceList }
         .getOrElse { false }
 }
 
 
-val persistInProgressLesson: PersistInProgressLesson = { lessonId, inProgressLesson ->
+internal val persistInProgressLesson: PersistInProgressLesson = { lessonId, inProgressLesson ->
     Database.LESSON_DATABASE.compute(lessonId) { _, lesson ->
         lesson?.copy(
             lessonTopic = inProgressLesson.lessonTopic.some())

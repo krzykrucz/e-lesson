@@ -73,78 +73,74 @@ data class PersistentCurrentLesson(
 
 }
 
-class Database {
+object Database {
 
-    companion object {
+    private val lessonId1 =
+        lessonIdOf("2019-09-09", 1, "1A")
 
-        private val lessonId1 =
-            lessonIdOf("2019-09-09", 1, "1A")
-
-        private val classRegistryOf1A = ClassRegistry(
-            students = listOf(
-                createStudentRecord(
-                    "Harry",
-                    "Potter",
-                    1
-                ),
-                createStudentRecord(
-                    "Tom",
-                    "Riddle",
-                    2
-                )
-
+    private val classRegistryOf1A = ClassRegistry(
+        students = listOf(
+            createStudentRecord(
+                "Harry",
+                "Potter",
+                1
             ),
-            className = classNameOf("1A")
+            createStudentRecord(
+                "Tom",
+                "Riddle",
+                2
+            )
+
+        ),
+        className = classNameOf("1A")
+    )
+
+    val LESSON_DATABASE: ConcurrentHashMap<LessonIdentifier, PersistentCurrentLesson> = ConcurrentHashMap(mutableMapOf(
+        lessonId1 to PersistentCurrentLesson(
+            lessonId1,
+            classRegistryOf1A,
+            semester = WinterSemester,
+            subject = LessonSubject(
+                NonEmptyText(
+                    "Defense from dark arts"
+                )
+            ),
+            status = Scheduled
+        )
+    ))
+
+    private fun lessonIdOf(date: String, number: Int, className: String) =
+        LessonIdentifier(
+            LocalDate.parse(date),
+            lessonHourNumberOf(number),
+            classNameOf(className)
         )
 
-        val LESSON_DATABASE: ConcurrentHashMap<LessonIdentifier, PersistentCurrentLesson> = ConcurrentHashMap(mutableMapOf(
-            lessonId1 to PersistentCurrentLesson(
-                lessonId1,
-                classRegistryOf1A,
-                semester = WinterSemester,
-                subject = LessonSubject(
-                    NonEmptyText(
-                        "Defense from dark arts"
-                    )
-                ),
-                status = Scheduled
-            )
-        ))
+    private fun lessonHourNumberOf(number: Int) =
+        LessonHourNumber.of(number).orNull()!!
 
-        fun lessonIdOf(date: String, number: Int, className: String) =
-            LessonIdentifier(
-                LocalDate.parse(date),
-                lessonHourNumberOf(number),
-                classNameOf(className)
-            )
+    private fun classNameOf(name: String) =
+        ClassName(
+            NonEmptyText.of(
+                name
+            )!!
+        )
 
-        private fun lessonHourNumberOf(number: Int) =
-            LessonHourNumber.of(number).orNull()!!
-
-        private fun classNameOf(name: String) =
-            ClassName(
+    private fun createStudentRecord(name: String, surname: String, numberInRegister: Int): StudentRecord =
+        StudentRecord(
+            firstName = FirstName(
                 NonEmptyText.of(
                     name
                 )!!
-            )
-
-        private fun createStudentRecord(name: String, surname: String, numberInRegister: Int): StudentRecord =
-            StudentRecord(
-                firstName = FirstName(
-                    NonEmptyText.of(
-                        name
-                    )!!
-                ),
-                secondName = SecondName(
-                    NonEmptyText.of(
-                        surname
-                    )!!
-                ),
-                numberInRegister = NaturalNumber.of(numberInRegister)
-                    .map(::NumberInRegister)
-                    .orNull()!!
-            )
-
-    }
+            ),
+            secondName = SecondName(
+                NonEmptyText.of(
+                    surname
+                )!!
+            ),
+            numberInRegister = NaturalNumber.of(numberInRegister)
+                .map(::NumberInRegister)
+                .orNull()!!
+        )
 
 }

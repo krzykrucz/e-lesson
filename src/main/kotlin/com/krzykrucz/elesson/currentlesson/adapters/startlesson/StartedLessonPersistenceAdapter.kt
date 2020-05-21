@@ -5,7 +5,7 @@ import com.krzykrucz.elesson.currentlesson.domain.shared.InProgress
 import com.krzykrucz.elesson.currentlesson.domain.shared.LessonIdentifier
 import com.krzykrucz.elesson.currentlesson.domain.shared.StartedLesson
 import com.krzykrucz.elesson.currentlesson.domain.startlesson.PersistStartedLessonIfDoesNotExist
-import com.krzykrucz.elesson.currentlesson.infrastructure.Database.Companion.LESSON_DATABASE
+import com.krzykrucz.elesson.currentlesson.infrastructure.Database.LESSON_DATABASE
 import com.krzykrucz.elesson.currentlesson.infrastructure.PersistentCurrentLesson
 
 

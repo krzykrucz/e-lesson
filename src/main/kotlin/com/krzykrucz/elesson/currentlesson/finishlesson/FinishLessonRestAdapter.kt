@@ -7,7 +7,7 @@ import org.springframework.web.reactive.function.server.awaitBody
 import org.springframework.web.reactive.function.server.coRouter
 
 
-fun finishLessonRestAdapter(
+internal fun finishLessonRestAdapter(
     finishLesson: FinishLesson,
     storeLessonAsFinished: StoreLessonAsFinished
 ) = coRouter {

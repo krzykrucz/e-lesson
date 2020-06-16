@@ -1,17 +1,10 @@
 package com.krzykrucz.elesson.currentlesson.lessonprogress
 
 import com.krzykrucz.elesson.currentlesson.shared.LessonTopic
-import org.springframework.context.annotation.Bean
-import org.springframework.context.annotation.Configuration
 import org.springframework.web.reactive.function.server.coRouter
 
-@Configuration
-class LessonProgressRestAdapter {
-
-    @Bean
-    fun lessonProgressRouter(loadLessonProgress: LoadLessonProgress) = coRouter {
-        GET("/progress", handleLessonProgressViewRequest(loadLessonProgress))
-    }
+internal fun lessonProgressRouter(loadLessonProgress: LoadLessonProgress) = coRouter {
+    GET("/progress", handleLessonProgressViewRequest(loadLessonProgress))
 }
 
 data class LessonProgressDto(

@@ -1,7 +1,10 @@
-package com.krzykrucz.elesson.currentlesson.finishlesson
+package com.krzykrucz.elesson.currentlesson
 
 import arrow.core.Either
 import arrow.core.getOrElse
+import com.krzykrucz.elesson.currentlesson.finishlesson.FinishLessonError
+import com.krzykrucz.elesson.currentlesson.finishlesson.FinishLessonTime
+import com.krzykrucz.elesson.currentlesson.finishlesson.FinishedLesson
 import com.krzykrucz.elesson.currentlesson.shared.InProgressLesson
 import com.krzykrucz.elesson.currentlesson.shared.isError
 import io.cucumber.core.api.TypeRegistry

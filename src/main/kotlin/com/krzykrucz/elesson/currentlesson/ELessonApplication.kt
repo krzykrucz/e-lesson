@@ -1,6 +1,8 @@
 package com.krzykrucz.elesson.currentlesson
 
+import com.krzykrucz.elesson.currentlesson.attendance.attendanceAdapters
 import com.krzykrucz.elesson.currentlesson.finishlesson.finishLessonAdapters
+import com.krzykrucz.elesson.currentlesson.lessonprogress.lessonProgressAdapters
 import com.krzykrucz.elesson.currentlesson.startlesson.startLessonAdapters
 import com.krzykrucz.elesson.currentlesson.topic.topicAdapters
 import org.springframework.boot.autoconfigure.SpringBootApplication
@@ -20,5 +22,7 @@ object BeansInitializer : ApplicationContextInitializer<GenericApplicationContex
         startLessonAdapters.initialize(context)
         topicAdapters.initialize(context)
         finishLessonAdapters.initialize(context)
+        lessonProgressAdapters.initialize(context)
+        attendanceAdapters.initialize(context)
     }
 }

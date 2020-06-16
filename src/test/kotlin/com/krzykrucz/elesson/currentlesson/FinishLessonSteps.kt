@@ -4,7 +4,6 @@ import arrow.core.Either
 import com.krzykrucz.elesson.currentlesson.finishlesson.FinishLessonError
 import com.krzykrucz.elesson.currentlesson.finishlesson.FinishLessonTime
 import com.krzykrucz.elesson.currentlesson.finishlesson.FinishedLesson
-import com.krzykrucz.elesson.currentlesson.finishlesson.MatchFinishLessonResult
 import com.krzykrucz.elesson.currentlesson.finishlesson.finishLessonWorkflow
 import com.krzykrucz.elesson.currentlesson.shared.InProgressLesson
 import com.krzykrucz.elesson.currentlesson.shared.LessonIdentifier

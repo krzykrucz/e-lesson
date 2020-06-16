@@ -1,8 +1,8 @@
 package com.krzykrucz.elesson.currentlesson
 
-import com.krzykrucz.elesson.currentlesson.adapters.finishlesson.finishLessonAdapters
-import com.krzykrucz.elesson.currentlesson.adapters.startlesson.startLessonAdapters
-import com.krzykrucz.elesson.currentlesson.adapters.topic.topicAdapters
+import com.krzykrucz.elesson.currentlesson.finishlesson.finishLessonAdapters
+import com.krzykrucz.elesson.currentlesson.startlesson.startLessonAdapters
+import com.krzykrucz.elesson.currentlesson.topic.topicAdapters
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 import org.springframework.context.ApplicationContextInitializer
